@@ -1,0 +1,212 @@
+#pragma once
+#include "frmTicket.h"
+#include "frmBiblioteca.h"
+
+namespace Epsteam {
+
+	using namespace System;
+	using namespace System::ComponentModel;
+	using namespace System::Collections;
+	using namespace System::Windows::Forms;
+	using namespace System::Data;
+	using namespace System::Drawing;
+
+	public ref class frmTienda : public System::Windows::Forms::Form
+	{
+	public:
+		frmTienda(void)
+		{
+			InitializeComponent();
+
+			// --- EL BOTÓN DE LA BIBLIOTECA ---
+			Button^ btnBiblioteca = gcnew Button();
+			btnBiblioteca->Text = "MI BIBLIOTECA";
+			btnBiblioteca->BackColor = Color::FromArgb(45, 45, 45);
+			btnBiblioteca->ForeColor = Color::White;
+			btnBiblioteca->FlatStyle = FlatStyle::Flat;
+			btnBiblioteca->Size = System::Drawing::Size(130, 35);
+			btnBiblioteca->Location = System::Drawing::Point(450, 20);
+			btnBiblioteca->Click += gcnew System::EventHandler(this, &frmTienda::btnBiblioteca_Click);
+
+			pnlNav->Controls->Add(btnBiblioteca);
+
+			// --- TUS JUEGOS ---
+			AgregarJuego("Elden Ring", "$1,200 MXN", Color::Gold);
+			AgregarJuego("Resident Evil 4", "$900 MXN", Color::DarkRed);
+			AgregarJuego("Demon Slayer", "$1,100 MXN", Color::DeepSkyBlue);
+			AgregarJuego("Hollow Knight", "$300 MXN", Color::White);
+		} // <--- Esta llave cierra el constructor
+
+	protected:
+		~frmTienda()
+		{
+			if (components)
+			{
+				delete components;
+			}
+		}
+
+	private:
+		System::Windows::Forms::Panel^ pnlNav;
+		System::Windows::Forms::Label^ lblLogo;
+		System::Windows::Forms::FlowLayoutPanel^ flowTienda;
+		System::Windows::Forms::Button^ btnCerrarSesion;
+		System::ComponentModel::Container^ components;
+
+		// Función mágica para crear cuadritos de juegos automáticamente
+		void AgregarJuego(String^ titulo, String^ precio, Color colorFondo) {
+			Panel^ card = gcnew Panel();
+			card->Size = System::Drawing::Size(200, 250);
+			card->BackColor = Color::FromArgb(45, 45, 45);
+			card->Margin = System::Windows::Forms::Padding(15);
+
+			Label^ lblTitulo = gcnew Label();
+			lblTitulo->Text = titulo;
+			lblTitulo->ForeColor = Color::White;
+			lblTitulo->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
+			lblTitulo->Dock = DockStyle::Top;
+			lblTitulo->TextAlign = ContentAlignment::MiddleCenter;
+
+			Label^ lblPrecio = gcnew Label();
+			lblPrecio->Text = precio;
+			lblPrecio->ForeColor = Color::LightGray;
+			lblPrecio->Dock = DockStyle::Bottom;
+			lblPrecio->TextAlign = ContentAlignment::MiddleCenter;
+
+			Button^ btnComprar = gcnew Button();
+			btnComprar->Text = "COMPRAR";
+			btnComprar->FlatStyle = FlatStyle::Flat;
+			btnComprar->ForeColor = Color::White;
+			btnComprar->BackColor = Color::FromArgb(0, 120, 215);
+			btnComprar->Dock = DockStyle::Bottom;
+
+			// --- ESTO ES LO NUEVO ---
+			// Guardamos el título y precio "escondidos" en el botón
+			btnComprar->Tag = gcnew array<String^>{titulo, precio};
+			// Le decimos qué hacer cuando le den clic
+			btnComprar->Click += gcnew System::EventHandler(this, &frmTienda::btnComprar_Click);
+			// -------------------------
+
+			Panel^ imgPlaceholder = gcnew Panel();
+			imgPlaceholder->BackColor = colorFondo;
+			imgPlaceholder->Dock = DockStyle::Fill;
+
+			card->Controls->Add(imgPlaceholder);
+			card->Controls->Add(lblTitulo);
+			card->Controls->Add(btnComprar);
+			card->Controls->Add(lblPrecio);
+
+			flowTienda->Controls->Add(card);
+		}
+
+#pragma region Windows Form Designer generated code
+		void InitializeComponent(void)
+		{
+			this->pnlNav = (gcnew System::Windows::Forms::Panel());
+			this->lblLogo = (gcnew System::Windows::Forms::Label());
+			this->btnCerrarSesion = (gcnew System::Windows::Forms::Button());
+			this->flowTienda = (gcnew System::Windows::Forms::FlowLayoutPanel());
+			this->pnlNav->SuspendLayout();
+			this->SuspendLayout();
+
+			// Panel de Navegación (Arriba)
+			this->pnlNav->BackColor = System::Drawing::Color::FromArgb(23, 26, 33);
+			this->pnlNav->Controls->Add(this->btnCerrarSesion);
+			this->pnlNav->Controls->Add(this->lblLogo);
+			this->pnlNav->Dock = System::Windows::Forms::DockStyle::Top;
+			this->pnlNav->Location = System::Drawing::Point(0, 0);
+			this->pnlNav->Name = L"pnlNav";
+			this->pnlNav->Size = System::Drawing::Size(1000, 60);
+
+			// Logo Epsteam
+			this->lblLogo->AutoSize = true;
+			this->lblLogo->Font = (gcnew System::Drawing::Font(L"Arial", 18, System::Drawing::FontStyle::Bold));
+			this->lblLogo->ForeColor = System::Drawing::Color::FromArgb(102, 192, 244);
+			this->lblLogo->Location = System::Drawing::Point(20, 15);
+			this->lblLogo->Text = L"EPSTEAM - TIENDA";
+
+			// Botón Cerrar Sesión
+			this->btnCerrarSesion->BackColor = System::Drawing::Color::FromArgb(45, 45, 45);
+			this->btnCerrarSesion->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+			this->btnCerrarSesion->ForeColor = System::Drawing::Color::White;
+			this->btnCerrarSesion->Location = System::Drawing::Point(850, 15);
+			this->btnCerrarSesion->Size = System::Drawing::Size(120, 30);
+			this->btnCerrarSesion->Text = L"Cerrar Sesión";
+			this->btnCerrarSesion->Click += gcnew System::EventHandler(this, &frmTienda::btnCerrarSesion_Click);
+
+			// FlowLayoutPanel (Donde caen los juegos)
+			this->flowTienda->AutoScroll = true;
+			this->flowTienda->BackColor = System::Drawing::Color::FromArgb(27, 40, 56);
+			this->flowTienda->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->flowTienda->Location = System::Drawing::Point(0, 60);
+			this->flowTienda->Name = L"flowTienda";
+			this->flowTienda->Padding = System::Windows::Forms::Padding(20);
+			this->flowTienda->Size = System::Drawing::Size(1000, 640);
+
+			// frmTienda Config
+			this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+			this->ClientSize = System::Drawing::Size(1000, 700);
+			this->Controls->Add(this->flowTienda);
+			this->Controls->Add(this->pnlNav);
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None; // Sin bordes feos
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+			this->Text = L"Tienda Epsteam";
+			this->pnlNav->ResumeLayout(false);
+			this->pnlNav->PerformLayout();
+			this->ResumeLayout(false);
+
+		}
+#pragma endregion
+
+private: System::Void btnCerrarSesion_Click(System::Object^ sender, System::EventArgs^ e) {
+		this->Close(); // Cierra la tienda y te regresa a la pantalla de inicio
+	}
+
+private: System::Void btnComprar_Click(System::Object^ sender, System::EventArgs^ e) {
+	// 1. Agarramos el nombre del juego del botón que presionaste
+	Button^ btnCliquado = (Button^)sender;
+	Panel^ pnlPadre = (Panel^)btnCliquado->Parent;
+	String^ nombreJuego = "";
+
+	// Buscamos el Label que tiene el título en ese cuadrito
+	for each (Control ^ c in pnlPadre->Controls) {
+		if (c->GetType() == Label::typeid && c->Dock == DockStyle::Top) {
+			nombreJuego = c->Text;
+			break;
+		}
+	}
+
+	// --- EL CANDADO AQUÍ ---
+	bool yaLoTiene = false;
+	if (System::IO::File::Exists("../mis_compras_reales.txt")) {
+		System::IO::StreamReader^ lector = gcnew System::IO::StreamReader("../mis_compras_reales.txt");
+		String^ linea;
+		while ((linea = lector->ReadLine()) != nullptr) {
+			if (linea == nombreJuego) { // <--- Aquí es donde bloquea la compra
+				yaLoTiene = true;
+				break;
+			}
+		}
+		lector->Close();
+	}
+
+	if (yaLoTiene) {
+		MessageBox::Show("¡Ya tienes '" + nombreJuego + "' en tu biblioteca!", "Juego Duplicado", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+	}
+	else {
+		// Si no lo tiene, abrimos el ticket normal
+		String^ precio = ""; // Aquí deberías jalar el precio como ya lo hacías
+		frmTicket^ ticket = gcnew frmTicket(nombreJuego, precio);
+		ticket->ShowDialog();
+	}
+}
+	   private: System::Void btnBiblioteca_Click(System::Object^ sender, System::EventArgs^ e) {
+		   // Esta es la función que Visual Studio no encuentra (Error 29)
+		   frmBiblioteca^ biblioteca = gcnew frmBiblioteca();
+		   this->Hide();
+		   biblioteca->ShowDialog();
+		   this->Show();
+	   }
+	};
+}
