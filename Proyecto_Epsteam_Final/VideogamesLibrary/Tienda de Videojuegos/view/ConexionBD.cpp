@@ -52,7 +52,7 @@ DataTable^ ConexionBD::ObtenerCatalogoJuegos() {
 
     if (con != nullptr) {
         try {
-            String^ query = "SELECT id_videojuego, titulo, precio_base FROM videojuego";
+            String^ query = "SELECT id_juego, titulo, precio_base FROM videojuego";
             MySqlCommand^ cmd = gcnew MySqlCommand(query, con);
             MySqlDataAdapter^ adapter = gcnew MySqlDataAdapter(cmd);
             adapter->Fill(tablaJuegos);
@@ -77,7 +77,7 @@ bool ConexionBD::RegistrarCompra(int id_usuario, int id_juego, String^ metodo_pa
         try {
             // Primera consulta de compra
             String^ queryCompra = "INSERT INTO compra (fecha_compra, total_compra, id_usuario, metodo_pago) " +
-                "VALUES (NOW(), (SELECT precio_base FROM videojuego WHERE id_videojuego = @idJuego), @idUsu, @metodo); " +
+                "VALUES (NOW(), (SELECT precio_base FROM videojuego WHERE id_juego = @idJuego), @idUsu, @metodo); " +
                 "SELECT LAST_INSERT_ID();";
 
             MySqlCommand^ cmdCompra = gcnew MySqlCommand(queryCompra, con, transaccion);
@@ -88,8 +88,8 @@ bool ConexionBD::RegistrarCompra(int id_usuario, int id_juego, String^ metodo_pa
             int idCompraGenerada = Convert::ToInt32(cmdCompra->ExecuteScalar());
 
             // Segunda consulta de detalle
-            String^ queryDetalle = "INSERT INTO detalle_compra (id_compra, id_videojuego, precio_pagado) " +
-                "VALUES (@idCompra, @idJuego, (SELECT precio_base FROM videojuego WHERE id_videojuego = @idJuego))";
+            String^ queryDetalle = "INSERT INTO detalle_compra (id_compra, id_juego, precio_pagado) " +
+                "VALUES (@idCompra, @idJuego, (SELECT precio_base FROM videojuego WHERE id_juego = @idJuego))";
 
             MySqlCommand^ cmdDetalle = gcnew MySqlCommand(queryDetalle, con, transaccion);
             cmdDetalle->Parameters->AddWithValue("@idCompra", idCompraGenerada);

@@ -1,6 +1,7 @@
 #pragma once
 #include "frmTicket.h"
 #include "frmBiblioteca.h"
+#include "ConexionBD.h" 
 
 namespace Epsteam {
 
@@ -8,8 +9,29 @@ namespace Epsteam {
 	using namespace System::ComponentModel;
 	using namespace System::Collections;
 	using namespace System::Windows::Forms;
-	using namespace System::Data;
+	using namespace System::Data; 
 	using namespace System::Drawing;
+
+	// =========================================================================
+	// INICIO DEL GESTOR DE IMÁGENES (VERSIÓN DINÁMICA Y OPTIMIZADA)
+	// =========================================================================
+	public ref class GestorImagenes {
+	public:
+		static String^ ObtenerRuta(String^ nombreJuego) {
+
+			// 1. Le quitamos los espacios fantasma al inicio/final con Trim()
+			String^ nombreLimpio = nombreJuego->Trim()->ToLower();
+
+			// 2. Aplicamos la regla de tu compañero: cambiamos espacios y borramos símbolos
+			nombreLimpio = nombreLimpio->Replace(" ", "_")->Replace(":", "")->Replace("!", "")->Replace("'", "");
+
+			// 3. Armamos la ruta final
+			return "img/" + nombreLimpio + ".jpg";
+		}
+	};
+	// =========================================================================
+	// FIN DEL GESTOR DE IMÁGENES
+	// =========================================================================
 
 	public ref class frmTienda : public System::Windows::Forms::Form
 	{
@@ -18,7 +40,6 @@ namespace Epsteam {
 		{
 			InitializeComponent();
 
-			// --- EL BOTÓN DE LA BIBLIOTECA ---
 			Button^ btnBiblioteca = gcnew Button();
 			btnBiblioteca->Text = "MI BIBLIOTECA";
 			btnBiblioteca->BackColor = Color::FromArgb(45, 45, 45);
@@ -30,12 +51,34 @@ namespace Epsteam {
 
 			pnlNav->Controls->Add(btnBiblioteca);
 
-			// --- TUS JUEGOS ---
-			AgregarJuego("Elden Ring", "$1,200 MXN", Color::Gold);
-			AgregarJuego("Resident Evil 4", "$900 MXN", Color::DarkRed);
-			AgregarJuego("Demon Slayer", "$1,100 MXN", Color::DeepSkyBlue);
-			AgregarJuego("Hollow Knight", "$300 MXN", Color::White);
-		} // <--- Esta llave cierra el constructor
+			// ==========================================================
+			// --- AQUÍ CONECTAMOS TU BASE DE DATOS CON LAS IMÁGENES ---
+			// ==========================================================
+
+			// 1. Traemos los 150 juegos de tu XAMPP
+			DataTable^ misJuegosReales = Epsteam::ConexionBD::ObtenerCatalogoJuegos();
+
+			// 2. Verificamos que la BD haya devuelto información
+			if (misJuegosReales != nullptr && misJuegosReales->Rows->Count > 0) {
+
+				// 3. Recorremos fila por fila
+				for (int i = 0; i < misJuegosReales->Rows->Count; i++) {
+
+					DataRow^ fila = misJuegosReales->Rows[i];
+					String^ titulo = fila["titulo"]->ToString();
+					String^ precio = "$" + fila["precio_base"]->ToString() + " MXN";
+
+					// 4. Se lo mandamos a la función de tu compañero.
+					// OJO: Solo pasamos 2 datos, la imagen se pondrá sola gracias a su GestorImagenes.
+					AgregarJuego(titulo, precio);
+				}
+			}
+			else {
+				MessageBox::Show("No se encontraron juegos en la BD.", "Aviso");
+			}
+			// ==========================================================
+		}
+	
 
 	protected:
 		~frmTienda()
@@ -54,11 +97,29 @@ namespace Epsteam {
 		System::ComponentModel::Container^ components;
 
 		// Función mágica para crear cuadritos de juegos automáticamente
-		void AgregarJuego(String^ titulo, String^ precio, Color colorFondo) {
+		// Función mágica para crear cuadritos con IMÁGENES
+		void AgregarJuego(String^ titulo, String^ precio) {
 			Panel^ card = gcnew Panel();
 			card->Size = System::Drawing::Size(200, 250);
 			card->BackColor = Color::FromArgb(45, 45, 45);
 			card->Margin = System::Windows::Forms::Padding(15);
+
+			// --- AQUÍ SUCEDE LA MAGIA DE LA IMAGEN ---
+			PictureBox^ picPortada = gcnew PictureBox();
+			picPortada->Dock = DockStyle::Fill;
+			picPortada->SizeMode = PictureBoxSizeMode::Zoom;
+
+			// Usamos nuestro Gestor para armar la ruta correcta (ej. "img/valorant.jpg")
+			String^ rutaImagen = GestorImagenes::ObtenerRuta(titulo);
+			
+			// Verificamos si la imagen existe en tu carpeta 'img'
+			if (System::IO::File::Exists(rutaImagen)) {
+				picPortada->Image = Image::FromFile(rutaImagen);
+			}
+			else {
+				picPortada->BackColor = Color::DimGray; // Si no la encuentra, pinta gris
+			}
+			// ------------------------------------------
 
 			Label^ lblTitulo = gcnew Label();
 			lblTitulo->Text = titulo;
@@ -80,21 +141,17 @@ namespace Epsteam {
 			btnComprar->BackColor = Color::FromArgb(0, 120, 215);
 			btnComprar->Dock = DockStyle::Bottom;
 
-			// --- ESTO ES LO NUEVO ---
-			// Guardamos el título y precio "escondidos" en el botón
 			btnComprar->Tag = gcnew array<String^>{titulo, precio};
-			// Le decimos qué hacer cuando le den clic
 			btnComprar->Click += gcnew System::EventHandler(this, &frmTienda::btnComprar_Click);
-			// -------------------------
 
-			Panel^ imgPlaceholder = gcnew Panel();
-			imgPlaceholder->BackColor = colorFondo;
-			imgPlaceholder->Dock = DockStyle::Fill;
-
-			card->Controls->Add(imgPlaceholder);
+			// Agregamos todo a la tarjeta (¡La imagen entra aquí!)
+			card->Controls->Add(picPortada);
 			card->Controls->Add(lblTitulo);
 			card->Controls->Add(btnComprar);
 			card->Controls->Add(lblPrecio);
+
+			// Mandamos la imagen al fondo para que el título y el botón queden por encima
+			picPortada->SendToBack();
 
 			flowTienda->Controls->Add(card);
 		}
