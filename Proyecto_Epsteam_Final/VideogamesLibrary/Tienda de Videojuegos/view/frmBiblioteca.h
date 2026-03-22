@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "ConexionBD.h"
 
 namespace Epsteam {
 
@@ -70,27 +71,39 @@ namespace Epsteam {
 #pragma endregion
 
 		   void CargarMisJuegos() {
-			   // 1. LIMPIEZA: Borramos lo que haya en el panel antes de pintar
 			   this->flowBiblioteca->Controls->Clear();
 
-			   // 2. RUTA: Usamos un nombre que no se confunda con el sistema
-			   if (System::IO::File::Exists("../mis_compras_reales.txt")) {
-				   System::IO::StreamReader^ lector = gcnew System::IO::StreamReader("../mis_compras_reales.txt");
-				   String^ juego;
+			   // Llamamos a la BD usando el ID de la sesión actual guardada en ConexionBD
+			   DataTable^ misJuegos = Epsteam::ConexionBD::ObtenerMisJuegos(Epsteam::ConexionBD::idUsuarioActual);
 
-				   while ((juego = lector->ReadLine()) != nullptr) {
-					   Label^ lbl = gcnew Label();
-					   lbl->Text = "De tu propiedad " + juego; // Se ve más pro con el emoji
+			   if (misJuegos != nullptr && misJuegos->Rows->Count > 0) {
+				   for (int i = 0; i < misJuegos->Rows->Count; i++) {
+					   DataRow^ fila = misJuegos->Rows[i]; // <--- EXTRAEMOS LA FILA PARA QUE C++ NO LLORE
+					   String^ juego = fila["titulo"]->ToString();
+
+					   int tiempoJugado = Convert::ToInt32(fila["tiempo_jugado_minutos"]);
+					   String^ textoTiempo = (tiempoJugado >= 120) ? " [+2hrs jugadas]" : " [" + tiempoJugado + " min jugados]";
+
+					   Label^ lbl = gcnew Label(); // <--- UNA SOLA ETIQUETA
+					   lbl->Text =juego + textoTiempo;
+
 					   lbl->ForeColor = Color::White;
 					   lbl->BackColor = Color::FromArgb(45, 45, 45);
-					   lbl->Size = System::Drawing::Size(300, 45); // Un poquito más grande para que quepa bien
+					   lbl->Size = System::Drawing::Size(300, 45);
 					   lbl->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
 					   lbl->TextAlign = ContentAlignment::MiddleLeft;
 					   lbl->Margin = System::Windows::Forms::Padding(10);
 
 					   this->flowBiblioteca->Controls->Add(lbl);
 				   }
-				   lector->Close();
+			   }
+			   else {
+				   Label^ lblVacio = gcnew Label();
+				   lblVacio->Text = "Aún no tienes juegos. ¡Ve a la tienda!";
+				   lblVacio->ForeColor = Color::LightGray;
+				   lblVacio->AutoSize = true;
+				   lblVacio->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Italic);
+				   this->flowBiblioteca->Controls->Add(lblVacio);
 			   }
 		   }
 

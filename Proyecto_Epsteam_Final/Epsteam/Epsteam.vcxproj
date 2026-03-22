@@ -115,14 +115,56 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Cryptography">
+      <HintPath>..\HackMySQL\bin\Debug\BouncyCastle.Cryptography.dll</HintPath>
+    </Reference>
+    <Reference Include="Google.Protobuf">
+      <HintPath>..\HackMySQL\bin\Debug\Google.Protobuf.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4">
+      <HintPath>..\HackMySQL\bin\Debug\K4os.Compression.LZ4.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Compression.LZ4.Streams">
+      <HintPath>..\HackMySQL\bin\Debug\K4os.Compression.LZ4.Streams.dll</HintPath>
+    </Reference>
+    <Reference Include="K4os.Hash.xxHash">
+      <HintPath>..\HackMySQL\bin\Debug\K4os.Hash.xxHash.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces">
+      <HintPath>..\HackMySQL\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
     <Reference Include="MySql.Data">
-      <HintPath>..\..\..\..\..\Program Files (x86)\MySQL\MySQL Connector NET 9.6\MySql.Data.dll</HintPath>
+      <HintPath>..\HackMySQL\bin\Debug\MySql.Data.dll</HintPath>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Buffers">
+      <HintPath>..\HackMySQL\bin\Debug\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Configuration.ConfigurationManager">
+      <HintPath>..\HackMySQL\bin\Debug\System.Configuration.ConfigurationManager.dll</HintPath>
+    </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.IO.Pipelines">
+      <HintPath>..\HackMySQL\bin\Debug\System.IO.Pipelines.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Memory">
+      <HintPath>..\HackMySQL\bin\Debug\System.Memory.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Numerics.Vectors">
+      <HintPath>..\HackMySQL\bin\Debug\System.Numerics.Vectors.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.CompilerServices.Unsafe">
+      <HintPath>..\HackMySQL\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Threading.Tasks.Extensions">
+      <HintPath>..\HackMySQL\bin\Debug\System.Threading.Tasks.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Reference Include="ZstdSharp">
+      <HintPath>..\HackMySQL\bin\Debug\ZstdSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.cpp" />

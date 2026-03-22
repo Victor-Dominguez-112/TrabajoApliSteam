@@ -1,5 +1,5 @@
 #pragma once
-
+#include "ConexionBD.h"
 namespace Epsteam {
 
 	using namespace System;
@@ -12,10 +12,13 @@ namespace Epsteam {
 	public ref class frmTicket : public System::Windows::Forms::Form
 	{
 	public:
-		// ¡El recibidor! Exige saber qué juego vas a comprar y su precio
-		frmTicket(String^ nombreJuego, String^ precioJuego)
+		int idJuegoComprando; // <--- GUARDAMOS EL ID DEL JUEGO AQUÍ
+
+		// ¡El recibidor! Exige saber el ID, el juego y su precio
+		frmTicket(String^ idJuegoStr, String^ nombreJuego, String^ precioJuego)
 		{
 			InitializeComponent();
+			idJuegoComprando = Convert::ToInt32(idJuegoStr);
 
 			// Asignamos los valores que nos mande la tienda
 			lblJuegoComprado->Text = nombreJuego;
@@ -106,13 +109,17 @@ namespace Epsteam {
 
 	private: System::Void btnConfirmar_Click(System::Object^ sender, System::EventArgs^ e) {
 		try {
-			// Usamos el nuevo nombre de archivo
-			System::IO::StreamWriter^ archivo = gcnew System::IO::StreamWriter("../mis_compras_reales.txt", true);
-			archivo->WriteLine(lblJuegoComprado->Text);
-			archivo->Close();
+			// Mandamos llamar el backend letal que hicieron Víctor y tú
+			// Por ahora asumo que el método de pago es "Cartera" (quemado), hasta que Andrea haga su parte
+			bool exito = Epsteam::ConexionBD::RegistrarCompra(Epsteam::ConexionBD::idUsuarioActual, idJuegoComprando, "Cartera");
 
-			MessageBox::Show("¡Pago exitoso! El juego se ha añadido a tu Biblioteca.", "Epsteam");
-			this->Close();
+			if (exito) {
+				MessageBox::Show("¡Pago exitoso! El juego se ha añadido a tu Biblioteca.", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
+				this->Close();
+			}
+			else {
+				MessageBox::Show("Hubo un problema al procesar el pago con la BD.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+			}
 		}
 		catch (Exception^ ex) {
 			MessageBox::Show("Error al guardar: " + ex->Message);
