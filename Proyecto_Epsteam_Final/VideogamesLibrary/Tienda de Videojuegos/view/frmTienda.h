@@ -15,7 +15,6 @@ namespace Epsteam {
     using namespace System::Drawing;
     using namespace System::Collections::Generic;
 
-    // Clase para acomodar los nombres de las imágenes
     public ref class GestorImagenes {
     public:
         static String^ ObtenerRuta(String^ nombreJuego) {
@@ -31,9 +30,7 @@ namespace Epsteam {
         frmTienda(int idLogueado)
         {
             idUsuarioActual = idLogueado;
-
             InitializeComponent();
-
             ignorarBusqueda = false;
 
             Button^ btnBiblioteca = gcnew Button();
@@ -46,7 +43,6 @@ namespace Epsteam {
             btnBiblioteca->Click += gcnew System::EventHandler(this, &frmTienda::btnBiblioteca_Click);
             pnlNav->Controls->Add(btnBiblioteca);
 
-            // CORRECCIÓN 1: El inicializador ahora también tiene el blindaje cli::array
             carritoCompras = gcnew System::Collections::Generic::List<cli::array<System::String^>^>();
 
             btnCarrito = gcnew Button();
@@ -75,10 +71,7 @@ namespace Epsteam {
         }
 
     protected:
-        ~frmTienda()
-        {
-            if (components) { delete components; }
-        }
+        ~frmTienda() { if (components) { delete components; } }
 
     private:
         bool ignorarBusqueda;
@@ -111,21 +104,21 @@ namespace Epsteam {
         System::Windows::Forms::Panel^ pnlFiltroDesarrolladores;
         System::Windows::Forms::Panel^ pnlFiltroEditores;
 
-        // FIRMA BLINDADA
         System::Collections::Generic::List<cli::array<System::String^>^>^ carritoCompras;
         System::Windows::Forms::Button^ btnCarrito;
 
         void ConstruirInterfazBuscador() {
             pnlBuscador = gcnew Panel();
             pnlBuscador->Dock = DockStyle::Top;
-            pnlBuscador->Height = 130;
+            pnlBuscador->Height = 140; // Más espacio para respirar
             pnlBuscador->BackColor = Color::FromArgb(32, 45, 60);
             this->Controls->Add(pnlBuscador);
             pnlBuscador->BringToFront();
 
+            // Buscador alineado arriba a la izquierda
             txtBusqueda = gcnew TextBox();
-            txtBusqueda->Location = System::Drawing::Point(35, 50);
-            txtBusqueda->Size = System::Drawing::Size(280, 30);
+            txtBusqueda->Location = System::Drawing::Point(35, 25);
+            txtBusqueda->Size = System::Drawing::Size(300, 30);
             txtBusqueda->Font = gcnew System::Drawing::Font("Arial", 12);
             txtBusqueda->ForeColor = Color::Gray;
             txtBusqueda->Text = "Buscar juego o etiqueta...";
@@ -136,17 +129,19 @@ namespace Epsteam {
             txtBusqueda->KeyPress += gcnew KeyPressEventHandler(this, &frmTienda::txtBusqueda_KeyPress);
             pnlBuscador->Controls->Add(txtBusqueda);
 
+            // Sugerencias debajo del buscador
             lstSugerencias = gcnew ListBox();
-            lstSugerencias->Location = System::Drawing::Point(35, 190);
-            lstSugerencias->Size = System::Drawing::Size(280, 100);
+            lstSugerencias->Location = System::Drawing::Point(35, 140);
+            lstSugerencias->Size = System::Drawing::Size(300, 100);
             lstSugerencias->Visible = false;
             lstSugerencias->MouseClick += gcnew MouseEventHandler(this, &frmTienda::lstSugerencias_MouseClick);
             this->Controls->Add(lstSugerencias);
             lstSugerencias->BringToFront();
 
+            // Barra de precio a la derecha
             tbPrecio = gcnew TrackBar();
-            tbPrecio->Location = System::Drawing::Point(750, 30);
-            tbPrecio->Size = System::Drawing::Size(200, 45);
+            tbPrecio->Location = System::Drawing::Point(720, 20);
+            tbPrecio->Size = System::Drawing::Size(220, 45);
             tbPrecio->Minimum = 0;
             tbPrecio->Maximum = 2000;
             tbPrecio->Value = 2000;
@@ -157,22 +152,22 @@ namespace Epsteam {
             lblPrecio = gcnew Label();
             lblPrecio->Text = "Precio Máx: $2000 MXN";
             lblPrecio->ForeColor = Color::White;
-            lblPrecio->Location = System::Drawing::Point(760, 75);
+            lblPrecio->Location = System::Drawing::Point(730, 65);
             lblPrecio->AutoSize = true;
             lblPrecio->Font = gcnew System::Drawing::Font("Arial", 10, FontStyle::Bold);
             pnlBuscador->Controls->Add(lblPrecio);
 
-            CrearBotonFiltro("Géneros", 340, 20, pnlFiltroGeneros, clbGeneros, "genero");
-            CrearBotonFiltro("Categorías", 470, 20, pnlFiltroCategorias, clbCategorias, "categoria");
-            CrearBotonFiltro("Etiquetas", 600, 20, pnlFiltroEtiquetas, clbEtiquetas, "etiqueta");
-
-            CrearBotonFiltro("Desarrollador", 340, 70, pnlFiltroDesarrolladores, clbDesarrolladores, "desarrollador");
-            CrearBotonFiltro("Editor", 470, 70, pnlFiltroEditores, clbEditores, "editor");
+            // ¡DISEÑO LIMPIO! Todos los filtros en una sola línea recta
+            CrearBotonFiltro("Géneros", 35, 80, pnlFiltroGeneros, clbGeneros, "genero");
+            CrearBotonFiltro("Categorías", 165, 80, pnlFiltroCategorias, clbCategorias, "categoria");
+            CrearBotonFiltro("Etiquetas", 295, 80, pnlFiltroEtiquetas, clbEtiquetas, "etiqueta");
+            CrearBotonFiltro("Desarrollador", 425, 80, pnlFiltroDesarrolladores, clbDesarrolladores, "desarrollador");
+            CrearBotonFiltro("Editor", 555, 80, pnlFiltroEditores, clbEditores, "editor");
         }
 
         void CrearBotonFiltro(String^ texto, int posX, int posY, Panel^% panelOut, CheckedListBox^% clbOut, String^ tipoFiltroBD) {
             Button^ btn = gcnew Button();
-            btn->Text = texto + " v";
+            btn->Text = texto;
             btn->Location = System::Drawing::Point(posX, posY);
             btn->Size = System::Drawing::Size(120, 35);
             btn->BackColor = Color::FromArgb(45, 45, 45);
@@ -180,9 +175,10 @@ namespace Epsteam {
             btn->FlatStyle = FlatStyle::Flat;
             pnlBuscador->Controls->Add(btn);
 
+            // El panel desplegable sale EXACTAMENTE debajo de su botón
             panelOut = gcnew Panel();
-            panelOut->Location = System::Drawing::Point(posX, 190);
-            panelOut->Size = System::Drawing::Size(180, 200);
+            panelOut->Location = System::Drawing::Point(posX, 140);
+            panelOut->Size = System::Drawing::Size(180, 200); // Más ancho para que no se corten las letras
             panelOut->Visible = false;
             panelOut->BackColor = Color::FromArgb(45, 45, 45);
             panelOut->BorderStyle = BorderStyle::FixedSingle;
@@ -226,24 +222,18 @@ namespace Epsteam {
     }
 
     private: System::Void txtBusqueda_KeyPress(System::Object^ sender, KeyPressEventArgs^ e) {
-        if (e->KeyChar == (char)13 || e->KeyChar == (char)27) {
-            e->Handled = true;
-        }
+        if (e->KeyChar == (char)13 || e->KeyChar == (char)27) e->Handled = true;
     }
 
     private: System::Void txtBusqueda_KeyDown(System::Object^ sender, KeyEventArgs^ e) {
         if (e->KeyCode == Keys::Escape) {
             lstSugerencias->Visible = false;
-            e->Handled = true;
-            e->SuppressKeyPress = true;
-            this->Focus();
+            e->Handled = true; e->SuppressKeyPress = true; this->Focus();
         }
         if (e->KeyCode == Keys::Enter) {
             lstSugerencias->Visible = false;
             EjecutarBusquedaEnBD();
-            e->Handled = true;
-            e->SuppressKeyPress = true;
-            this->Focus();
+            e->Handled = true; e->SuppressKeyPress = true; this->Focus();
         }
     }
 
@@ -281,14 +271,11 @@ namespace Epsteam {
     private: System::Void IniciarTimerBusqueda(System::Object^ sender, System::EventArgs^ e) {
         if (ignorarBusqueda) return;
         if (txtBusqueda->Text == "Buscar juego o etiqueta...") return;
-
-        timerBusqueda->Stop();
-        timerBusqueda->Start();
+        timerBusqueda->Stop(); timerBusqueda->Start();
     }
 
     private: System::Void timerBusqueda_Tick(System::Object^ sender, System::EventArgs^ e) {
-        timerBusqueda->Stop();
-        EjecutarBusquedaEnBD();
+        timerBusqueda->Stop(); EjecutarBusquedaEnBD();
     }
 
     private: System::Void FiltroCasilla_Modificada(System::Object^ sender, ItemCheckEventArgs^ e) {
@@ -304,50 +291,34 @@ namespace Epsteam {
             DataRowView^ fila = (DataRowView^)clbGeneros->Items[i];
             if (fila["nombre"]->ToString()->ToLower() == busqueda->ToLower()) {
                 clbGeneros->SetItemChecked(i, true);
-
-                ignorarBusqueda = true;
-                txtBusqueda->Text = "";
-                ignorarBusqueda = false;
-
-                esSmartText = true;
-                break;
+                ignorarBusqueda = true; txtBusqueda->Text = ""; ignorarBusqueda = false;
+                esSmartText = true; break;
             }
         }
         if (esSmartText) return;
 
         List<int>^ idsGeneros = gcnew List<int>();
-        for (int i = 0; i < clbGeneros->CheckedItems->Count; i++) {
-            idsGeneros->Add(Convert::ToInt32(((DataRowView^)clbGeneros->CheckedItems[i])["id"]));
-        }
+        for (int i = 0; i < clbGeneros->CheckedItems->Count; i++) idsGeneros->Add(Convert::ToInt32(((DataRowView^)clbGeneros->CheckedItems[i])["id"]));
 
         List<int>^ idsCategorias = gcnew List<int>();
-        for (int i = 0; i < clbCategorias->CheckedItems->Count; i++) {
-            idsCategorias->Add(Convert::ToInt32(((DataRowView^)clbCategorias->CheckedItems[i])["id"]));
-        }
+        for (int i = 0; i < clbCategorias->CheckedItems->Count; i++) idsCategorias->Add(Convert::ToInt32(((DataRowView^)clbCategorias->CheckedItems[i])["id"]));
 
         List<int>^ idsEtiquetas = gcnew List<int>();
-        for (int i = 0; i < clbEtiquetas->CheckedItems->Count; i++) {
-            idsEtiquetas->Add(Convert::ToInt32(((DataRowView^)clbEtiquetas->CheckedItems[i])["id"]));
-        }
+        for (int i = 0; i < clbEtiquetas->CheckedItems->Count; i++) idsEtiquetas->Add(Convert::ToInt32(((DataRowView^)clbEtiquetas->CheckedItems[i])["id"]));
 
         List<int>^ idsDesarrolladores = gcnew List<int>();
-        for (int i = 0; i < clbDesarrolladores->CheckedItems->Count; i++) {
-            idsDesarrolladores->Add(Convert::ToInt32(((DataRowView^)clbDesarrolladores->CheckedItems[i])["id"]));
-        }
+        for (int i = 0; i < clbDesarrolladores->CheckedItems->Count; i++) idsDesarrolladores->Add(Convert::ToInt32(((DataRowView^)clbDesarrolladores->CheckedItems[i])["id"]));
 
         List<int>^ idsEditores = gcnew List<int>();
-        for (int i = 0; i < clbEditores->CheckedItems->Count; i++) {
-            idsEditores->Add(Convert::ToInt32(((DataRowView^)clbEditores->CheckedItems[i])["id"]));
-        }
+        for (int i = 0; i < clbEditores->CheckedItems->Count; i++) idsEditores->Add(Convert::ToInt32(((DataRowView^)clbEditores->CheckedItems[i])["id"]));
 
         DataTable^ resultados = Epsteam::ConexionBD::ObtenerCatalogoFiltrado(busqueda, idsGeneros, idsCategorias, idsEtiquetas, idsDesarrolladores, idsEditores, tbPrecio->Value);
-
         CargarJuegosTienda(resultados);
 
         if (busqueda->Length > 0 && resultados->Rows->Count > 0) {
             lstSugerencias->Items->Clear();
             for (int i = 0; i < resultados->Rows->Count && i < 5; i++) {
-                lstSugerencias->Items->Add(safe_cast<DataRow^>(resultados->Rows[i])["titulo"]->ToString());
+                lstSugerencias->Items->Add(resultados->Rows[i]["titulo"]->ToString());
             }
             lstSugerencias->Visible = true;
         }
@@ -362,7 +333,6 @@ namespace Epsteam {
             txtBusqueda->Text = lstSugerencias->SelectedItem->ToString();
             lstSugerencias->Visible = false;
             ignorarBusqueda = false;
-
             EjecutarBusquedaEnBD();
         }
     }
@@ -374,11 +344,9 @@ namespace Epsteam {
                if (juegosTabla != nullptr && juegosTabla->Rows->Count > 0) {
                    for (int i = 0; i < juegosTabla->Rows->Count; i++) {
                        DataRow^ fila = juegosTabla->Rows[i];
-
                        int id_juego = Convert::ToInt32(fila["id_juego"]);
                        String^ titulo = fila["titulo"]->ToString();
                        String^ precio = "$" + fila["precio_base"]->ToString() + " MXN";
-
                        AgregarJuego(id_juego, titulo, precio);
                    }
                }
@@ -395,13 +363,15 @@ namespace Epsteam {
 
            void AgregarJuego(int id_juego, String^ titulo, String^ precio) {
                Panel^ card = gcnew Panel();
-               card->Size = System::Drawing::Size(200, 250);
+               // ¡MAGIA! Tarjetas más altas para acomodar mejor la imagen
+               card->Size = System::Drawing::Size(210, 330);
                card->BackColor = Color::FromArgb(45, 45, 45);
                card->Margin = System::Windows::Forms::Padding(15);
 
                PictureBox^ picPortada = gcnew PictureBox();
                picPortada->Dock = DockStyle::Fill;
-               picPortada->SizeMode = PictureBoxSizeMode::Zoom;
+               // ¡MAGIA 2! StretchImage para que la portada no deje bordes negros ni se corte raro
+               picPortada->SizeMode = PictureBoxSizeMode::StretchImage;
                String^ rutaImagen = GestorImagenes::ObtenerRuta(titulo);
 
                if (System::IO::File::Exists(rutaImagen)) {
@@ -414,15 +384,18 @@ namespace Epsteam {
                Label^ lblTitulo = gcnew Label();
                lblTitulo->Text = titulo;
                lblTitulo->ForeColor = Color::White;
-               lblTitulo->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
+               lblTitulo->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
                lblTitulo->Dock = DockStyle::Top;
                lblTitulo->TextAlign = ContentAlignment::MiddleCenter;
+               lblTitulo->Height = 35; // Un poco más alto por si el nombre es largo
 
                Label^ lblPrecio = gcnew Label();
                lblPrecio->Text = precio;
-               lblPrecio->ForeColor = Color::LightGray;
+               lblPrecio->ForeColor = Color::LightGreen; // Precio en verde
+               lblPrecio->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
                lblPrecio->Dock = DockStyle::Bottom;
                lblPrecio->TextAlign = ContentAlignment::MiddleCenter;
+               lblPrecio->Height = 25;
 
                Button^ btnComprar = gcnew Button();
                btnComprar->Text = "AGREGAR AL CARRO";
@@ -430,9 +403,9 @@ namespace Epsteam {
                btnComprar->ForeColor = Color::White;
                btnComprar->BackColor = Color::FromArgb(0, 120, 215);
                btnComprar->Dock = DockStyle::Bottom;
+               btnComprar->Height = 35;
 
-               // CORRECCIÓN 2: También usamos cli::array para empaquetar los datos aquí
-               btnComprar->Tag = gcnew cli::array<System::String^>{ id_juego.ToString(), titulo, precio };
+               btnComprar->Tag = gcnew cli::array<System::String^>{id_juego.ToString(), titulo, precio};
                btnComprar->Click += gcnew System::EventHandler(this, &frmTienda::btnComprar_Click);
 
                card->Controls->Add(picPortada);
@@ -479,9 +452,10 @@ namespace Epsteam {
                this->flowTienda->AutoScroll = true;
                this->flowTienda->BackColor = System::Drawing::Color::FromArgb(27, 40, 56);
                this->flowTienda->Dock = System::Windows::Forms::DockStyle::Fill;
+               // Ajustamos el margen para que los juegos empiecen más abajo de los filtros
                this->flowTienda->Location = System::Drawing::Point(0, 60);
                this->flowTienda->Name = L"flowTienda";
-               this->flowTienda->Padding = System::Windows::Forms::Padding(20);
+               this->flowTienda->Padding = System::Windows::Forms::Padding(20, 150, 20, 20);
                this->flowTienda->Size = System::Drawing::Size(1000, 640);
                this->flowTienda->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &frmTienda::ClicFueraDeFiltros);
 
@@ -507,7 +481,6 @@ namespace Epsteam {
 
     private: System::Void btnComprar_Click(System::Object^ sender, System::EventArgs^ e) {
         Button^ btnCliquado = (Button^)sender;
-
         cli::array<System::String^>^ datos = (cli::array<System::String^>^)btnCliquado->Tag;
 
         String^ idJuegoStr = datos[0];
@@ -518,7 +491,7 @@ namespace Epsteam {
         DataTable^ misJuegos = Epsteam::ConexionBD::ObtenerMisJuegos(idUsuarioActual);
         if (misJuegos != nullptr) {
             for (int i = 0; i < misJuegos->Rows->Count; i++) {
-                if (safe_cast<DataRow^>(misJuegos->Rows[i])["titulo"]->ToString() == nombreJuego) {
+                if (misJuegos->Rows[i]["titulo"]->ToString() == nombreJuego) {
                     yaLoTiene = true;
                     break;
                 }
@@ -531,10 +504,7 @@ namespace Epsteam {
 
         bool yaEnCarrito = false;
         for (int i = 0; i < carritoCompras->Count; i++) {
-            if (safe_cast<cli::array<System::String^>^>(carritoCompras[i])[0] == idJuegoStr) {
-                yaEnCarrito = true;
-                break;
-            }
+            if (carritoCompras[i][0] == idJuegoStr) { yaEnCarrito = true; break; }
         }
 
         if (yaEnCarrito) {
@@ -557,24 +527,18 @@ namespace Epsteam {
         frmCarrito^ ventanaCarrito = gcnew frmCarrito(idUsuarioActual, carritoCompras);
         ventanaCarrito->ShowDialog();
 
-        // CORRECCIÓN 3: Le agregamos el Convert::ToString para evitar el error C2227
         btnCarrito->Text = "CARRITO (" + Convert::ToString(carritoCompras->Count) + ")";
 
-        for each(Control ^ card in flowTienda->Controls) {
-            for each(Control ^ c in card->Controls) {
+        for each (Control ^ card in flowTienda->Controls) {
+            for each (Control ^ c in card->Controls) {
                 if (c->GetType() == Button::typeid) {
                     Button^ btn = (Button^)c;
-
-                    // CORRECCIÓN 4: Agregamos el blindaje cli::array aquí también
                     cli::array<System::String^>^ datos = (cli::array<System::String^>^)btn->Tag;
                     String^ idJuego = datos[0];
 
                     bool sigueEnCarrito = false;
                     for (int i = 0; i < carritoCompras->Count; i++) {
-                        if (safe_cast<cli::array<System::String^>^>(carritoCompras[i])[0] == idJuego) {
-                            sigueEnCarrito = true;
-                            break;
-                        }
+                        if (carritoCompras[i][0] == idJuego) { sigueEnCarrito = true; break; }
                     }
 
                     if (sigueEnCarrito) {
@@ -598,12 +562,8 @@ namespace Epsteam {
     }
 
     private: System::Void timerFarmeo_Tick(System::Object^ sender, System::EventArgs^ e) {
-        if (ticksGracia < 25) {
-            ticksGracia++;
-        }
-        else {
-            Epsteam::ConexionBD::AvanzarTiempoJuego(idUsuarioActual);
-        }
+        if (ticksGracia < 25) ticksGracia++;
+        else Epsteam::ConexionBD::AvanzarTiempoJuego(idUsuarioActual);
     }
     };
 }

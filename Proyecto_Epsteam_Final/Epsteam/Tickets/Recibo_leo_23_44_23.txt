@@ -1,0 +1,18 @@
+========================================
+          RECIBO DE EPSTEAM             
+========================================
+Fecha: 22/03/2026 23:44:23
+Cliente: leo
+Método de Pago: Efectivo
+----------------------------------------
+ARTÍCULOS COMPRADOS:
+- Half-Life 2 ($113.99 MXN)
+- Grand Theft Auto V ($599.00 MXN)
+- Portal 2 ($113.99 MXN)
+- Hollow Knight ($149.99 MXN)
+- Hades ($279.99 MXN)
+- Left 4 Dead 2 ($113.99 MXN)
+----------------------------------------
+TOTAL PAGADO: $1370.95 MXN
+========================================
+¡Los juegos ya están en tu Biblioteca!

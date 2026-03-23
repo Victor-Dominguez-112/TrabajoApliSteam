@@ -42,6 +42,7 @@ namespace Epsteam {
 #pragma region Windows Form Designer generated code
         void InitializeComponent(void)
         {
+            System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(frmLogin::typeid));
             this->lblTitle = (gcnew System::Windows::Forms::Label());
             this->txtUsername = (gcnew System::Windows::Forms::TextBox());
             this->txtPassword = (gcnew System::Windows::Forms::TextBox());
@@ -54,30 +55,28 @@ namespace Epsteam {
             this->lblTitle->AutoSize = true;
             this->lblTitle->Font = (gcnew System::Drawing::Font(L"Arial", 16, System::Drawing::FontStyle::Bold));
             this->lblTitle->ForeColor = System::Drawing::Color::White;
-            this->lblTitle->Location = System::Drawing::Point(122, 38);
+            this->lblTitle->Location = System::Drawing::Point(108, 30);
             this->lblTitle->Name = L"lblTitle";
-            this->lblTitle->Size = System::Drawing::Size(188, 37);
+            this->lblTitle->Size = System::Drawing::Size(163, 32);
             this->lblTitle->TabIndex = 4;
             this->lblTitle->Text = L"Bienvenido";
             // 
             // txtUsername
             // 
             this->txtUsername->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-            this->txtUsername->Location = System::Drawing::Point(73, 112);
-            this->txtUsername->Margin = System::Windows::Forms::Padding(3, 4, 3, 4);
+            this->txtUsername->Location = System::Drawing::Point(65, 90);
             this->txtUsername->MaxLength = 20;
             this->txtUsername->Name = L"txtUsername";
-            this->txtUsername->Size = System::Drawing::Size(281, 35);
+            this->txtUsername->Size = System::Drawing::Size(250, 30);
             this->txtUsername->TabIndex = 3;
             // 
             // txtPassword
             // 
             this->txtPassword->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
-            this->txtPassword->Location = System::Drawing::Point(73, 175);
-            this->txtPassword->Margin = System::Windows::Forms::Padding(3, 4, 3, 4);
+            this->txtPassword->Location = System::Drawing::Point(65, 140);
             this->txtPassword->Name = L"txtPassword";
             this->txtPassword->PasswordChar = '*';
-            this->txtPassword->Size = System::Drawing::Size(281, 35);
+            this->txtPassword->Size = System::Drawing::Size(250, 30);
             this->txtPassword->TabIndex = 2;
             // 
             // btnLogin
@@ -88,10 +87,9 @@ namespace Epsteam {
             this->btnLogin->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
             this->btnLogin->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Bold));
             this->btnLogin->ForeColor = System::Drawing::Color::White;
-            this->btnLogin->Location = System::Drawing::Point(129, 250);
-            this->btnLogin->Margin = System::Windows::Forms::Padding(3, 4, 3, 4);
+            this->btnLogin->Location = System::Drawing::Point(115, 200);
             this->btnLogin->Name = L"btnLogin";
-            this->btnLogin->Size = System::Drawing::Size(169, 50);
+            this->btnLogin->Size = System::Drawing::Size(150, 40);
             this->btnLogin->TabIndex = 1;
             this->btnLogin->Text = L"Entrar";
             this->btnLogin->UseVisualStyleBackColor = false;
@@ -104,10 +102,9 @@ namespace Epsteam {
             this->btnRegister->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Bold));
             this->btnRegister->ForeColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(123)),
                 static_cast<System::Int32>(static_cast<System::Byte>(255)));
-            this->btnRegister->Location = System::Drawing::Point(129, 312);
-            this->btnRegister->Margin = System::Windows::Forms::Padding(3, 4, 3, 4);
+            this->btnRegister->Location = System::Drawing::Point(115, 250);
             this->btnRegister->Name = L"btnRegister";
-            this->btnRegister->Size = System::Drawing::Size(169, 50);
+            this->btnRegister->Size = System::Drawing::Size(150, 40);
             this->btnRegister->TabIndex = 0;
             this->btnRegister->Text = L"Crear Cuenta";
             this->btnRegister->UseVisualStyleBackColor = true;
@@ -115,18 +112,18 @@ namespace Epsteam {
             // 
             // frmLogin
             // 
-            this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
+            this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(30)),
                 static_cast<System::Int32>(static_cast<System::Byte>(36)));
-            this->ClientSize = System::Drawing::Size(432, 389);
+            this->ClientSize = System::Drawing::Size(384, 311);
             this->Controls->Add(this->btnRegister);
             this->Controls->Add(this->btnLogin);
             this->Controls->Add(this->txtPassword);
             this->Controls->Add(this->txtUsername);
             this->Controls->Add(this->lblTitle);
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
-            this->Margin = System::Windows::Forms::Padding(3, 4, 3, 4);
+            this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
             this->MaximizeBox = false;
             this->Name = L"frmLogin";
             this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
@@ -157,8 +154,7 @@ namespace Epsteam {
 
         // 2. Evaluamos la respuesta (-1 significa que falló)
         if (idLogueado != -1) {
-            MessageBox::Show("¡Conexión a la BD Exitosa! Bienvenido, tu ID es: " + idLogueado,
-                "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
+            MessageBox::Show("¡Bienvenido de vuelta, " + Epsteam::ConexionBD::nicknameActual + "!", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
 
             // --- EL CAMBIO ESTÁ AQUÍ ---
             // Le pasamos el 'idLogueado' adentro de los paréntesis de frmTienda

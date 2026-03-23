@@ -1,137 +1,107 @@
 #pragma once
 #include "ConexionBD.h"
+
 namespace Epsteam {
+    using namespace System;
+    using namespace System::ComponentModel;
+    using namespace System::Collections;
+    using namespace System::Windows::Forms;
+    using namespace System::Drawing;
+    using namespace System::Collections::Generic;
 
-	using namespace System;
-	using namespace System::ComponentModel;
-	using namespace System::Collections;
-	using namespace System::Windows::Forms;
-	using namespace System::Data;
-	using namespace System::Drawing;
+    public ref class frmTicket : public System::Windows::Forms::Form
+    {
+    private:
+        Label^ lblASCII;
 
-	public ref class frmTicket : public System::Windows::Forms::Form
-	{
-	public:
-		int idJuegoComprando;
+    public:
+        // FIRMA BLINDADA
+        frmTicket(String^ metodo, System::Collections::Generic::List<cli::array<System::String^>^>^ carrito, double total)
+        {
+            InitializeComponent();
+            ConfigurarInterfaz(metodo, carrito, total);
+        }
 
-		frmTicket(String^ idJuegoStr, String^ nombreJuego, String^ precioJuego)
-		{
-			InitializeComponent();
-			idJuegoComprando = Convert::ToInt32(idJuegoStr);
-			lblJuegoComprado->Text = nombreJuego;
-			lblPrecioTotal->Text = "Total a pagar: " + precioJuego;
-		}
+    protected:
+        ~frmTicket() { if (components) { delete components; } }
 
-	protected:
-		~frmTicket()
-		{
-			if (components) { delete components; }
-		}
+    private:
+        System::ComponentModel::Container^ components;
+        void InitializeComponent(void) {
+            System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(frmTicket::typeid));
+            this->SuspendLayout();
+            // 
+            // frmTicket
+            // 
+            this->AutoScaleDimensions = System::Drawing::SizeF(8, 16);
+            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+            this->ClientSize = System::Drawing::Size(282, 253);
+            this->Icon = (cli::safe_cast<System::Drawing::Icon^>(resources->GetObject(L"$this.Icon")));
+            this->Name = L"frmTicket";
+            this->Text = L"Tu Recibo Digital";
+            this->ResumeLayout(false);
 
-	private: System::Windows::Forms::Label^ lblTitulo;
-	private: System::Windows::Forms::Label^ lblJuegoComprado;
-	private: System::Windows::Forms::Label^ lblPrecioTotal;
-	private: System::Windows::Forms::Button^ btnConfirmar;
-	private: System::Windows::Forms::Button^ btnCancelar;
-	private: System::ComponentModel::Container^ components;
+        }
 
-#pragma region Windows Form Designer generated code
-		   void InitializeComponent(void)
-		   {
-			   this->lblTitulo = (gcnew System::Windows::Forms::Label());
-			   this->lblJuegoComprado = (gcnew System::Windows::Forms::Label());
-			   this->lblPrecioTotal = (gcnew System::Windows::Forms::Label());
-			   this->btnConfirmar = (gcnew System::Windows::Forms::Button());
-			   this->btnCancelar = (gcnew System::Windows::Forms::Button());
-			   this->SuspendLayout();
+        void ConfigurarInterfaz(String^ metodo, System::Collections::Generic::List<cli::array<System::String^>^>^ carrito, double total) {
+            this->BackColor = Color::FromArgb(27, 40, 56);
+            this->Size = System::Drawing::Size(450, 550);
+            this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedSingle;
+            this->StartPosition = FormStartPosition::CenterParent;
+            this->MaximizeBox = false;
 
-			   this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
-			   this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			   this->BackColor = System::Drawing::Color::FromArgb(30, 30, 30);
-			   this->ClientSize = System::Drawing::Size(400, 300);
-			   this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::FixedToolWindow;
-			   this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-			   this->Text = L"Recibo de Compra - Epsteam";
+            lblASCII = gcnew Label();
+            lblASCII->Location = System::Drawing::Point(15, 15);
+            lblASCII->Size = System::Drawing::Size(420, 500);
+            lblASCII->ForeColor = Color::White;
+            lblASCII->Padding = System::Windows::Forms::Padding(5);
+            lblASCII->Font = gcnew System::Drawing::Font("Courier New", 11); // Magia ASCII
 
-			   this->lblTitulo->AutoSize = true;
-			   this->lblTitulo->Font = (gcnew System::Drawing::Font(L"Arial", 16, System::Drawing::FontStyle::Bold));
-			   this->lblTitulo->ForeColor = System::Drawing::Color::White;
-			   this->lblTitulo->Location = System::Drawing::Point(90, 20);
-			   this->lblTitulo->Text = L"Resumen de Pedido";
+            DateTime fecha = DateTime::Now;
+            String^ ticketTexto = "";
+            ticketTexto += "========================================\n";
+            ticketTexto += "          RECIBO DE EPSTEAM             \n";
+            ticketTexto += "========================================\n\n";
+            ticketTexto += "Fecha: " + fecha.ToString("dd/MM/yyyy HH:mm:ss") + "\n";
+            ticketTexto += "ID Cliente: " + Epsteam::ConexionBD::nicknameActual + "\n";
+            ticketTexto += "Método Pago: " + metodo + "\n";
+            ticketTexto += "----------------------------------------\n";
+            ticketTexto += "ARTÍCULOS COMPRADOS:\n\n";
 
-			   this->lblJuegoComprado->AutoSize = true;
-			   this->lblJuegoComprado->Font = (gcnew System::Drawing::Font(L"Arial", 14));
-			   this->lblJuegoComprado->ForeColor = System::Drawing::Color::FromArgb(102, 192, 244);
-			   this->lblJuegoComprado->Location = System::Drawing::Point(40, 80);
-			   this->lblJuegoComprado->Text = L"[Nombre del Juego]";
+            for (int i = 0; i < carrito->Count; i++) {
+                // BLINDAJE AL SACAR LOS DATOS
+                cli::array<System::String^>^ datos = carrito[i];
+                String^ titulo = datos[1];
+                if (titulo->Length > 25) titulo = titulo->Substring(0, 22) + "...";
 
-			   this->lblPrecioTotal->AutoSize = true;
-			   this->lblPrecioTotal->Font = (gcnew System::Drawing::Font(L"Arial", 12));
-			   this->lblPrecioTotal->ForeColor = System::Drawing::Color::LightGreen;
-			   this->lblPrecioTotal->Location = System::Drawing::Point(40, 130);
-			   this->lblPrecioTotal->Text = L"Total a pagar: $0.00";
+                String^ precioTexto = datos[2]->Replace(" MXN", "");
 
-			   this->btnConfirmar->BackColor = System::Drawing::Color::FromArgb(0, 120, 215);
-			   this->btnConfirmar->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			   this->btnConfirmar->ForeColor = System::Drawing::Color::White;
-			   this->btnConfirmar->Location = System::Drawing::Point(220, 220);
-			   this->btnConfirmar->Size = System::Drawing::Size(120, 40);
-			   this->btnConfirmar->Text = L"Confirmar Compra";
-			   this->btnConfirmar->Click += gcnew System::EventHandler(this, &frmTicket::btnConfirmar_Click);
+                ticketTexto += "- " + String::Format("{0,-28} {1,10}\n", titulo, precioTexto);
+            }
+            ticketTexto += "\n----------------------------------------\n";
+            ticketTexto += String::Format("{0,-28} {1,10}\n", "TOTAL PAGADO:", "$" + total.ToString("0.00"));
+            ticketTexto += "========================================\n\n";
+            ticketTexto += "¡Los juegos ya están en tu Biblioteca!\n";
+            ticketTexto += "      ¡Gracias por tu compra!       \n";
 
-			   this->btnCancelar->BackColor = System::Drawing::Color::FromArgb(45, 45, 45);
-			   this->btnCancelar->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-			   this->btnCancelar->ForeColor = System::Drawing::Color::White;
-			   this->btnCancelar->Location = System::Drawing::Point(60, 220);
-			   this->btnCancelar->Size = System::Drawing::Size(120, 40);
-			   this->btnCancelar->Text = L"Cancelar";
-			   this->btnCancelar->Click += gcnew System::EventHandler(this, &frmTicket::btnCancelar_Click);
+            lblASCII->Text = ticketTexto;
+            this->Controls->Add(lblASCII);
 
-			   this->Controls->Add(this->btnCancelar);
-			   this->Controls->Add(this->btnConfirmar);
-			   this->Controls->Add(this->lblPrecioTotal);
-			   this->Controls->Add(this->lblJuegoComprado);
-			   this->Controls->Add(this->lblTitulo);
-			   this->ResumeLayout(false);
-			   this->PerformLayout();
-		   }
-#pragma endregion
+            Button^ btnOK = gcnew Button();
+            btnOK->Text = "CERRAR";
+            btnOK->Size = System::Drawing::Size(100, 30);
+            btnOK->Location = System::Drawing::Point(175, 390);
+            btnOK->BackColor = Color::FromArgb(0, 120, 215);
+            btnOK->ForeColor = Color::White;
+            btnOK->FlatStyle = FlatStyle::Flat;
+            btnOK->Click += gcnew System::EventHandler(this, &frmTicket::btnOK_Click);
+            this->Controls->Add(btnOK);
 
-	private: System::Void btnConfirmar_Click(System::Object^ sender, System::EventArgs^ e) {
-		try {
-			// frmTicket solo tiene un juego individual, construimos el carrito aquí
-			cli::array<System::String^>^ item = gcnew cli::array<System::String^>{
-				Convert::ToString(idJuegoComprando),
-				lblJuegoComprado->Text,
-				lblPrecioTotal->Text
-			};
-			System::Collections::Generic::List<cli::array<System::String^>^>^ carritoTemporal =
-				gcnew System::Collections::Generic::List<cli::array<System::String^>^>();
-			carritoTemporal->Add(item);
+            btnOK->BringToFront();
+        }
 
-			bool exito = Epsteam::ConexionBD::RegistrarCompra(
-				Epsteam::ConexionBD::idUsuarioActual,
-				carritoTemporal,
-				3,   // método quemado = Cartera
-				0.0  // precio quemado hasta que se integre
-			);
-
-			if (exito) {
-				MessageBox::Show("¡Pago exitoso! El juego se ha añadido a tu Biblioteca.", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
-				this->Close();
-			}
-			else {
-				MessageBox::Show("Hubo un problema al procesar el pago con la BD.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
-			}
-		}
-		catch (Exception^ ex) {
-			MessageBox::Show("Error al guardar: " + ex->Message);
-		}
-	}
-
-	private: System::Void btnCancelar_Click(System::Object^ sender, System::EventArgs^ e) {
-		this->Close();
-	}
-
-	};
+        System::Void btnOK_Click(System::Object^ sender, System::EventArgs^ e) {
+            this->Close();
+        }
+    };
 }

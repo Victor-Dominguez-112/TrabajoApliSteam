@@ -1,4 +1,5 @@
 #pragma once
+#include "ConexionBD.h" // <--- ¡CONECTADO A LA BASE DE DATOS!
 
 namespace Epsteam {
 
@@ -8,7 +9,6 @@ namespace Epsteam {
     using namespace System::Windows::Forms;
     using namespace System::Data;
     using namespace System::Drawing;
-    using namespace System::IO;
 
     public ref class frmRegister : public System::Windows::Forms::Form
     {
@@ -21,10 +21,7 @@ namespace Epsteam {
     protected:
         ~frmRegister()
         {
-            if (components)
-            {
-                delete components;
-            }
+            if (components) { delete components; }
         }
 
     private: System::Windows::Forms::Label^ lblTitle;
@@ -57,9 +54,7 @@ namespace Epsteam {
             this->lblPass = (gcnew System::Windows::Forms::Label());
             this->lblConfirmPass = (gcnew System::Windows::Forms::Label());
             this->SuspendLayout();
-            // 
-            // lblTitle
-            // 
+
             this->lblTitle->AutoSize = true;
             this->lblTitle->Font = (gcnew System::Drawing::Font(L"Arial", 16, System::Drawing::FontStyle::Bold));
             this->lblTitle->ForeColor = System::Drawing::Color::White;
@@ -68,43 +63,33 @@ namespace Epsteam {
             this->lblTitle->Size = System::Drawing::Size(219, 37);
             this->lblTitle->TabIndex = 10;
             this->lblTitle->Text = L"Crear Cuenta";
-            // 
-            // txtUsername
-            // 
+
             this->txtUsername->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
             this->txtUsername->Location = System::Drawing::Point(64, 105);
             this->txtUsername->Name = L"txtUsername";
             this->txtUsername->Size = System::Drawing::Size(300, 35);
             this->txtUsername->TabIndex = 8;
-            // 
-            // txtEmail
-            // 
+
             this->txtEmail->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
             this->txtEmail->Location = System::Drawing::Point(64, 175);
             this->txtEmail->Name = L"txtEmail";
             this->txtEmail->Size = System::Drawing::Size(300, 35);
             this->txtEmail->TabIndex = 6;
-            // 
-            // txtPassword
-            // 
+
             this->txtPassword->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
             this->txtPassword->Location = System::Drawing::Point(64, 245);
             this->txtPassword->Name = L"txtPassword";
             this->txtPassword->PasswordChar = '*';
             this->txtPassword->Size = System::Drawing::Size(300, 35);
             this->txtPassword->TabIndex = 4;
-            // 
-            // txtConfirmPass
-            // 
+
             this->txtConfirmPass->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 12));
             this->txtConfirmPass->Location = System::Drawing::Point(64, 315);
             this->txtConfirmPass->Name = L"txtConfirmPass";
             this->txtConfirmPass->PasswordChar = '*';
             this->txtConfirmPass->Size = System::Drawing::Size(300, 35);
             this->txtConfirmPass->TabIndex = 2;
-            // 
-            // btnCreate
-            // 
+
             this->btnCreate->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(0)), static_cast<System::Int32>(static_cast<System::Byte>(123)),
                 static_cast<System::Int32>(static_cast<System::Byte>(255)));
             this->btnCreate->FlatAppearance->BorderSize = 0;
@@ -118,9 +103,7 @@ namespace Epsteam {
             this->btnCreate->Text = L"Registrarse";
             this->btnCreate->UseVisualStyleBackColor = false;
             this->btnCreate->Click += gcnew System::EventHandler(this, &frmRegister::btnCreate_Click);
-            // 
-            // btnCancel
-            // 
+
             this->btnCancel->FlatAppearance->BorderSize = 0;
             this->btnCancel->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
             this->btnCancel->Font = (gcnew System::Drawing::Font(L"Microsoft Sans Serif", 10, System::Drawing::FontStyle::Bold));
@@ -133,9 +116,7 @@ namespace Epsteam {
             this->btnCancel->Text = L"Cancelar";
             this->btnCancel->UseVisualStyleBackColor = true;
             this->btnCancel->Click += gcnew System::EventHandler(this, &frmRegister::btnCancel_Click);
-            // 
-            // lblUser
-            // 
+
             this->lblUser->AutoSize = true;
             this->lblUser->ForeColor = System::Drawing::Color::LightGray;
             this->lblUser->Location = System::Drawing::Point(60, 80);
@@ -143,9 +124,7 @@ namespace Epsteam {
             this->lblUser->Size = System::Drawing::Size(68, 20);
             this->lblUser->TabIndex = 9;
             this->lblUser->Text = L"Usuario:";
-            // 
-            // lblEmail
-            // 
+
             this->lblEmail->AutoSize = true;
             this->lblEmail->ForeColor = System::Drawing::Color::LightGray;
             this->lblEmail->Location = System::Drawing::Point(60, 150);
@@ -153,9 +132,7 @@ namespace Epsteam {
             this->lblEmail->Size = System::Drawing::Size(142, 20);
             this->lblEmail->TabIndex = 7;
             this->lblEmail->Text = L"Correo electrónico:";
-            // 
-            // lblPass
-            // 
+
             this->lblPass->AutoSize = true;
             this->lblPass->ForeColor = System::Drawing::Color::LightGray;
             this->lblPass->Location = System::Drawing::Point(60, 220);
@@ -163,9 +140,7 @@ namespace Epsteam {
             this->lblPass->Size = System::Drawing::Size(96, 20);
             this->lblPass->TabIndex = 5;
             this->lblPass->Text = L"Contraseña:";
-            // 
-            // lblConfirmPass
-            // 
+
             this->lblConfirmPass->AutoSize = true;
             this->lblConfirmPass->ForeColor = System::Drawing::Color::LightGray;
             this->lblConfirmPass->Location = System::Drawing::Point(60, 290);
@@ -173,9 +148,7 @@ namespace Epsteam {
             this->lblConfirmPass->Size = System::Drawing::Size(169, 20);
             this->lblConfirmPass->TabIndex = 3;
             this->lblConfirmPass->Text = L"Confirmar Contraseña:";
-            // 
-            // frmRegister
-            // 
+
             this->AutoScaleDimensions = System::Drawing::SizeF(9, 20);
             this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
             this->BackColor = System::Drawing::Color::FromArgb(static_cast<System::Int32>(static_cast<System::Byte>(30)), static_cast<System::Int32>(static_cast<System::Byte>(30)),
@@ -199,31 +172,31 @@ namespace Epsteam {
             this->Text = L"Registro - Epsteam";
             this->ResumeLayout(false);
             this->PerformLayout();
-
         }
 #pragma endregion
 
-        // Lógica de los botones
     private: System::Void btnCancel_Click(System::Object^ sender, System::EventArgs^ e) {
-        this->Close(); // Cierra esta ventana y regresa al login
+        this->Close(); // Regresa al login
     }
 
     private: System::Void btnCreate_Click(System::Object^ sender, System::EventArgs^ e) {
-        if (txtPassword->Text == txtConfirmPass->Text && txtUsername->Text != "") {
-
-            // --- INICIO DEL GUARDADO EN TXT ---
-            // Creamos o abrimos el archivo usuarios_epsteam.txt. El 'true' es para no borrar a los anteriores.
-            System::IO::StreamWriter^ archivo = gcnew System::IO::StreamWriter("usuarios_epsteam.txt", true);
-            // Guardamos el usuario y la contraseña separados por una coma
-            archivo->WriteLine(txtUsername->Text + "," + txtPassword->Text);
-            archivo->Close(); // Cerramos el archivo para que se guarde bien
-            // --- FIN DEL GUARDADO ---
-
-            MessageBox::Show("¡Cuenta creada exitosamente! Ahora puedes iniciar sesion.", "Registro", MessageBoxButtons::OK, MessageBoxIcon::Information);
-            this->Close(); // Cierra la ventana tras "registrar"
+        // Validaciones básicas de seguridad
+        if (String::IsNullOrWhiteSpace(txtUsername->Text) || String::IsNullOrWhiteSpace(txtEmail->Text) || String::IsNullOrWhiteSpace(txtPassword->Text)) {
+            MessageBox::Show("Por favor, llena todos los campos.", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+            return;
         }
-        else {
-            MessageBox::Show("Las contrasenas no coinciden o faltan datos.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+
+        if (txtPassword->Text != txtConfirmPass->Text) {
+            MessageBox::Show("Las contraseñas no coinciden. Inténtalo de nuevo.", "Error", MessageBoxButtons::OK, MessageBoxIcon::Error);
+            return;
+        }
+
+        // --- MAGIA CON LA BASE DE DATOS ---
+        bool exito = Epsteam::ConexionBD::RegistrarUsuario(txtUsername->Text, txtEmail->Text, txtPassword->Text);
+
+        if (exito) {
+            MessageBox::Show("¡Cuenta creada exitosamente! Ahora puedes iniciar sesión en Epsteam.", "Registro", MessageBoxButtons::OK, MessageBoxIcon::Information);
+            this->Close();
         }
     }
     };

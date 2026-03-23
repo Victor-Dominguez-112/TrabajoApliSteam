@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "ConexionBD.h"
+#include "frmTicket.h" // ¡Conectamos tu nueva vista!
 
 namespace Epsteam {
     using namespace System;
@@ -14,7 +15,7 @@ namespace Epsteam {
     {
     private:
         int idUsuario;
-        // FIRMA BLINDADA
+        // FIRMA BLINDADA PARA EVITAR ERRORES E1767
         System::Collections::Generic::List<cli::array<System::String^>^>^ carritoPago;
         double totalPago;
 
@@ -29,7 +30,7 @@ namespace Epsteam {
         Button^ btnCancelar;
 
     public:
-        // FIRMA BLINDADA
+        // FIRMA BLINDADA EN EL CONSTRUCTOR
         frmPago(int idUsu, System::Collections::Generic::List<cli::array<System::String^>^>^ carrito, double total)
         {
             idUsuario = idUsu;
@@ -62,7 +63,7 @@ namespace Epsteam {
             this->Controls->Add(lblTitulo);
 
             lblResumen = gcnew Label();
-            lblResumen->Text = "Llevas: " + Convert::ToString(carritoPago->Count) + " juego(s) en el carrito\nTotal a pagar: $" + Convert::ToString(totalPago) + " MXN";
+            lblResumen->Text = "Llevas: " + Convert::ToString(carritoPago->Count) + " juego(s) en el carrito\nTotal a pagar: $" + totalPago.ToString("0.00") + " MXN";
             lblResumen->ForeColor = Color::White;
             lblResumen->Font = gcnew System::Drawing::Font("Arial", 11);
             lblResumen->Location = System::Drawing::Point(20, 60);
@@ -142,12 +143,56 @@ namespace Epsteam {
         pnlOpciones->Controls->Clear();
 
         if (rbTarjeta->Checked) {
-            Label^ lblInfo = gcnew Label();
-            lblInfo->Text = "Próximamente: Tus tarjetas guardadas aparecerán aquí.";
-            lblInfo->ForeColor = Color::LightGray;
-            lblInfo->Dock = DockStyle::Fill;
-            lblInfo->TextAlign = ContentAlignment::MiddleCenter;
-            pnlOpciones->Controls->Add(lblInfo);
+            Label^ lblNum = gcnew Label();
+            lblNum->Text = "Número de Tarjeta (16 dígitos):";
+            lblNum->ForeColor = Color::LightGray;
+            lblNum->Font = gcnew System::Drawing::Font("Arial", 9);
+            lblNum->Location = System::Drawing::Point(15, 15);
+            lblNum->AutoSize = true;
+
+            TextBox^ txtNum = gcnew TextBox();
+            txtNum->Location = System::Drawing::Point(15, 35);
+            txtNum->Size = System::Drawing::Size(200, 25);
+            txtNum->Font = gcnew System::Drawing::Font("Arial", 11);
+            txtNum->MaxLength = 16;
+
+            Label^ lblVenc = gcnew Label();
+            lblVenc->Text = "Vencimiento:";
+            lblVenc->ForeColor = Color::LightGray;
+            lblVenc->Font = gcnew System::Drawing::Font("Arial", 9);
+            lblVenc->Location = System::Drawing::Point(230, 15);
+            lblVenc->AutoSize = true;
+
+            TextBox^ txtVenc = gcnew TextBox();
+            txtVenc->Location = System::Drawing::Point(230, 35);
+            txtVenc->Size = System::Drawing::Size(60, 25);
+            txtVenc->Font = gcnew System::Drawing::Font("Arial", 11);
+            txtVenc->MaxLength = 5;
+            txtVenc->Text = "MM/AA";
+            txtVenc->ForeColor = Color::Gray;
+            txtVenc->GotFocus += gcnew System::EventHandler(this, &frmPago::txtVenc_GotFocus);
+            txtVenc->LostFocus += gcnew System::EventHandler(this, &frmPago::txtVenc_LostFocus);
+
+            Label^ lblCVV = gcnew Label();
+            lblCVV->Text = "CVV:";
+            lblCVV->ForeColor = Color::LightGray;
+            lblCVV->Font = gcnew System::Drawing::Font("Arial", 9);
+            lblCVV->Location = System::Drawing::Point(310, 15);
+            lblCVV->AutoSize = true;
+
+            TextBox^ txtCVV = gcnew TextBox();
+            txtCVV->Location = System::Drawing::Point(310, 35);
+            txtCVV->Size = System::Drawing::Size(45, 25);
+            txtCVV->Font = gcnew System::Drawing::Font("Arial", 11);
+            txtCVV->MaxLength = 3;
+            txtCVV->PasswordChar = '*';
+
+            pnlOpciones->Controls->Add(lblNum);
+            pnlOpciones->Controls->Add(txtNum);
+            pnlOpciones->Controls->Add(lblVenc);
+            pnlOpciones->Controls->Add(txtVenc);
+            pnlOpciones->Controls->Add(lblCVV);
+            pnlOpciones->Controls->Add(txtCVV);
         }
         else if (rbEfectivo->Checked) {
             Random^ rnd = gcnew Random();
@@ -192,52 +237,88 @@ namespace Epsteam {
         }
     }
 
+    private: System::Void txtVenc_GotFocus(System::Object^ sender, System::EventArgs^ e) {
+        TextBox^ txt = (TextBox^)sender;
+        if (txt->Text == "MM/AA") {
+            txt->Text = "";
+            txt->ForeColor = Color::Black;
+        }
+    }
+    private: System::Void txtVenc_LostFocus(System::Object^ sender, System::EventArgs^ e) {
+        TextBox^ txt = (TextBox^)sender;
+        if (String::IsNullOrWhiteSpace(txt->Text)) {
+            txt->Text = "MM/AA";
+            txt->ForeColor = Color::Gray;
+        }
+    }
+
     private: System::Void btnPagar_Click(System::Object^ sender, System::EventArgs^ e) {
+
+        // --- 1. EL CADENERO DE SEGURIDAD ---
+        if (rbTarjeta->Checked) {
+            bool faltanDatos = false;
+            for each (Control ^ c in pnlOpciones->Controls) {
+                if (c->GetType() == TextBox::typeid) {
+                    if (String::IsNullOrWhiteSpace(c->Text) || c->Text == "MM/AA") {
+                        faltanDatos = true;
+                        break;
+                    }
+                }
+            }
+            if (faltanDatos) {
+                MessageBox::Show("¡Oye! No puedes llevarte los juegos gratis. Llena todos los datos de tu tarjeta.", "Aviso de Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+                return; // ¡Abortar misión!
+            }
+        }
+
+        // --- 2. PREPARAR DATOS DE LA COMPRA ---
         int metodoSeleccionado = 1;
         String^ nombreMetodo = "Tarjeta de Crédito/Débito";
         if (rbEfectivo->Checked) { metodoSeleccionado = 2; nombreMetodo = "Efectivo"; }
         else if (rbCartera->Checked) { metodoSeleccionado = 3; nombreMetodo = "Cartera Epsteam"; }
 
+        // --- 3. GUARDAR EN LA BASE DE DATOS ---
         bool exito = Epsteam::ConexionBD::RegistrarCompra(idUsuario, carritoPago, metodoSeleccionado, totalPago);
 
         if (exito) {
+            // --- 4. ABRIR EL TICKET VISUAL POP-UP (NUEVO) ---
+            frmTicket^ ticketVisual = gcnew frmTicket(nombreMetodo, carritoPago, totalPago);
+            ticketVisual->ShowDialog();
+
+            // --- 5. GENERAR EL TICKET TXT CON TU NICKNAME ---
             try {
                 if (!System::IO::Directory::Exists("Tickets")) {
                     System::IO::Directory::CreateDirectory("Tickets");
                 }
                 DateTime fecha = DateTime::Now;
-                String^ nombreArchivo = "Tickets/Ticket_Usuario" + Convert::ToString(idUsuario) + "_" + fecha.ToString("HH_mm_ss") + ".txt";
+                String^ nombreArchivo = "Tickets/Recibo_" + Epsteam::ConexionBD::nicknameActual + "_" + fecha.ToString("HH_mm_ss") + ".txt";
 
                 System::IO::StreamWriter^ recibo = gcnew System::IO::StreamWriter(nombreArchivo);
                 recibo->WriteLine("========================================");
                 recibo->WriteLine("          RECIBO DE EPSTEAM             ");
                 recibo->WriteLine("========================================");
                 recibo->WriteLine("Fecha: " + fecha.ToString("dd/MM/yyyy HH:mm:ss"));
-                recibo->WriteLine("ID Cliente: " + Convert::ToString(idUsuario));
+                recibo->WriteLine("Cliente: " + Epsteam::ConexionBD::nicknameActual);
                 recibo->WriteLine("Método de Pago: " + nombreMetodo);
                 recibo->WriteLine("----------------------------------------");
                 recibo->WriteLine("ARTÍCULOS COMPRADOS:");
 
                 for (int i = 0; i < carritoPago->Count; i++) {
-                    recibo->WriteLine("- " + safe_cast<cli::array<System::String^>^>(carritoPago[i])[1] + " (" + safe_cast<cli::array<System::String^>^>(carritoPago[i])[2] + ")");
+                    cli::array<System::String^>^ datos = carritoPago[i];
+                    recibo->WriteLine("- " + datos[1] + " (" + datos[2] + ")");
                 }
 
                 recibo->WriteLine("----------------------------------------");
-                recibo->WriteLine("TOTAL PAGADO: $" + Convert::ToString(totalPago) + " MXN");
+                recibo->WriteLine("TOTAL PAGADO: $" + totalPago.ToString("0.00") + " MXN");
                 recibo->WriteLine("========================================");
                 recibo->WriteLine("¡Los juegos ya están en tu Biblioteca!");
                 recibo->Close();
-
-                MessageBox::Show("¡Pago exitoso! Se generó tu recibo digital y los juegos están en tu biblioteca.", "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
-
-                this->DialogResult = System::Windows::Forms::DialogResult::OK;
-                this->Close();
             }
-            catch (Exception^ ex) {
-                MessageBox::Show("La compra fue exitosa pero no se pudo generar el TXT.", "Aviso");
-                this->DialogResult = System::Windows::Forms::DialogResult::OK;
-                this->Close();
-            }
+            catch (...) {}
+
+            // --- 6. CERRAR EL CARRITO ---
+            this->DialogResult = System::Windows::Forms::DialogResult::OK;
+            this->Close();
         }
     }
     };

@@ -4,7 +4,8 @@
 using namespace Epsteam;
 using namespace System::Windows::Forms;
 
-// 1. Conectar a la base de datos
+
+// 1. Conectar a la base de datos (Se queda igual)
 MySqlConnection^ ConexionBD::Conectar() {
     try {
         MySqlConnection^ conexion = gcnew MySqlConnection(cadenaConexion);
@@ -17,24 +18,30 @@ MySqlConnection^ ConexionBD::Conectar() {
     }
 }
 
-// 2. Revisar si el usuario y contraseña son correctos
+// 2. CORREGIMOS ESTA FUNCIÓN PARA ATRAPAR EL NOMBRE DE USUARIO
 int ConexionBD::ValidarLogin(String^ usuario, String^ password) {
     int idUsuario = -1;
     MySqlConnection^ con = Conectar();
 
     if (con != nullptr) {
         try {
-            String^ query = "SELECT id_usuario FROM usuario WHERE nickname = @usu AND password_hash = @pass";
+            // ¡EL SECRETO! Ahora también traemos el nickname de la tabla
+            String^ query = "SELECT id_usuario, nickname FROM usuario WHERE nickname = @usu AND password_hash = @pass";
             MySqlCommand^ cmd = gcnew MySqlCommand(query, con);
             cmd->Parameters->AddWithValue("@usu", usuario);
             cmd->Parameters->AddWithValue("@pass", password);
 
-            Object^ resultado = cmd->ExecuteScalar();
+            MySqlDataReader^ reader = cmd->ExecuteReader();
 
-            if (resultado != nullptr) {
-                idUsuario = Convert::ToInt32(resultado);
+            if (reader->Read()) {
+                // Atrapamos el ID
+                idUsuario = Convert::ToInt32(reader["id_usuario"]);
                 idUsuarioActual = idUsuario;
+
+                // ¡LA CORONA! Atrapamos el nombre de usuario y lo guardamos
+                nicknameActual = reader["nickname"]->ToString();
             }
+            reader->Close();
         }
         catch (Exception^ ex) {
             MessageBox::Show("Error en el Login: " + ex->Message);
@@ -45,6 +52,7 @@ int ConexionBD::ValidarLogin(String^ usuario, String^ password) {
     }
     return idUsuario;
 }
+// (El resto del archivo se queda igualito como lo tienes)
 
 // 3. Traer todos los juegos al abrir la tienda por primera vez
 DataTable^ ConexionBD::ObtenerCatalogoJuegos() {
@@ -164,25 +172,34 @@ DataTable^ ConexionBD::ObtenerCatalogoFiltrado(String^ textoBusqueda, List<int>^
 }
 
 // 4. Guardar la compra en las tablas correspondientes
+// 4. Guardar la compra en las tablas correspondientes
 bool ConexionBD::RegistrarCompra(int idUsu, System::Collections::Generic::List<cli::array<System::String^>^>^ carrito, int idMetodo, double totalPagado) {
     MySqlConnection^ con = Conectar();
     if (con != nullptr) {
         MySqlTransaction^ transaccion = con->BeginTransaction();
         try {
-            String^ queryCompra = "INSERT INTO compra (fecha_compra, total_compra, id_usuario, id_metodo) "
-                "VALUES (NOW(), @total, @idUsu, @idMetodo); "
+            // 1. Guardar el ticket principal
+            String^ queryCompra = "INSERT INTO compra (`fecha_compra`, `total_pagado`, `id_usuario`) "
+                "VALUES (NOW(), @total, @idUsu); "
                 "SELECT LAST_INSERT_ID();";
+
             MySqlCommand^ cmd1 = gcnew MySqlCommand(queryCompra, con, transaccion);
             cmd1->Parameters->AddWithValue("@total", totalPagado);
             cmd1->Parameters->AddWithValue("@idUsu", idUsu);
-            cmd1->Parameters->AddWithValue("@idMetodo", idMetodo);
 
             int idCompra = Convert::ToInt32(cmd1->ExecuteScalar());
 
-            String^ queryDetalle = "INSERT INTO detalle_compra (id_compra, id_juego, precio_pagado) VALUES (@idCompra, @idJuego, @precioPagado)";
+            // 2. Guardar el detalle de la compra (Le agregamos SELECT LAST_INSERT_ID para saber qué número de detalle fue)
+            String^ queryDetalle = "INSERT INTO detalle_compra (id_compra, id_juego, precio_unitario) VALUES (@idCompra, @idJuego, @precioPagado); SELECT LAST_INSERT_ID();";
             MySqlCommand^ cmd2 = gcnew MySqlCommand(queryDetalle, con, transaccion);
 
+            // 3. ¡LA NOVEDAD! Preparar la inserción a la biblioteca
+            String^ queryBiblio = "INSERT INTO biblioteca (id_usuario, id_juego, id_detalle, fecha_adquisicion, tiempo_jugado_minutos) "
+                "VALUES (@idUsu, @idJuego, @idDetalle, NOW(), 0)";
+            MySqlCommand^ cmd3 = gcnew MySqlCommand(queryBiblio, con, transaccion);
+
             for (int i = 0; i < carrito->Count; i++) {
+                // A) Insertar en detalle_compra
                 cmd2->Parameters->Clear();
                 cmd2->Parameters->AddWithValue("@idCompra", idCompra);
                 cmd2->Parameters->AddWithValue("@idJuego", Convert::ToInt32(carrito[i][0]));
@@ -190,7 +207,16 @@ bool ConexionBD::RegistrarCompra(int idUsu, System::Collections::Generic::List<c
                 String^ precioStr = carrito[i][2]->Replace("$", "")->Replace(" MXN", "")->Replace(",", "");
                 cmd2->Parameters->AddWithValue("@precioPagado", Convert::ToDouble(precioStr));
 
-                cmd2->ExecuteNonQuery();
+                // Usamos ExecuteScalar para atrapar el ID del detalle recién creado
+                int idDetalle = Convert::ToInt32(cmd2->ExecuteScalar());
+
+                // B) ¡ENTREGAR EL JUEGO A LA BIBLIOTECA!
+                cmd3->Parameters->Clear();
+                cmd3->Parameters->AddWithValue("@idUsu", idUsu);
+                cmd3->Parameters->AddWithValue("@idJuego", Convert::ToInt32(carrito[i][0]));
+                cmd3->Parameters->AddWithValue("@idDetalle", idDetalle);
+
+                cmd3->ExecuteNonQuery(); // Guardamos el juego en la repisa
             }
 
             transaccion->Commit();
@@ -246,4 +272,49 @@ void ConexionBD::AvanzarTiempoJuego(int id_usuario) {
             con->Close();
         }
     }
+}
+
+// 7. Registrar un usuario nuevo en la Base de Datos
+bool ConexionBD::RegistrarUsuario(String^ nickname, String^ email, String^ password) {
+    MySqlConnection^ con = Conectar();
+    if (con != nullptr) {
+        try {
+            // A) Revisar si el usuario ya existe para no tener duplicados
+            String^ queryCheck = "SELECT COUNT(*) FROM usuario WHERE nickname = @nick";
+            MySqlCommand^ cmdCheck = gcnew MySqlCommand(queryCheck, con);
+            cmdCheck->Parameters->AddWithValue("@nick", nickname);
+
+            int existe = Convert::ToInt32(cmdCheck->ExecuteScalar());
+            if (existe > 0) {
+                MessageBox::Show("Ese nombre de usuario ya está ocupado. ¡Elige otro!", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+                return false;
+            }
+
+            // B) ¡EL TRUCO MAESTRO! Le ganamos a MySQL calculando el ID nosotros mismos
+            // Buscamos el ID más alto y le sumamos 1. Si está vacía, le pone el 1.
+            String^ queryMax = "SELECT IFNULL(MAX(id_usuario), 0) + 1 FROM usuario";
+            MySqlCommand^ cmdMax = gcnew MySqlCommand(queryMax, con);
+            int nuevoId = Convert::ToInt32(cmdMax->ExecuteScalar());
+
+            // C) Guardamos mandándole nuestro propio ID a la fuerza (id_usuario)
+            String^ query = "INSERT INTO usuario (id_usuario, nickname, email, password_hash, fecha_nacimiento, saldo_cartera, id_pais) "
+                "VALUES (@id, @nick, @email, @pass, '2000-01-01', 0.00, 1)";
+            MySqlCommand^ cmd = gcnew MySqlCommand(query, con);
+            cmd->Parameters->AddWithValue("@id", nuevoId); // Metemos el ID calculado
+            cmd->Parameters->AddWithValue("@nick", nickname);
+            cmd->Parameters->AddWithValue("@email", email);
+            cmd->Parameters->AddWithValue("@pass", password);
+
+            cmd->ExecuteNonQuery();
+            return true;
+        }
+        catch (Exception^ ex) {
+            MessageBox::Show("Error al crear cuenta: " + ex->Message);
+            return false;
+        }
+        finally {
+            con->Close();
+        }
+    }
+    return false;
 }
