@@ -4,8 +4,13 @@
 using namespace Epsteam;
 using namespace System::Windows::Forms;
 
-
-// 1. Conectar a la base de datos (Se queda igual)
+/**
+ * @brief Implementación de la conexión a la base de datos MySQL.
+ * @details Utiliza la cadena de conexión definida en el archivo de cabecera.
+ * Si la conexión falla, captura la excepción y muestra un MessageBox con el error.
+ * @return Un objeto MySqlConnection abierto, o nullptr si falla.
+ */
+ // 1. Conectar a la base de datos (Se queda igual)
 MySqlConnection^ ConexionBD::Conectar() {
     try {
         MySqlConnection^ conexion = gcnew MySqlConnection(cadenaConexion);
@@ -18,7 +23,15 @@ MySqlConnection^ ConexionBD::Conectar() {
     }
 }
 
-// 2. CORREGIMOS ESTA FUNCIÓN PARA ATRAPAR EL NOMBRE DE USUARIO
+/**
+ * @brief Implementación de la validación del inicio de sesión.
+ * @details Realiza una consulta SELECT buscando coincidencias exactas del nickname y el hash de la contraseña.
+ * Además de verificar el acceso, guarda el ID y el nickname en variables estáticas globales para uso futuro.
+ * @param usuario El nickname introducido en el login.
+ * @param password La contraseña introducida en el login.
+ * @return El ID del usuario (>0) en caso de éxito, o -1 en caso de error o credenciales incorrectas.
+ */
+ // 2. CORREGIMOS ESTA FUNCIÓN PARA ATRAPAR EL NOMBRE DE USUARIO
 int ConexionBD::ValidarLogin(String^ usuario, String^ password) {
     int idUsuario = -1;
     MySqlConnection^ con = Conectar();
@@ -54,7 +67,13 @@ int ConexionBD::ValidarLogin(String^ usuario, String^ password) {
 }
 // (El resto del archivo se queda igualito como lo tienes)
 
-// 3. Traer todos los juegos al abrir la tienda por primera vez
+/**
+ * @brief Implementación de la obtención del catálogo completo.
+ * @details Ejecuta un SELECT básico sobre la tabla 'videojuego' para extraer ID, título y precio base.
+ * Rellena un DataTable a través de un MySqlDataAdapter.
+ * @return DataTable instanciado con todos los juegos disponibles en la base de datos.
+ */
+ // 3. Traer todos los juegos al abrir la tienda por primera vez
 DataTable^ ConexionBD::ObtenerCatalogoJuegos() {
     DataTable^ tablaJuegos = gcnew DataTable();
     MySqlConnection^ con = Conectar();
@@ -76,7 +95,14 @@ DataTable^ ConexionBD::ObtenerCatalogoJuegos() {
     return tablaJuegos;
 }
 
-// 3.1. Cargar las opciones de las listas desplegables
+/**
+ * @brief Implementación para cargar catálogos secundarios (filtros).
+ * @details Utiliza condicionales para determinar qué tabla consultar (genero, categoria, etiqueta, etc.).
+ * Estandariza la salida para que las columnas siempre se llamen 'id' y 'nombre', facilitando su uso en la interfaz.
+ * @param tipoFiltro String que define la tabla objetivo.
+ * @return DataTable estructurado con columnas estandarizadas.
+ */
+ // 3.1. Cargar las opciones de las listas desplegables
 DataTable^ ConexionBD::ObtenerListaFiltros(String^ tipoFiltro) {
     DataTable^ tablaFiltros = gcnew DataTable();
     MySqlConnection^ con = Conectar();
@@ -104,7 +130,20 @@ DataTable^ ConexionBD::ObtenerListaFiltros(String^ tipoFiltro) {
     return tablaFiltros;
 }
 
-// 3.2. Buscar juegos
+/**
+ * @brief Implementación de la búsqueda dinámica de juegos.
+ * @details Construye una consulta SQL dinámica agregando bloques JOIN y WHERE dependiendo
+ * de qué listas (Lists) vienen con datos. Aplica cláusulas IN para los filtros y LIKE para la búsqueda por texto.
+ * @param textoBusqueda Texto ingresado por el usuario (filtro LIKE).
+ * @param idsGeneros Lista de enteros de los géneros marcados.
+ * @param idsCategorias Lista de enteros de las categorías marcadas.
+ * @param idsEtiquetas Lista de enteros de las etiquetas marcadas.
+ * @param idsDesarrolladores Lista de enteros de desarrolladores marcados.
+ * @param idsEditores Lista de enteros de editores marcados.
+ * @param precioMaximo Tope de precio base.
+ * @return DataTable filtrado con los juegos coincidentes.
+ */
+ // 3.2. Buscar juegos
 DataTable^ ConexionBD::ObtenerCatalogoFiltrado(String^ textoBusqueda, List<int>^ idsGeneros, List<int>^ idsCategorias, List<int>^ idsEtiquetas, List<int>^ idsDesarrolladores, List<int>^ idsEditores, int precioMaximo) {
     DataTable^ tablaResultados = gcnew DataTable();
     MySqlConnection^ con = Conectar();
@@ -171,8 +210,21 @@ DataTable^ ConexionBD::ObtenerCatalogoFiltrado(String^ textoBusqueda, List<int>^
     return tablaResultados;
 }
 
-// 4. Guardar la compra en las tablas correspondientes
-// 4. Guardar la compra en las tablas correspondientes
+/**
+ * @brief Implementación de la transacción de compra maestra.
+ * @details Este es el método central de transacciones en la tienda.
+ * Abre una transacción SQL (BeginTransaction) y realiza tres inserciones dependientes:
+ * 1. Inserta el recibo global en 'compra' y recupera el LAST_INSERT_ID().
+ * 2. Itera sobre el carrito para insertar cada ítem en 'detalle_compra'.
+ * 3. Inmediatamente inserta el registro del juego en 'biblioteca' a nombre del usuario.
+ * Si algo falla, aplica Rollback. Si todo es correcto, hace Commit.
+ * @param idUsu ID del cliente.
+ * @param carrito Lista de los juegos y sus precios a insertar.
+ * @param idMetodo ID del método de pago.
+ * @param totalPagado Gran total de la venta.
+ * @return booleano indicando el éxito del bloque de transacciones.
+ */
+ // 4. Guardar la compra en las tablas correspondientes
 bool ConexionBD::RegistrarCompra(int idUsu, System::Collections::Generic::List<cli::array<System::String^>^>^ carrito, int idMetodo, double totalPagado) {
     MySqlConnection^ con = Conectar();
     if (con != nullptr) {
@@ -234,7 +286,14 @@ bool ConexionBD::RegistrarCompra(int idUsu, System::Collections::Generic::List<c
     return false;
 }
 
-// 5. Cargar los juegos que el usuario ya compró
+/**
+ * @brief Implementación de la carga de inventario de usuario.
+ * @details Realiza un JOIN cuádruple entre 'compra', 'detalle_compra', 'videojuego' y 'biblioteca'
+ * para garantizar la pertenencia del juego y extraer sus minutos jugados de manera segura.
+ * @param id_usuario ID del cliente activo.
+ * @return DataTable resultante de la consulta compleja de biblioteca.
+ */
+ // 5. Cargar los juegos que el usuario ya compró
 DataTable^ ConexionBD::ObtenerMisJuegos(int id_usuario) {
     DataTable^ tablaMisJuegos = gcnew DataTable();
     MySqlConnection^ con = Conectar();
@@ -257,7 +316,13 @@ DataTable^ ConexionBD::ObtenerMisJuegos(int id_usuario) {
     return tablaMisJuegos;
 }
 
-// 6. Sumar tiempo jugado a la biblioteca
+/**
+ * @brief Función invisible para simular el avance del tiempo de juego.
+ * @details Realiza un UPDATE sumando 1 al campo de tiempo_jugado_minutos de todos los juegos del usuario.
+ * Se incluyó una restricción WHERE para que el contador de horas no sobrepase las 2 horas (121 minutos) como demo.
+ * @param id_usuario El ID del cliente logueado actualmente.
+ */
+ // 6. Sumar tiempo jugado a la biblioteca
 void ConexionBD::AvanzarTiempoJuego(int id_usuario) {
     MySqlConnection^ con = Conectar();
     if (con != nullptr) {
@@ -274,7 +339,17 @@ void ConexionBD::AvanzarTiempoJuego(int id_usuario) {
     }
 }
 
-// 7. Registrar un usuario nuevo en la Base de Datos
+/**
+ * @brief Registro seguro de nuevos clientes.
+ * @details Evita la inserción si el nickname ya existe mediante un COUNT().
+ * Adicionalmente, implementa una lógica de auto-resolución (bypass) de IDs, calculando el máximo + 1
+ * para eludir posibles restricciones de llave foránea (FK) impuestas en la tabla por la base de datos.
+ * @param nickname Elegido por el cliente.
+ * @param email Correo electrónico de registro.
+ * @param password Contraseña de acceso a Epsteam.
+ * @return True si se inserta el usuario burlando restricciones con el nuevo ID generado, False de lo contrario.
+ */
+ // 7. Registrar un usuario nuevo en la Base de Datos
 bool ConexionBD::RegistrarUsuario(String^ nickname, String^ email, String^ password) {
     MySqlConnection^ con = Conectar();
     if (con != nullptr) {

@@ -1,0 +1,27 @@
+var group__xapi__sess =
+[
+    [ "mysqlx_client_close", "group__xapi__sess.html#gaf137b711cc34b1e6acda48f1711ab8e0", null ],
+    [ "mysqlx_free_options", "group__xapi__sess.html#ga54be0ba961910ebc6552be0d7a91647f", null ],
+    [ "mysqlx_get_client_from_options", "group__xapi__sess.html#ga13830923b537bf2f289bb6d0476145e3", null ],
+    [ "mysqlx_get_client_from_url", "group__xapi__sess.html#gafeee6d6705e129775a7679374a3ccde5", null ],
+    [ "mysqlx_get_collection", "group__xapi__sess.html#gaa7bcf58b7111a5eb082f9401bd5e334a", null ],
+    [ "mysqlx_get_collections", "group__xapi__sess.html#gaade7729d94023e55291fbf6948188dfc", null ],
+    [ "mysqlx_get_schema", "group__xapi__sess.html#gabecc870ca9f8a319bdd328f7fedd5b20", null ],
+    [ "mysqlx_get_schemas", "group__xapi__sess.html#gad18507f9884ce938eb3e0d40c4c66510", null ],
+    [ "mysqlx_get_session", "group__xapi__sess.html#gaf722e71b559d586207a349503ea62c03", null ],
+    [ "mysqlx_get_session_from_options", "group__xapi__sess.html#ga39c2f8e605b84186bdb3417df782a120", null ],
+    [ "mysqlx_get_session_from_url", "group__xapi__sess.html#gadf1bb05e53ef22f98e3349aab42934b7", null ],
+    [ "mysqlx_get_table", "group__xapi__sess.html#gad33e1b473a5421905f990de02e9a58f6", null ],
+    [ "mysqlx_get_tables", "group__xapi__sess.html#gad73ef0a67f6b27f467f188ab655680d6", null ],
+    [ "mysqlx_rollback_to", "group__xapi__sess.html#ga087b56faf670f36caa6db4f8eb4321e7", null ],
+    [ "mysqlx_savepoint_release", "group__xapi__sess.html#ga69102fd95a63e8728debfb19f0874406", null ],
+    [ "mysqlx_savepoint_set", "group__xapi__sess.html#ga27b51c38650573281e1501a5c783d54b", null ],
+    [ "mysqlx_session_close", "group__xapi__sess.html#ga3d17ff704ecac7ee6cad1c6c1f3752c3", null ],
+    [ "mysqlx_session_option_get", "group__xapi__sess.html#gaf2e3066f7c290baf7601efc8fc053167", null ],
+    [ "mysqlx_session_option_set", "group__xapi__sess.html#ga96bd8f690be1a57c39bdcfd8b805e45c", null ],
+    [ "mysqlx_session_options_new", "group__xapi__sess.html#ga49b25366a21a07b3f9bbb696da8e3c69", null ],
+    [ "mysqlx_session_valid", "group__xapi__sess.html#gaf150bec3ef9ce71a50cbca0bce56b0c2", null ],
+    [ "mysqlx_transaction_begin", "group__xapi__sess.html#ga228621768d7d44671a039ec7d3fc918a", null ],
+    [ "mysqlx_transaction_commit", "group__xapi__sess.html#ga6a0ea92d27750fc24b36ced210a78fda", null ],
+    [ "mysqlx_transaction_rollback", "group__xapi__sess.html#gab917f2bd549b7a642c910f984dca1063", null ]
+];

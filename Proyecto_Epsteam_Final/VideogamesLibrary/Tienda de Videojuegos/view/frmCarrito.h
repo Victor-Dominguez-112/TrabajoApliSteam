@@ -10,23 +10,47 @@ namespace Epsteam {
     using namespace System::Drawing;
     using namespace System::Collections::Generic;
 
+    /**
+     * @class frmCarrito
+     * @brief Formulario que representa el Carrito de Compras del usuario.
+     * @details Muestra dinámicamente los videojuegos que el usuario ha seleccionado para comprar.
+     * Calcula el subtotal, permite eliminar ítems individualmente de la lista en memoria y
+     * redirige a la pasarela de pago (frmPago) para concluir la transacción.
+     */
     public ref class frmCarrito : public System::Windows::Forms::Form
     {
     private:
+        /** @brief Almacena el ID del usuario logueado para pasarlo a la ventana de pago. */
         int idUsuario;
+
         // FIRMA BLINDADA
+        /** * @brief Referencia directa a la lista del carrito creada en la tienda.
+         * @details Almacena arreglos de strings donde índice 0 es ID, índice 1 es Título y índice 2 es Precio.
+         */
         System::Collections::Generic::List<cli::array<System::String^>^>^ carritoReferencia;
 
+        /** @brief Panel superior de la ventana. */
         Panel^ pnlTop;
+        /** @brief Etiqueta principal con el título del carrito. */
         Label^ lblTitulo;
+        /** @brief Contenedor dinámico donde se dibujan los ítems del carrito. */
         FlowLayoutPanel^ flowItems;
+        /** @brief Panel inferior que contiene los totales y botones de acción. */
         Panel^ pnlBottom;
+        /** @brief Etiqueta que muestra el monto total acumulado. */
         Label^ lblTotal;
+        /** @brief Botón para proceder al cobro. */
         Button^ btnPagar;
+        /** @brief Botón para regresar a la tienda sin perder el carrito. */
         Button^ btnCerrar;
 
     public:
         // FIRMA BLINDADA EN EL CONSTRUCTOR
+        /**
+         * @brief Constructor principal del Carrito.
+         * @param idUsu ID del usuario actualmente conectado.
+         * @param carritoReal Referencia a la lista genérica con los artículos seleccionados en frmTienda.
+         */
         frmCarrito(int idUsu, System::Collections::Generic::List<cli::array<System::String^>^>^ carritoReal)
         {
             idUsuario = idUsu;
@@ -37,12 +61,25 @@ namespace Epsteam {
         }
 
     protected:
+        /**
+         * @brief Destructor de la clase.
+         * @details Libera los recursos y componentes visuales administrados por la ventana.
+         */
         ~frmCarrito() { if (components) { delete components; } }
+
     private:
+        /** @brief Contenedor principal de componentes de Windows Forms. */
         System::ComponentModel::Container^ components;
 
+        /**
+         * @brief Configuración básica del formulario.
+         */
         void InitializeComponent(void) { this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font; this->Text = L"Carrito de Compras"; }
 
+        /**
+         * @brief Construye la interfaz visual dinámica del carrito.
+         * @details Asigna colores, tamaños y posiciones a los paneles, etiquetas y botones generales.
+         */
         void ConfigurarInterfaz() {
             this->Size = System::Drawing::Size(580, 600);
             this->BackColor = Color::FromArgb(27, 40, 56);
@@ -105,6 +142,12 @@ namespace Epsteam {
             flowItems->BringToFront();
         }
 
+        /**
+         * @brief Renderiza visualmente cada ítem contenido en el carritoReferencia.
+         * @details Itera sobre la lista del carrito. Por cada juego, crea un panel con su nombre,
+         * su precio parseado numéricamente (para ir sumando al total) y un botón de eliminación (X).
+         * Si el carrito está vacío, muestra un mensaje y deshabilita el botón de pago.
+         */
         void DibujarJuegos() {
             flowItems->Controls->Clear();
             double total = 0;
@@ -173,6 +216,13 @@ namespace Epsteam {
             lblTotal->Text = "Total a pagar: $" + total.ToString("0.00") + " MXN";
         }
 
+        /**
+         * @brief Evento que elimina un juego específico de la lista del carrito.
+         * @details Utiliza la propiedad Tag del botón clickeado para obtener el índice del arreglo,
+         * lo elimina de carritoReferencia y vuelve a invocar DibujarJuegos() para actualizar la interfaz.
+         * @param sender Botón "X" que fue clickeado.
+         * @param e Argumentos del evento.
+         */
     private: System::Void btnEliminar_Click(System::Object^ sender, System::EventArgs^ e) {
         Button^ btn = (Button^)sender;
         int indice = Convert::ToInt32(btn->Tag);
@@ -180,10 +230,23 @@ namespace Epsteam {
         DibujarJuegos();
     }
 
+           /**
+            * @brief Cierra el formulario del carrito para regresar a la tienda principal.
+            * @param sender Botón "SEGUIR COMPRANDO".
+            * @param e Argumentos del evento.
+            */
     private: System::Void btnCerrar_Click(System::Object^ sender, System::EventArgs^ e) {
         this->Close();
     }
 
+           /**
+            * @brief Abre la pasarela de pago para liquidar los artículos del carrito.
+            * @details Vuelve a calcular el total asegurándose de que el precio esté limpio.
+            * Instancia 'frmPago' pasando el ID, el carrito y el total. Si el pago es exitoso (DialogResult::OK),
+            * vacía la lista del carrito y cierra la ventana.
+            * @param sender Botón "IR A PAGAR".
+            * @param e Argumentos del evento.
+            */
     private: System::Void btnPagar_Click(System::Object^ sender, System::EventArgs^ e) {
         double total = 0;
         for (int i = 0; i < carritoReferencia->Count; i++) {

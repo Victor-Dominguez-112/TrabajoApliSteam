@@ -1,0 +1,107 @@
+var group__devapi =
+[
+    [ "Database operations", "group__devapi__op.html", "group__devapi__op" ],
+    [ "Classes for result processing", "group__devapi__res.html", "group__devapi__res" ],
+    [ "Auxiliary types", "group__devapi__aux.html", "group__devapi__aux" ],
+    [ "xdevapi.h", "xdevapi_8h.html", null ],
+    [ "mysqlx::common::Error", "classmysqlx_1_1common_1_1_error.html", null ],
+    [ "mysqlx::Error", "classmysqlx_1_1_error.html", null ],
+    [ "mysqlx::Warning", "classmysqlx_1_1_warning.html", [
+      [ "Level", "classmysqlx_1_1_warning.html#ac80edb796f0233e72efd5beb996008d0", [
+        [ "LEVEL_ERROR", "classmysqlx_1_1_warning.html#ac80edb796f0233e72efd5beb996008d0a00d1644bfe5b73bba708ee9361dc4520", null ],
+        [ "LEVEL_WARNING", "classmysqlx_1_1_warning.html#ac80edb796f0233e72efd5beb996008d0a01c782de586737207b01c25dcae9079e", null ],
+        [ "LEVEL_INFO", "classmysqlx_1_1_warning.html#ac80edb796f0233e72efd5beb996008d0ac344bb6ed1cdc97f61f2cb1a89877dc2", null ]
+      ] ],
+      [ "getCode", "classmysqlx_1_1_warning.html#a5f69caafeed00de3e05de55e06e6341d", null ],
+      [ "getLevel", "classmysqlx_1_1_warning.html#a7d0f0d3e52770cb7d41656871880e39b", null ],
+      [ "getMessage", "classmysqlx_1_1_warning.html#a45b6f7311b0c77106aba1c026242094a", null ]
+    ] ],
+    [ "mysqlx::SessionSettings", "classmysqlx_1_1_session_settings.html", [
+      [ "SessionSettings", "classmysqlx_1_1_session_settings.html#aac21d43d06a01c645a51d5ab27d12bb8", null ],
+      [ "SessionSettings", "classmysqlx_1_1_session_settings.html#ab319e5f9dc58bb4a403a4813cf0a20e9", null ],
+      [ "SessionSettings", "classmysqlx_1_1_session_settings.html#a70903bf8203231e7e1ba1b63c1208284", null ],
+      [ "SessionSettings", "classmysqlx_1_1_session_settings.html#a5918ee366ac1cdf9e5b518b795aad02e", null ],
+      [ "SessionSettings", "classmysqlx_1_1_session_settings.html#a61764dd5b24d538c4c86d61857a221ad", null ],
+      [ "clear", "classmysqlx_1_1_session_settings.html#a0b262253b119bf796f900472d404ef6a", null ],
+      [ "erase", "classmysqlx_1_1_session_settings.html#a0ab42b8a698c26c99c344ae55298527b", null ],
+      [ "find", "classmysqlx_1_1_session_settings.html#a6628a594d166fc161487c2471f7f5c0e", null ],
+      [ "has_option", "classmysqlx_1_1_session_settings.html#a022b049417a553ac05ed30064a11a952", null ],
+      [ "set", "classmysqlx_1_1_session_settings.html#adad80354a59d868b72b4dfdce81a63f8", null ]
+    ] ],
+    [ "mysqlx::ClientSettings", "classmysqlx_1_1_client_settings.html", [
+      [ "ClientSettings", "classmysqlx_1_1_client_settings.html#ac9fcc33d1ba87f1801086a3c85e85730", null ],
+      [ "ClientSettings", "classmysqlx_1_1_client_settings.html#a6b2239a774f8efb795ce2a10749bd0c7", null ],
+      [ "ClientSettings", "classmysqlx_1_1_client_settings.html#a0a343b29c68356964e388eb89d1495cb", null ],
+      [ "ClientSettings", "classmysqlx_1_1_client_settings.html#a64ba97a76ee32be0b67965cb05bd4579", null ],
+      [ "ClientSettings", "classmysqlx_1_1_client_settings.html#a3185fc7f6212302bf45ebd84ae9f191c", null ],
+      [ "clear", "classmysqlx_1_1_client_settings.html#a7add0ed77a73db884cb937fc829ba973", null ],
+      [ "erase", "classmysqlx_1_1_client_settings.html#a72ae81eda002c298046fe6fda85abd4b", null ],
+      [ "find", "classmysqlx_1_1_client_settings.html#abf1d7ad9719a96fc2379284a0ea46093", null ],
+      [ "has_option", "classmysqlx_1_1_client_settings.html#a9b07bc2efaa52f9e7cb33747daefd8c9", null ],
+      [ "has_option", "classmysqlx_1_1_client_settings.html#ab4bfc34245b9e7864053aa112ff91505", null ],
+      [ "set", "classmysqlx_1_1_client_settings.html#adbad14675eb5056abd01659609dea9b9", null ]
+    ] ],
+    [ "mysqlx::Schema", "classmysqlx_1_1_schema.html", [
+      [ "Schema", "classmysqlx_1_1_schema.html#a4cc5c719f8e3aec4dc8a61a68a471cc9", null ],
+      [ "Schema", "classmysqlx_1_1_schema.html#a49889c49f673b5efc13e235a448f50f0", null ],
+      [ "createCollection", "classmysqlx_1_1_schema.html#ac356b4fafc7470d84a1a9186a4774982", null ],
+      [ "createCollection", "classmysqlx_1_1_schema.html#aba3ebaeb66d4392f158948dd88f41c5b", null ],
+      [ "dropCollection", "classmysqlx_1_1_schema.html#a4c0189085a7a22028c6e248eec18a2d4", null ],
+      [ "existsInDatabase", "classmysqlx_1_1_schema.html#a1346243b2bed8d2bd46eabe1ee9f27da", null ],
+      [ "getCollection", "classmysqlx_1_1_schema.html#aaf2bd0575a37e642a98e20f0097572df", null ],
+      [ "getCollectionAsTable", "classmysqlx_1_1_schema.html#ac6a1063f37ba5cf3f4f8ab68b9ec9acf", null ],
+      [ "getCollectionNames", "classmysqlx_1_1_schema.html#acf288de75843a33bc1a390b8ca7b9a47", null ],
+      [ "getCollections", "classmysqlx_1_1_schema.html#aaf6b99b15b0a6ae1b415918d1e6c6913", null ],
+      [ "getName", "classmysqlx_1_1_schema.html#ac1e4591ba1ecb0fcca48dd5d6612cf80", null ],
+      [ "getSession", "classmysqlx_1_1_schema.html#a06290c5364000b7a8ce4ea27bb57fa4b", null ],
+      [ "getTable", "classmysqlx_1_1_schema.html#a4ca73bc09ff9c7c1bdbbd5a5640cdd8e", null ],
+      [ "getTableNames", "classmysqlx_1_1_schema.html#a15020d53f3c40a976f3a17607f1b10d0", null ],
+      [ "getTables", "classmysqlx_1_1_schema.html#ae430401367c224f507d6fed649f27b4e", null ],
+      [ "modifyCollection", "classmysqlx_1_1_schema.html#abdb8b7916f6b8550ee171275aa9cced6", null ]
+    ] ],
+    [ "mysqlx::Collection", "classmysqlx_1_1_collection.html", [
+      [ "add", "classmysqlx_1_1_collection.html#a81e165307f03ad396c3c343414a22560", null ],
+      [ "addOrReplaceOne", "classmysqlx_1_1_collection.html#a744de1ec87ae25fc9dae3dfc8a9da974", null ],
+      [ "count", "classmysqlx_1_1_collection.html#a07cfbc5194d42a0e6512bf859b6c817d", null ],
+      [ "createIndex", "classmysqlx_1_1_collection.html#ababf3d46ab600ecca0c8e9e32f91c472", null ],
+      [ "dropIndex", "classmysqlx_1_1_collection.html#a0d86596c48a30a6f6016326167118aeb", null ],
+      [ "find", "classmysqlx_1_1_collection.html#ab7e1d0a15db6e08907bc1014de7e5a83", null ],
+      [ "find", "classmysqlx_1_1_collection.html#a4b23489db6827e21a251e2494d44bc28", null ],
+      [ "getOne", "classmysqlx_1_1_collection.html#a6c66f2b54ac71b62c148c0f86bc71a01", null ],
+      [ "modify", "classmysqlx_1_1_collection.html#a1112fa5ef8e322c47d739df1665f4266", null ],
+      [ "remove", "classmysqlx_1_1_collection.html#ae97904bfdc3e8e053971d196e91a13bd", null ],
+      [ "removeOne", "classmysqlx_1_1_collection.html#aa3650ae31e98558f016caf4f59a2b412", null ],
+      [ "replaceOne", "classmysqlx_1_1_collection.html#a2d1738fad0c4cca61f5d84067bea8409", null ]
+    ] ],
+    [ "mysqlx::Table", "classmysqlx_1_1_table.html", [
+      [ "count", "classmysqlx_1_1_table.html#ab0cf261db0baa41b4ebfd35c732066b1", null ],
+      [ "insert", "classmysqlx_1_1_table.html#ae6ea9b851b05dc6e17499fcf1c185662", null ],
+      [ "insert", "classmysqlx_1_1_table.html#ab665feb923a3715f2e1433d0d5034bc0", null ],
+      [ "isView", "classmysqlx_1_1_table.html#ac1268883dc0a98496da238f4842f7b39", null ],
+      [ "remove", "classmysqlx_1_1_table.html#ae92f10293ec7e0bd5867607e0746a5db", null ],
+      [ "select", "classmysqlx_1_1_table.html#ad1af8bc375c6867c979c9231e2907c89", null ],
+      [ "update", "classmysqlx_1_1_table.html#a4bddffc41df87602d0306065b5569584", null ]
+    ] ],
+    [ "mysqlx::Session", "classmysqlx_1_1_session.html", [
+      [ "Session", "classmysqlx_1_1_session.html#a8a62d2a6aede0d43aa257790900ad78a", null ],
+      [ "Session", "classmysqlx_1_1_session.html#a6d59530c748796c42527005fb66e1b97", null ],
+      [ "close", "classmysqlx_1_1_session.html#aba75ef8b59040f35e66e16fdf107fdaa", null ],
+      [ "commit", "classmysqlx_1_1_session.html#ad475e3377057b7fc916dd7b20e471dfc", null ],
+      [ "createSchema", "classmysqlx_1_1_session.html#a20531529b530d94a02498fb15a024df2", null ],
+      [ "dropSchema", "classmysqlx_1_1_session.html#a2a23e0f8dc444de674891ab141091681", null ],
+      [ "getDefaultSchema", "classmysqlx_1_1_session.html#af56491adf455980dba6365423a9edde8", null ],
+      [ "getDefaultSchemaName", "classmysqlx_1_1_session.html#a40386b2264f7b6ad4507bc5fe0cba680", null ],
+      [ "getSchema", "classmysqlx_1_1_session.html#abd5a6c2ce0bf1ce676c23e46cbfa65e7", null ],
+      [ "getSchemas", "classmysqlx_1_1_session.html#a2cc40d797fde6d68c49460bba5dec573", null ],
+      [ "releaseSavepoint", "classmysqlx_1_1_session.html#abcc4ae2ef05c929fb16d20bdfef1339a", null ],
+      [ "rollback", "classmysqlx_1_1_session.html#a5a70856f9532ac0e18ef85f1d4b09e8f", null ],
+      [ "rollbackTo", "classmysqlx_1_1_session.html#a9b1b921990f28352e11c3b5b69d74147", null ],
+      [ "setSavepoint", "classmysqlx_1_1_session.html#aa26403363a7c52fdabba1d1df3ba52a8", null ],
+      [ "setSavepoint", "classmysqlx_1_1_session.html#ac7c7e108e4377edeb9c29c85dfba36b9", null ],
+      [ "sql", "classmysqlx_1_1_session.html#ad9cf24c61d492128ecba504e6eec583d", null ],
+      [ "startTransaction", "classmysqlx_1_1_session.html#ac186603647d97795befd6b2243c763e5", null ]
+    ] ],
+    [ "mysqlx::internal::expr", "group__devapi.html#gab52ab38c72407f6f24317d09c5593d74", null ],
+    [ "mysqlx::getClient", "group__devapi.html#gac528dc40a4a45b249d52ff7a16167a99", null ],
+    [ "mysqlx::getSession", "group__devapi.html#ga03b7c71440991ddf36326342e2d72779", null ]
+];

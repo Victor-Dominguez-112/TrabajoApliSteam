@@ -1,0 +1,26 @@
+var searchData=
+[
+  ['mysqlx_5fauth_5fmethod_5ft_0',['mysqlx_auth_method_t',['../group__xapi.html#ga7fbd81a841e9d846cd826c10a7b9ad3b',1,'xapi.h']]],
+  ['mysqlx_5fclient_5fopt_5ftype_5ft_1',['mysqlx_client_opt_type_t',['../group__xapi.html#gac80ea6c73dc62603e14e97b8f67d36ec',1,'xapi.h']]],
+  ['mysqlx_5fclient_5ft_2',['mysqlx_client_t',['../group__xapi.html#gab13ce2573dde7172db7287415dbe294b',1,'xapi.h']]],
+  ['mysqlx_5fcollection_5fopt_5ft_3',['mysqlx_collection_opt_t',['../group__xapi.html#ga7e5d08f41e51405e2a1e6b69a0e1d872',1,'xapi.h']]],
+  ['mysqlx_5fcollection_5foptions_5ft_4',['mysqlx_collection_options_t',['../group__xapi.html#gaf7f31f463cb81f1047d4646d1e5b8fa6',1,'xapi.h']]],
+  ['mysqlx_5fcollection_5ft_5',['mysqlx_collection_t',['../group__xapi.html#gac990320684918ac534f1403746b877f1',1,'xapi.h']]],
+  ['mysqlx_5fcollection_5fvalidation_5flevel_5ft_6',['mysqlx_collection_validation_level_t',['../group__xapi.html#gac0af2fdec12fcbbf661f59bca989d63d',1,'xapi.h']]],
+  ['mysqlx_5fcollection_5fvalidation_5fopt_5ft_7',['mysqlx_collection_validation_opt_t',['../group__xapi.html#ga3ca3da29556bf8b96afd3422112b96a9',1,'xapi.h']]],
+  ['mysqlx_5fcompression_5fmode_5ft_8',['mysqlx_compression_mode_t',['../group__xapi.html#ga369cc7204a5ef429a31cb1f733182c24',1,'xapi.h']]],
+  ['mysqlx_5fdata_5ftype_5ft_9',['mysqlx_data_type_t',['../group__xapi.html#gadf320117da956565724dde0d9c8549bb',1,'xapi.h']]],
+  ['mysqlx_5ferror_5ft_10',['mysqlx_error_t',['../group__xapi.html#gad4cda49a5921e183e5889615e4b39e7d',1,'xapi.h']]],
+  ['mysqlx_5flock_5fcontention_5ft_11',['mysqlx_lock_contention_t',['../group__xapi.html#gacd0ae8b2949bac1cd907db0e90eede1b',1,'xapi.h']]],
+  ['mysqlx_5fopt_5ftype_5ft_12',['mysqlx_opt_type_t',['../group__xapi.html#ga584efc0a48f1b9293417a740e0d71401',1,'xapi.h']]],
+  ['mysqlx_5fresult_5ft_13',['mysqlx_result_t',['../group__xapi.html#ga339c0dde62323dd3013ae82eac428205',1,'xapi.h']]],
+  ['mysqlx_5frow_5flocking_5ft_14',['mysqlx_row_locking_t',['../group__xapi.html#ga58d4ebef53369a95aa3197418fe304a4',1,'xapi.h']]],
+  ['mysqlx_5frow_5ft_15',['mysqlx_row_t',['../group__xapi.html#ga4c845544e7e66e7f75856ffcab20beb7',1,'xapi.h']]],
+  ['mysqlx_5fschema_5ft_16',['mysqlx_schema_t',['../group__xapi.html#gaf4f287ce6066ef583f6b1b797cb516dc',1,'xapi.h']]],
+  ['mysqlx_5fsession_5foptions_5ft_17',['mysqlx_session_options_t',['../group__xapi.html#ga62d6ce202e049ddcd16ef5d19ebfc0de',1,'xapi.h']]],
+  ['mysqlx_5fsession_5ft_18',['mysqlx_session_t',['../group__xapi.html#ga875629dbda3145760cc5f59dc022520e',1,'xapi.h']]],
+  ['mysqlx_5fsort_5fdirection_5ft_19',['mysqlx_sort_direction_t',['../group__xapi.html#ga4740255473ede10c034a7239c0710da9',1,'xapi.h']]],
+  ['mysqlx_5fssl_5fmode_5ft_20',['mysqlx_ssl_mode_t',['../group__xapi.html#gaf1718c8850aef8191f0a63b72c39fd9f',1,'xapi.h']]],
+  ['mysqlx_5fstmt_5ft_21',['mysqlx_stmt_t',['../group__xapi.html#ga58ba34986caa7ae16677fde5272a6ae5',1,'xapi.h']]],
+  ['mysqlx_5ftable_5ft_22',['mysqlx_table_t',['../group__xapi.html#gaf85a361305300a7f9ba9d78160ae00ec',1,'xapi.h']]]
+];

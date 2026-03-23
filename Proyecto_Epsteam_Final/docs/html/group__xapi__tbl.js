@@ -1,0 +1,26 @@
+var group__xapi__tbl =
+[
+    [ "mysqlx_set_delete_limit", "group__xapi__tbl.html#ga7a3a406ce17bbc929c49ecde0e34eba8", null ],
+    [ "mysqlx_set_delete_order_by", "group__xapi__tbl.html#ga45a01e189cc77433e8a016e5c710e3b5", null ],
+    [ "mysqlx_set_delete_where", "group__xapi__tbl.html#ga6dc0b80c3797de4fcd43412d9fe6a9b2", null ],
+    [ "mysqlx_set_find_group_by", "group__xapi__tbl.html#ga1e217836f3628407b062a7bccdf2be98", null ],
+    [ "mysqlx_set_select_group_by", "group__xapi__tbl.html#gaeb42f13b55e75a190094bf747d2da5e6", null ],
+    [ "mysqlx_set_select_items", "group__xapi__tbl.html#ga92baf2070c1ccaf47b3afabf86f317cf", null ],
+    [ "mysqlx_set_select_limit_and_offset", "group__xapi__tbl.html#ga0706004d4f5685008ba7566e152bc86e", null ],
+    [ "mysqlx_set_select_order_by", "group__xapi__tbl.html#gae9e1619ca14cf1afdf8807d664da9840", null ],
+    [ "mysqlx_set_select_where", "group__xapi__tbl.html#ga999e3277635cbaecc6c34685f023ac36", null ],
+    [ "mysqlx_set_update_limit", "group__xapi__tbl.html#gadab57f9f9f1ee2bf57566ba709bac124", null ],
+    [ "mysqlx_set_update_order_by", "group__xapi__tbl.html#ga038cf0d6198cc4db43cbeb4a8e3e8820", null ],
+    [ "mysqlx_set_update_where", "group__xapi__tbl.html#gaeaff968ae6b5545f53a681b3e724a13a", null ],
+    [ "mysqlx_set_insert_columns", "group__xapi__tbl.html#ga9ccb1db1af3b45fb849fcd77955a7f86", null ],
+    [ "mysqlx_set_update_values", "group__xapi__tbl.html#gafdf5fb13e8e7a15b8ed227469cf8f4fa", null ],
+    [ "mysqlx_table_delete", "group__xapi__tbl.html#gab1a04f2ab063a681619404acce8038cf", null ],
+    [ "mysqlx_table_delete_new", "group__xapi__tbl.html#ga48636eb8e4f107c4d0f3f55eba53ae54", null ],
+    [ "mysqlx_table_insert", "group__xapi__tbl.html#ga4d93a8d7599cbd1c8a42d53f46d6296a", null ],
+    [ "mysqlx_table_insert_new", "group__xapi__tbl.html#ga0fee461f0f6862b87436f27dec0106a6", null ],
+    [ "mysqlx_table_select", "group__xapi__tbl.html#ga717f4068f4af069d2922f81b07552905", null ],
+    [ "mysqlx_table_select_limit", "group__xapi__tbl.html#gadf0ed8fdb942eb267cf33fd8352b837f", null ],
+    [ "mysqlx_table_select_new", "group__xapi__tbl.html#gaf8c7f273942576d96cb7ff207f46213a", null ],
+    [ "mysqlx_table_update", "group__xapi__tbl.html#gab81c6b62beffb9949dc1392f203f3b6a", null ],
+    [ "mysqlx_table_update_new", "group__xapi__tbl.html#gace82c6ef86b7d370fe1d6a3985b3099d", null ]
+];

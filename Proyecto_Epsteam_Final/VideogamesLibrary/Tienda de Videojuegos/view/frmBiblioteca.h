@@ -9,9 +9,21 @@ namespace Epsteam {
     using namespace System::Data;
     using namespace System::Drawing;
 
+    /**
+     * @class frmBiblioteca
+     * @brief Formulario que representa la interfaz de la "Biblioteca de Juegos" del usuario.
+     * @details Esta ventana se encarga de leer la base de datos para extraer los juegos que
+     * el usuario logueado ha comprado, generando dinámicamente una cuadrícula visual ("tarjetas")
+     * con la portada del juego, su título, el tiempo jugado y un botón para iniciar la simulación del juego.
+     */
     public ref class frmBiblioteca : public System::Windows::Forms::Form
     {
     public:
+        /**
+         * @brief Constructor por defecto de frmBiblioteca.
+         * @details Llama a la inicialización de componentes básicos, configura el diseño visual
+         * y ejecuta la carga dinámica de los juegos del usuario desde la base de datos.
+         */
         frmBiblioteca()
         {
             InitializeComponent();
@@ -20,15 +32,28 @@ namespace Epsteam {
         }
 
     protected:
+        /**
+         * @brief Destructor de la clase.
+         * @details Libera los recursos y componentes visuales administrados por la ventana.
+         */
         ~frmBiblioteca() { if (components) { delete components; } }
 
     private:
+        /** @brief Contenedor principal de componentes de Windows Forms. */
         System::ComponentModel::Container^ components;
+        /** @brief Panel superior que funciona como barra de navegación o encabezado. */
         Panel^ pnlTop;
+        /** @brief Etiqueta que muestra el título de la ventana ("MI BIBLIOTECA DE JUEGOS"). */
         Label^ lblTitulo;
+        /** @brief Botón para cerrar la biblioteca y regresar a la interfaz de la tienda. */
         Button^ btnVolver;
+        /** @brief Panel de flujo dinámico donde se inyectan y ordenan las tarjetas de los videojuegos. */
         FlowLayoutPanel^ flowJuegos;
 
+        /**
+         * @brief Método autogenerado por el Diseñador de Windows Forms.
+         * @details Inicializa los componentes básicos del formulario.
+         */
         void InitializeComponent(void) {
             System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(frmBiblioteca::typeid));
             this->SuspendLayout();
@@ -45,6 +70,11 @@ namespace Epsteam {
 
         }
 
+        /**
+         * @brief Configura las propiedades de diseño y controles UI generados manualmente.
+         * @details Establece los colores, tamaños, posiciones y estilos flat de los botones,
+         * encabezados y el panel contenedor de la cuadrícula de juegos.
+         */
         void ConfigurarInterfaz() {
             this->Size = System::Drawing::Size(900, 600);
             this->BackColor = Color::FromArgb(27, 40, 56);
@@ -83,6 +113,12 @@ namespace Epsteam {
             flowJuegos->BringToFront();
         }
 
+        /**
+         * @brief Carga y dibuja el inventario de juegos del usuario.
+         * @details Llama a ConexionBD::ObtenerMisJuegos() y por cada registro devuelto,
+         * genera un Panel visual (tarjeta) con PictureBox (portada), Labels (título y tiempo) y un Button (Jugar).
+         * Si el usuario no tiene juegos, muestra un mensaje invitándolo a la tienda.
+         */
         void CargarBiblioteca() {
             flowJuegos->Controls->Clear();
 
@@ -156,14 +192,31 @@ namespace Epsteam {
             }
         }
 
+        /**
+         * @brief Evento disparado al hacer clic en el botón "VOLVER A LA TIENDA".
+         * @param sender Objeto que dispara el evento.
+         * @param e Argumentos del evento.
+         */
         System::Void btnVolver_Click(System::Object^ sender, System::EventArgs^ e) {
             this->Close(); // Cierra la biblioteca y regresa a la tienda
         }
 
+        /**
+         * @brief Evento disparado al hacer clic en el botón "JUGAR" de cualquier tarjeta.
+         * @details Simula el inicio del videojuego seleccionado mediante un mensaje en pantalla.
+         * @param sender Objeto que dispara el evento.
+         * @param e Argumentos del evento.
+         */
         System::Void btnJugar_Click(System::Object^ sender, System::EventArgs^ e) {
             MessageBox::Show("¡Iniciando juego! Preparando motores gráficos...", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
         }
+
+        /**
+         * @brief Evento de carga inicial del formulario (vacío por defecto).
+         * @param sender Objeto que dispara el evento.
+         * @param e Argumentos del evento.
+         */
     private: System::Void frmBiblioteca_Load(System::Object^ sender, System::EventArgs^ e) {
     }
-};
+    };
 }

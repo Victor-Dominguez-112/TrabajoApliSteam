@@ -1,0 +1,21 @@
+var searchData=
+[
+  ['mysqlx_5ftype_5fbit_0',['MYSQLX_TYPE_BIT',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca322f253a0aa1a6f2069065c7f935e0ae',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fbool_1',['MYSQLX_TYPE_BOOL',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca092dc340ca8e31db208b3c43a9a5d5d4',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fbytes_2',['MYSQLX_TYPE_BYTES',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954cabb6f8c17cfc2a50bef5f7ff538d0cca8',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fdatetime_3',['MYSQLX_TYPE_DATETIME',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954cadce954162606cab926fc71b006540bfc',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fdecimal_4',['MYSQLX_TYPE_DECIMAL',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca00e14ea4f11bcb859b32131446b9a7cf',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fdouble_5',['MYSQLX_TYPE_DOUBLE',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca80b6ca1f506aaba7b7214e14ecfed593',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fenum_6',['MYSQLX_TYPE_ENUM',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954caa1dbcd025b20bac300103ed5ef89d4fa',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fexpr_7',['MYSQLX_TYPE_EXPR',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca55600c081ee9028c9b2cd8a8a664f6a6',1,'xapi.h']]],
+  ['mysqlx_5ftype_5ffloat_8',['MYSQLX_TYPE_FLOAT',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca69be1aad0024e49073f574a12d7a0b76',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fgeometry_9',['MYSQLX_TYPE_GEOMETRY',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954caccb0ad9ab1556959e0b6110ca68053cf',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fjson_10',['MYSQLX_TYPE_JSON',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954caf7de9101bfa88bedd4928f095ecefc3e',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fnull_11',['MYSQLX_TYPE_NULL',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954cab2dcd8375fda7d19769e34833174ab3e',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fset_12',['MYSQLX_TYPE_SET',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954cad6302a354f2643e0725a8c2a76c37ae4',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fsint_13',['MYSQLX_TYPE_SINT',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca36a4c0ed487bf871433950433c1c92ae',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fstring_14',['MYSQLX_TYPE_STRING',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca7322f957b22ebbd018534a1626909195',1,'xapi.h']]],
+  ['mysqlx_5ftype_5ftime_15',['MYSQLX_TYPE_TIME',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca4bc69ca0ca1779ec468dc931ffc2e28b',1,'xapi.h']]],
+  ['mysqlx_5ftype_5ftimestamp_16',['MYSQLX_TYPE_TIMESTAMP',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954cad0072e5ead4f62a241e302664a852e3a',1,'xapi.h']]],
+  ['mysqlx_5ftype_5fuint_17',['MYSQLX_TYPE_UINT',['../group__xapi.html#gga407ea18f6a6e277d99e0678a9d32954ca75d93f86883015554f8be7f5fad09d0c',1,'xapi.h']]]
+];

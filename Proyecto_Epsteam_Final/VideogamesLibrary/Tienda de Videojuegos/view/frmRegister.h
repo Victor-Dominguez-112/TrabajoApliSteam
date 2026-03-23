@@ -10,36 +10,68 @@ namespace Epsteam {
     using namespace System::Data;
     using namespace System::Drawing;
 
+    /**
+     * @class frmRegister
+     * @brief Formulario para la creación de nuevas cuentas de usuario.
+     * @details Permite a un nuevo cliente ingresar sus datos (nickname, email, contraseña),
+     * realiza validaciones básicas de seguridad en los campos y se comunica con
+     * ConexionBD para insertar el registro en la base de datos MySQL.
+     */
     public ref class frmRegister : public System::Windows::Forms::Form
     {
     public:
+        /**
+         * @brief Constructor por defecto de frmRegister.
+         * @details Inicializa los componentes visuales del formulario.
+         */
         frmRegister(void)
         {
             InitializeComponent();
         }
 
     protected:
+        /**
+         * @brief Destructor de la clase.
+         * @details Libera la memoria de los controles administrados por la ventana.
+         */
         ~frmRegister()
         {
             if (components) { delete components; }
         }
 
-    private: System::Windows::Forms::Label^ lblTitle;
-    private: System::Windows::Forms::TextBox^ txtUsername;
-    private: System::Windows::Forms::TextBox^ txtEmail;
-    private: System::Windows::Forms::TextBox^ txtPassword;
-    private: System::Windows::Forms::TextBox^ txtConfirmPass;
-    private: System::Windows::Forms::Button^ btnCreate;
-    private: System::Windows::Forms::Button^ btnCancel;
-    private: System::Windows::Forms::Label^ lblUser;
-    private: System::Windows::Forms::Label^ lblEmail;
-    private: System::Windows::Forms::Label^ lblPass;
-    private: System::Windows::Forms::Label^ lblConfirmPass;
+    private:
+        /** @brief Título principal del formulario. */
+        System::Windows::Forms::Label^ lblTitle;
+        /** @brief Caja de texto para ingresar el nombre de usuario (nickname). */
+        System::Windows::Forms::TextBox^ txtUsername;
+        /** @brief Caja de texto para ingresar el correo electrónico. */
+        System::Windows::Forms::TextBox^ txtEmail;
+        /** @brief Caja de texto para ingresar la contraseña (oculta con asteriscos). */
+        System::Windows::Forms::TextBox^ txtPassword;
+        /** @brief Caja de texto para confirmar la contraseña escrita. */
+        System::Windows::Forms::TextBox^ txtConfirmPass;
+        /** @brief Botón para ejecutar la validación y el registro en BD. */
+        System::Windows::Forms::Button^ btnCreate;
+        /** @brief Botón para cancelar el proceso y regresar al Login. */
+        System::Windows::Forms::Button^ btnCancel;
+        /** @brief Etiqueta descriptiva para el campo de usuario. */
+        System::Windows::Forms::Label^ lblUser;
+        /** @brief Etiqueta descriptiva para el campo de email. */
+        System::Windows::Forms::Label^ lblEmail;
+        /** @brief Etiqueta descriptiva para el campo de contraseña. */
+        System::Windows::Forms::Label^ lblPass;
+        /** @brief Etiqueta descriptiva para el campo de confirmación de contraseña. */
+        System::Windows::Forms::Label^ lblConfirmPass;
 
     private:
+        /** @brief Contenedor principal de los componentes visuales. */
         System::ComponentModel::Container^ components;
 
 #pragma region Windows Form Designer generated code
+        /**
+         * @brief Método generado por el Diseñador de Windows Forms.
+         * @details Contiene la inicialización, tamaño, color y posicionamiento de todos los Labels, TextBoxes y Buttons.
+         */
         void InitializeComponent(void)
         {
             this->lblTitle = (gcnew System::Windows::Forms::Label());
@@ -175,10 +207,26 @@ namespace Epsteam {
         }
 #pragma endregion
 
+        /**
+         * @brief Evento que cancela la creación de la cuenta.
+         * @details Cierra la ventana actual y devuelve el control al formulario padre (frmLogin).
+         * @param sender Botón Cancelar clickeado.
+         * @param e Argumentos del evento.
+         */
     private: System::Void btnCancel_Click(System::Object^ sender, System::EventArgs^ e) {
         this->Close(); // Regresa al login
     }
 
+           /**
+            * @brief Evento central que intenta registrar la nueva cuenta en la base de datos.
+            * @details
+            * 1. Revisa que ninguno de los tres campos principales esté vacío o contenga solo espacios en blanco.
+            * 2. Compara el texto de la contraseña con el texto de confirmación para evitar errores de tipeo.
+            * 3. Llama a la función estática RegistrarUsuario() de ConexionBD.
+            * Si la base de datos lo acepta (retorna true), avisa al usuario y cierra la ventana.
+            * @param sender Botón Registrarse clickeado.
+            * @param e Argumentos del evento.
+            */
     private: System::Void btnCreate_Click(System::Object^ sender, System::EventArgs^ e) {
         // Validaciones básicas de seguridad
         if (String::IsNullOrWhiteSpace(txtUsername->Text) || String::IsNullOrWhiteSpace(txtEmail->Text) || String::IsNullOrWhiteSpace(txtPassword->Text)) {

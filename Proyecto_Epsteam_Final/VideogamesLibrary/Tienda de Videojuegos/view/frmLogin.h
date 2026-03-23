@@ -12,15 +12,30 @@ namespace Epsteam {
     using namespace System::Data;
     using namespace System::Drawing;
 
+    /**
+     * @class frmLogin
+     * @brief Formulario inicial que gestiona el acceso y autenticación de usuarios.
+     * @details Esta ventana solicita credenciales (usuario y contraseña) y las valida contra
+     * la base de datos MySQL mediante la clase ConexionBD. También provee acceso a la ventana
+     * de creación de nuevas cuentas (frmRegister).
+     */
     public ref class frmLogin : public System::Windows::Forms::Form
     {
     public:
+        /**
+         * @brief Constructor por defecto de frmLogin.
+         * @details Inicializa todos los componentes visuales de la ventana de inicio de sesión.
+         */
         frmLogin(void)
         {
             InitializeComponent();
         }
 
     protected:
+        /**
+         * @brief Destructor de la clase.
+         * @details Libera la memoria de los componentes visuales administrados cuando se cierra la aplicación.
+         */
         ~frmLogin()
         {
             if (components)
@@ -30,16 +45,27 @@ namespace Epsteam {
         }
 
         // Declaración de los elementos de tu diseño
-    private: System::Windows::Forms::Label^ lblTitle;
-    private: System::Windows::Forms::TextBox^ txtUsername;
-    private: System::Windows::Forms::TextBox^ txtPassword;
-    private: System::Windows::Forms::Button^ btnLogin;
-    private: System::Windows::Forms::Button^ btnRegister;
+    private:
+        /** @brief Etiqueta principal con el título de bienvenida. */
+        System::Windows::Forms::Label^ lblTitle;
+        /** @brief Campo de texto para que el usuario ingrese su nickname. */
+        System::Windows::Forms::TextBox^ txtUsername;
+        /** @brief Campo de texto oculto para que el usuario ingrese su contraseña. */
+        System::Windows::Forms::TextBox^ txtPassword;
+        /** @brief Botón que desencadena el proceso de validación y acceso. */
+        System::Windows::Forms::Button^ btnLogin;
+        /** @brief Botón que abre la ventana de registro de nuevos usuarios. */
+        System::Windows::Forms::Button^ btnRegister;
 
     private:
+        /** @brief Contenedor principal de componentes de Windows Forms. */
         System::ComponentModel::Container^ components;
 
 #pragma region Windows Form Designer generated code
+        /**
+         * @brief Método autogenerado por el Diseñador de Windows Forms.
+         * @details Inicializa, posiciona y da estilo a todos los controles UI de la ventana de login.
+         */
         void InitializeComponent(void)
         {
             System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(frmLogin::typeid));
@@ -136,8 +162,16 @@ namespace Epsteam {
 #pragma endregion
 
         // ---------------------------------------------------------------------
-            // 1. EL BOTÓN DE ENTRAR (LOGIN)
-            // ---------------------------------------------------------------------
+        // 1. EL BOTÓN DE ENTRAR (LOGIN)
+        // ---------------------------------------------------------------------
+        /**
+         * @brief Evento que valida las credenciales introducidas y otorga el acceso.
+         * @details Revisa que los campos no estén vacíos. Llama a ConexionBD::ValidarLogin()
+         * y, si recibe un ID válido, oculta el login, muestra un saludo personalizado y abre la Tienda (frmTienda).
+         * Al cerrar la tienda, vuelve a mostrar el login.
+         * @param sender Botón "Entrar" que disparó el evento.
+         * @param e Argumentos del evento.
+         */
     private: System::Void btnLogin_Click(System::Object^ sender, System::EventArgs^ e) {
         String^ usuario = txtUsername->Text;
         String^ password = txtPassword->Text;
@@ -168,22 +202,36 @@ namespace Epsteam {
                 MessageBoxButtons::OK, MessageBoxIcon::Error);
         }
     }
-    
-    // <--- CIERRA btnLogin_Click // <--- LLAVE 1: CIERRA EL BOTÓN DE ENTRAR
+
+           // <--- CIERRA btnLogin_Click // <--- LLAVE 1: CIERRA EL BOTÓN DE ENTRAR
 
 
-    // ---------------------------------------------------------------------
-    // 2. EL LOAD (A veces se crea solo al darle doble clic al fondo)
-    // ---------------------------------------------------------------------
+           // ---------------------------------------------------------------------
+           // 2. EL LOAD (A veces se crea solo al darle doble clic al fondo)
+           // ---------------------------------------------------------------------
+           /**
+            * @brief Evento que se ejecuta al cargar y dibujar el formulario por primera vez.
+            * @details Realiza una prueba temprana de conexión a la base de datos MySQL (ConexionBD::Conectar)
+            * para asegurar que los servicios de XAMPP estén encendidos y disponibles antes de que el usuario intente loguearse.
+            * @param sender El propio formulario frmLogin.
+            * @param e Argumentos del evento.
+            */
     private: System::Void frmLogin_Load(System::Object^ sender, System::EventArgs^ e) {
         // Intentamos abrir la puerta de la BD nada más arrancar
         MySql::Data::MySqlClient::MySqlConnection^ prueba = Epsteam::ConexionBD::Conectar();
     }
 
 
-    // ---------------------------------------------------------------------
-    // 3. EL TEXTO AZUL DE CREAR CUENTA
-    // ---------------------------------------------------------------------
+           // ---------------------------------------------------------------------
+           // 3. EL TEXTO AZUL DE CREAR CUENTA
+           // ---------------------------------------------------------------------
+           /**
+            * @brief Evento que redirige al usuario a la ventana de registro de cuentas.
+            * @details Oculta temporalmente la ventana de login (Hide) y muestra la ventana modal frmRegister.
+            * Cuando el registro finaliza o se cancela, el login vuelve a aparecer (Show).
+            * @param sender Botón "Crear Cuenta" que disparó el evento.
+            * @param e Argumentos del evento.
+            */
     private: System::Void btnRegister_Click(System::Object^ sender, System::EventArgs^ e) {
         frmRegister^ ventanaRegistro = gcnew frmRegister();
         this->Hide();

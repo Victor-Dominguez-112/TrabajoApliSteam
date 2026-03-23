@@ -11,26 +11,55 @@ namespace Epsteam {
     using namespace System::Drawing;
     using namespace System::Collections::Generic;
 
+    /**
+     * @class frmPago
+     * @brief Formulario que simula una pasarela de pago para procesar las compras.
+     * @details Presenta al usuario tres opciones de pago (Tarjeta, Efectivo, Cartera).
+     * Incluye validaciones básicas de campos, invoca el guardado de la transacción en la base
+     * de datos, genera un recibo visual (frmTicket) y escribe un comprobante físico (.txt).
+     */
     public ref class frmPago : public System::Windows::Forms::Form
     {
     private:
+        /** @brief ID del usuario que está realizando la compra. */
         int idUsuario;
+
         // FIRMA BLINDADA PARA EVITAR ERRORES E1767
+        /** * @brief Referencia a la lista de juegos a comprar.
+         * @details Contiene arreglos de Strings donde el índice 0 es ID, 1 es Título y 2 es Precio.
+         */
         System::Collections::Generic::List<cli::array<System::String^>^>^ carritoPago;
+
+        /** @brief Monto total a cobrar. */
         double totalPago;
 
+        /** @brief Etiqueta principal con el título de la ventana. */
         Label^ lblTitulo;
+        /** @brief Etiqueta que muestra la cantidad de artículos y el total a pagar. */
         Label^ lblResumen;
+        /** @brief Botón de radio para seleccionar pago con Tarjeta de Crédito/Débito. */
         RadioButton^ rbTarjeta;
+        /** @brief Botón de radio para seleccionar pago en Efectivo (generación de código). */
         RadioButton^ rbEfectivo;
+        /** @brief Botón de radio para seleccionar pago con Cartera Virtual Epsteam. */
         RadioButton^ rbCartera;
+        /** @brief Panel dinámico que cambia su contenido dependiendo del método de pago seleccionado. */
         Panel^ pnlOpciones;
+        /** @brief Etiqueta inicial que pide al usuario seleccionar un método de pago. */
         Label^ lblDinamico;
+        /** @brief Botón para ejecutar la transacción y registrar la compra. */
         Button^ btnPagar;
+        /** @brief Botón para abortar el pago y regresar al carrito. */
         Button^ btnCancelar;
 
     public:
         // FIRMA BLINDADA EN EL CONSTRUCTOR
+        /**
+         * @brief Constructor de la clase frmPago.
+         * @param idUsu ID del usuario logueado.
+         * @param carrito Lista genérica de arreglos de cadenas con los datos de los juegos seleccionados.
+         * @param total Monto total pre-calculado a cobrar.
+         */
         frmPago(int idUsu, System::Collections::Generic::List<cli::array<System::String^>^>^ carrito, double total)
         {
             idUsuario = idUsu;
@@ -42,12 +71,26 @@ namespace Epsteam {
         }
 
     protected:
+        /**
+         * @brief Destructor de la clase.
+         * @details Libera la memoria de los componentes visuales de Windows Forms.
+         */
         ~frmPago() { if (components) { delete components; } }
 
     private:
+        /** @brief Contenedor principal de componentes. */
         System::ComponentModel::Container^ components;
+
+        /**
+         * @brief Inicialización básica del formulario.
+         */
         void InitializeComponent(void) { this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font; }
 
+        /**
+         * @brief Configura la interfaz visual de la pasarela de pago.
+         * @details Posiciona los RadioButtons de opciones, inicializa el panel dinámico central
+         * e instancia los botones de confirmación y cancelación con estilos flat.
+         */
         void ConfigurarDiseño() {
             this->BackColor = Color::FromArgb(27, 40, 56);
             this->Size = System::Drawing::Size(450, 520);
@@ -133,11 +176,25 @@ namespace Epsteam {
             this->Controls->Add(btnPagar);
         }
 
+        /**
+         * @brief Cierra la ventana y devuelve un resultado de cancelación.
+         * @param sender Botón Cancelar.
+         * @param e Argumentos del evento.
+         */
     private: System::Void btnCancelar_Click(System::Object^ sender, System::EventArgs^ e) {
         this->DialogResult = System::Windows::Forms::DialogResult::Cancel;
         this->Close();
     }
 
+           /**
+            * @brief Evento disparado al cambiar la selección en los RadioButtons.
+            * @details Reconstruye dinámicamente el contenido de pnlOpciones:
+            * - Tarjeta: Dibuja TextBox para número, vencimiento y CVV.
+            * - Efectivo: Genera un número aleatorio de pago y dibuja un código de barras simulado en un Bitmap.
+            * - Cartera: Muestra un mensaje de confirmación de saldo.
+            * @param sender El RadioButton que fue modificado.
+            * @param e Argumentos del evento.
+            */
     private: System::Void CambiarMetodoPago(System::Object^ sender, System::EventArgs^ e) {
         btnPagar->Enabled = true;
         pnlOpciones->Controls->Clear();
@@ -237,6 +294,9 @@ namespace Epsteam {
         }
     }
 
+           /**
+            * @brief Limpia el texto guía "MM/AA" cuando la caja de texto recibe el foco.
+            */
     private: System::Void txtVenc_GotFocus(System::Object^ sender, System::EventArgs^ e) {
         TextBox^ txt = (TextBox^)sender;
         if (txt->Text == "MM/AA") {
@@ -244,6 +304,10 @@ namespace Epsteam {
             txt->ForeColor = Color::Black;
         }
     }
+
+           /**
+            * @brief Restaura el texto guía "MM/AA" si el usuario deja el campo vacío al perder el foco.
+            */
     private: System::Void txtVenc_LostFocus(System::Object^ sender, System::EventArgs^ e) {
         TextBox^ txt = (TextBox^)sender;
         if (String::IsNullOrWhiteSpace(txt->Text)) {
@@ -252,12 +316,23 @@ namespace Epsteam {
         }
     }
 
+           /**
+            * @brief Valida, registra y consolida la compra final del usuario.
+            * @details
+            * 1. Verifica que los TextBoxes de la tarjeta no estén vacíos.
+            * 2. Determina el método de pago seleccionado.
+            * 3. Llama a ConexionBD::RegistrarCompra para insertar los datos en la BD.
+            * 4. Lanza el formulario visual frmTicket para mostrar un comprobante al usuario.
+            * 5. Escribe físicamente un archivo de texto (.txt) con el resumen de la compra dentro de la carpeta "Tickets".
+            * @param sender Botón "CONFIRMAR PAGO".
+            * @param e Argumentos del evento.
+            */
     private: System::Void btnPagar_Click(System::Object^ sender, System::EventArgs^ e) {
 
         // --- 1. EL CADENERO DE SEGURIDAD ---
         if (rbTarjeta->Checked) {
             bool faltanDatos = false;
-            for each (Control ^ c in pnlOpciones->Controls) {
+            for each(Control ^ c in pnlOpciones->Controls) {
                 if (c->GetType() == TextBox::typeid) {
                     if (String::IsNullOrWhiteSpace(c->Text) || c->Text == "MM/AA") {
                         faltanDatos = true;
