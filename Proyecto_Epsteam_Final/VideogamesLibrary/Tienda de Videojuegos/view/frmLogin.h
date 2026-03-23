@@ -157,12 +157,12 @@ namespace Epsteam {
 
         // 2. Evaluamos la respuesta (-1 significa que falló)
         if (idLogueado != -1) {
-
-            // ¡ESTO RESPONDE TU PREGUNTA DE CÓMO SABER SI SE CONECTÓ!
             MessageBox::Show("¡Conexión a la BD Exitosa! Bienvenido, tu ID es: " + idLogueado,
                 "Éxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
 
-            frmTienda^ tienda = gcnew frmTienda();
+            // --- EL CAMBIO ESTÁ AQUÍ ---
+            // Le pasamos el 'idLogueado' adentro de los paréntesis de frmTienda
+            frmTienda^ tienda = gcnew frmTienda(idLogueado);
             this->Hide();
             tienda->ShowDialog();
             this->Show();

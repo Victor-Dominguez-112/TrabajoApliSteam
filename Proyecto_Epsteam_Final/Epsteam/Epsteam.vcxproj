@@ -169,7 +169,9 @@
   <ItemGroup>
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.cpp" />
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.cpp" />
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.cpp" />
@@ -179,9 +181,11 @@
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.h" />
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.h">
       <FileType>CppForm</FileType>
     </ClInclude>
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.h" />
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.h" />
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.h">
       <FileType>CppForm</FileType>

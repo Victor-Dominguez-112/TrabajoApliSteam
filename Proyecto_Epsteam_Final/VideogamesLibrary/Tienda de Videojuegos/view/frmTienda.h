@@ -2,6 +2,8 @@
 #include "frmTicket.h"
 #include "frmBiblioteca.h"
 #include "ConexionBD.h" 
+#include "frmPago.h"
+#include "frmCarrito.h"
 
 namespace Epsteam {
 
@@ -26,11 +28,12 @@ namespace Epsteam {
     public ref class frmTienda : public System::Windows::Forms::Form
     {
     public:
-        frmTienda(void)
+        frmTienda(int idLogueado)
         {
+            idUsuarioActual = idLogueado;
+
             InitializeComponent();
 
-            // Candado para que la búsqueda no se vuelva loca al dar clic
             ignorarBusqueda = false;
 
             Button^ btnBiblioteca = gcnew Button();
@@ -43,7 +46,19 @@ namespace Epsteam {
             btnBiblioteca->Click += gcnew System::EventHandler(this, &frmTienda::btnBiblioteca_Click);
             pnlNav->Controls->Add(btnBiblioteca);
 
-            // Timer para que no busque letras a lo loco (evita el lag)
+            // CORRECCIÓN 1: El inicializador ahora también tiene el blindaje cli::array
+            carritoCompras = gcnew System::Collections::Generic::List<cli::array<System::String^>^>();
+
+            btnCarrito = gcnew Button();
+            btnCarrito->Text = "CARRITO (0)";
+            btnCarrito->BackColor = Color::FromArgb(45, 45, 45);
+            btnCarrito->ForeColor = Color::White;
+            btnCarrito->FlatStyle = FlatStyle::Flat;
+            btnCarrito->Size = System::Drawing::Size(130, 35);
+            btnCarrito->Location = System::Drawing::Point(600, 20);
+            btnCarrito->Click += gcnew System::EventHandler(this, &frmTienda::btnCarrito_Click);
+            pnlNav->Controls->Add(btnCarrito);
+
             timerBusqueda = gcnew System::Windows::Forms::Timer();
             timerBusqueda->Interval = 400;
             timerBusqueda->Tick += gcnew System::EventHandler(this, &frmTienda::timerBusqueda_Tick);
@@ -56,7 +71,6 @@ namespace Epsteam {
             timerFarmeo->Tick += gcnew System::EventHandler(this, &frmTienda::timerFarmeo_Tick);
             timerFarmeo->Start();
 
-            // Cargar juegos al abrir la ventana
             CargarJuegosTienda(Epsteam::ConexionBD::ObtenerCatalogoJuegos());
         }
 
@@ -71,6 +85,7 @@ namespace Epsteam {
         System::Windows::Forms::Timer^ timerFarmeo;
         System::Windows::Forms::Timer^ timerBusqueda;
         int ticksGracia;
+        int idUsuarioActual;
 
         System::Windows::Forms::Panel^ pnlNav;
         System::Windows::Forms::Label^ lblLogo;
@@ -78,7 +93,6 @@ namespace Epsteam {
         System::Windows::Forms::Button^ btnCerrarSesion;
         System::ComponentModel::Container^ components;
 
-        // Variables de la barra de búsqueda y filtros
         System::Windows::Forms::Panel^ pnlBuscador;
         System::Windows::Forms::TextBox^ txtBusqueda;
         System::Windows::Forms::TrackBar^ tbPrecio;
@@ -97,16 +111,18 @@ namespace Epsteam {
         System::Windows::Forms::Panel^ pnlFiltroDesarrolladores;
         System::Windows::Forms::Panel^ pnlFiltroEditores;
 
-        // --- Armar el área del buscador visualmente ---
+        // FIRMA BLINDADA
+        System::Collections::Generic::List<cli::array<System::String^>^>^ carritoCompras;
+        System::Windows::Forms::Button^ btnCarrito;
+
         void ConstruirInterfazBuscador() {
             pnlBuscador = gcnew Panel();
             pnlBuscador->Dock = DockStyle::Top;
-            pnlBuscador->Height = 130; // Más grande para las dos filas
+            pnlBuscador->Height = 130;
             pnlBuscador->BackColor = Color::FromArgb(32, 45, 60);
             this->Controls->Add(pnlBuscador);
             pnlBuscador->BringToFront();
 
-            // Caja de texto para buscar
             txtBusqueda = gcnew TextBox();
             txtBusqueda->Location = System::Drawing::Point(35, 50);
             txtBusqueda->Size = System::Drawing::Size(280, 30);
@@ -120,7 +136,6 @@ namespace Epsteam {
             txtBusqueda->KeyPress += gcnew KeyPressEventHandler(this, &frmTienda::txtBusqueda_KeyPress);
             pnlBuscador->Controls->Add(txtBusqueda);
 
-            // Lista desplegable para autocompletar
             lstSugerencias = gcnew ListBox();
             lstSugerencias->Location = System::Drawing::Point(35, 190);
             lstSugerencias->Size = System::Drawing::Size(280, 100);
@@ -129,7 +144,6 @@ namespace Epsteam {
             this->Controls->Add(lstSugerencias);
             lstSugerencias->BringToFront();
 
-            // Barra para escoger el precio
             tbPrecio = gcnew TrackBar();
             tbPrecio->Location = System::Drawing::Point(750, 30);
             tbPrecio->Size = System::Drawing::Size(200, 45);
@@ -148,17 +162,14 @@ namespace Epsteam {
             lblPrecio->Font = gcnew System::Drawing::Font("Arial", 10, FontStyle::Bold);
             pnlBuscador->Controls->Add(lblPrecio);
 
-            // Primera fila de botones (Arriba)
             CrearBotonFiltro("Géneros", 340, 20, pnlFiltroGeneros, clbGeneros, "genero");
             CrearBotonFiltro("Categorías", 470, 20, pnlFiltroCategorias, clbCategorias, "categoria");
             CrearBotonFiltro("Etiquetas", 600, 20, pnlFiltroEtiquetas, clbEtiquetas, "etiqueta");
 
-            // Segunda fila de botones (Abajo)
             CrearBotonFiltro("Desarrollador", 340, 70, pnlFiltroDesarrolladores, clbDesarrolladores, "desarrollador");
             CrearBotonFiltro("Editor", 470, 70, pnlFiltroEditores, clbEditores, "editor");
         }
 
-        // Crear los botones de filtros y sus listas ocultas
         void CrearBotonFiltro(String^ texto, int posX, int posY, Panel^% panelOut, CheckedListBox^% clbOut, String^ tipoFiltroBD) {
             Button^ btn = gcnew Button();
             btn->Text = texto + " v";
@@ -196,9 +207,6 @@ namespace Epsteam {
             btn->Tag = panelOut;
         }
 
-        // --- Eventos del Buscador ---
-
-        // Quitar el texto gris al hacer clic
     private: System::Void txtBusqueda_GotFocus(System::Object^ sender, System::EventArgs^ e) {
         if (txtBusqueda->Text == "Buscar juego o etiqueta...") {
             ignorarBusqueda = true;
@@ -208,7 +216,6 @@ namespace Epsteam {
         }
     }
 
-           // Poner el texto gris si lo dejan vacío
     private: System::Void txtBusqueda_LostFocus(System::Object^ sender, System::EventArgs^ e) {
         if (String::IsNullOrWhiteSpace(txtBusqueda->Text)) {
             ignorarBusqueda = true;
@@ -218,14 +225,12 @@ namespace Epsteam {
         }
     }
 
-           // Evitar que Windows haga "Beep" al presionar Enter o Esc
     private: System::Void txtBusqueda_KeyPress(System::Object^ sender, KeyPressEventArgs^ e) {
         if (e->KeyChar == (char)13 || e->KeyChar == (char)27) {
             e->Handled = true;
         }
     }
 
-           // Que el Enter busque y el Esc cierre la lista
     private: System::Void txtBusqueda_KeyDown(System::Object^ sender, KeyEventArgs^ e) {
         if (e->KeyCode == Keys::Escape) {
             lstSugerencias->Visible = false;
@@ -242,7 +247,6 @@ namespace Epsteam {
         }
     }
 
-           // Si dan clic en el fondo, ocultar todos los menús
     private: System::Void ClicFueraDeFiltros(System::Object^ sender, MouseEventArgs^ e) {
         pnlFiltroGeneros->Visible = false;
         pnlFiltroCategorias->Visible = false;
@@ -252,7 +256,6 @@ namespace Epsteam {
         lstSugerencias->Visible = false;
     }
 
-           // Mostrar solo la lista del botón que se presionó
     private: System::Void TogglePanelFiltro(System::Object^ sender, System::EventArgs^ e) {
         Button^ btn = (Button^)sender;
         Panel^ panelAsociado = (Panel^)btn->Tag;
@@ -270,13 +273,11 @@ namespace Epsteam {
         }
     }
 
-           // Cambiar el texto del precio al mover la barra
     private: System::Void ActualizarLabelPrecio(System::Object^ sender, System::EventArgs^ e) {
         lblPrecio->Text = "Precio Máx: $" + tbPrecio->Value + " MXN";
         IniciarTimerBusqueda(sender, e);
     }
 
-           // Esperar un ratito antes de buscar para no trabar la compu
     private: System::Void IniciarTimerBusqueda(System::Object^ sender, System::EventArgs^ e) {
         if (ignorarBusqueda) return;
         if (txtBusqueda->Text == "Buscar juego o etiqueta...") return;
@@ -290,17 +291,14 @@ namespace Epsteam {
         EjecutarBusquedaEnBD();
     }
 
-           // Buscar inmediatamente si marcan una casilla
     private: System::Void FiltroCasilla_Modificada(System::Object^ sender, ItemCheckEventArgs^ e) {
         this->BeginInvoke(gcnew MethodInvoker(this, &frmTienda::EjecutarBusquedaEnBD));
     }
 
-           // Función principal para mandar a llamar a la BD
     private: System::Void EjecutarBusquedaEnBD() {
         String^ busqueda = txtBusqueda->Text;
         if (busqueda == "Buscar juego o etiqueta...") busqueda = "";
 
-        // Marcar casilla automáticamente si el texto coincide con un género
         bool esSmartText = false;
         for (int i = 0; i < clbGeneros->Items->Count; i++) {
             DataRowView^ fila = (DataRowView^)clbGeneros->Items[i];
@@ -317,7 +315,6 @@ namespace Epsteam {
         }
         if (esSmartText) return;
 
-        // Recoger todos los IDs seleccionados
         List<int>^ idsGeneros = gcnew List<int>();
         for (int i = 0; i < clbGeneros->CheckedItems->Count; i++) {
             idsGeneros->Add(Convert::ToInt32(((DataRowView^)clbGeneros->CheckedItems[i])["id"]));
@@ -343,16 +340,14 @@ namespace Epsteam {
             idsEditores->Add(Convert::ToInt32(((DataRowView^)clbEditores->CheckedItems[i])["id"]));
         }
 
-        // Ejecutar la búsqueda en SQL
         DataTable^ resultados = Epsteam::ConexionBD::ObtenerCatalogoFiltrado(busqueda, idsGeneros, idsCategorias, idsEtiquetas, idsDesarrolladores, idsEditores, tbPrecio->Value);
 
         CargarJuegosTienda(resultados);
 
-        // Rellenar la lista de sugerencias
         if (busqueda->Length > 0 && resultados->Rows->Count > 0) {
             lstSugerencias->Items->Clear();
             for (int i = 0; i < resultados->Rows->Count && i < 5; i++) {
-                lstSugerencias->Items->Add(resultados->Rows[i]["titulo"]->ToString());
+                lstSugerencias->Items->Add(safe_cast<DataRow^>(resultados->Rows[i])["titulo"]->ToString());
             }
             lstSugerencias->Visible = true;
         }
@@ -361,30 +356,29 @@ namespace Epsteam {
         }
     }
 
-           // Completar el texto si el usuario da clic en una sugerencia
     private: System::Void lstSugerencias_MouseClick(System::Object^ sender, MouseEventArgs^ e) {
         if (lstSugerencias->SelectedItem != nullptr) {
-            ignorarBusqueda = true; // Activar candado
+            ignorarBusqueda = true;
             txtBusqueda->Text = lstSugerencias->SelectedItem->ToString();
             lstSugerencias->Visible = false;
-            ignorarBusqueda = false; // Desactivar candado
+            ignorarBusqueda = false;
 
             EjecutarBusquedaEnBD();
         }
     }
 
-           // --- Mostrar los juegos en pantalla ---
            void CargarJuegosTienda(DataTable^ juegosTabla) {
-               // Congelar la interfaz para que no parpadee al dibujar
                flowTienda->SuspendLayout();
                flowTienda->Controls->Clear();
 
                if (juegosTabla != nullptr && juegosTabla->Rows->Count > 0) {
                    for (int i = 0; i < juegosTabla->Rows->Count; i++) {
                        DataRow^ fila = juegosTabla->Rows[i];
-                       String^ id_juego = fila["id_juego"]->ToString();
+
+                       int id_juego = Convert::ToInt32(fila["id_juego"]);
                        String^ titulo = fila["titulo"]->ToString();
                        String^ precio = "$" + fila["precio_base"]->ToString() + " MXN";
+
                        AgregarJuego(id_juego, titulo, precio);
                    }
                }
@@ -399,7 +393,7 @@ namespace Epsteam {
                flowTienda->ResumeLayout();
            }
 
-           void AgregarJuego(String^ id_juego, String^ titulo, String^ precio) {
+           void AgregarJuego(int id_juego, String^ titulo, String^ precio) {
                Panel^ card = gcnew Panel();
                card->Size = System::Drawing::Size(200, 250);
                card->BackColor = Color::FromArgb(45, 45, 45);
@@ -431,13 +425,14 @@ namespace Epsteam {
                lblPrecio->TextAlign = ContentAlignment::MiddleCenter;
 
                Button^ btnComprar = gcnew Button();
-               btnComprar->Text = "COMPRAR";
+               btnComprar->Text = "AGREGAR AL CARRO";
                btnComprar->FlatStyle = FlatStyle::Flat;
                btnComprar->ForeColor = Color::White;
                btnComprar->BackColor = Color::FromArgb(0, 120, 215);
                btnComprar->Dock = DockStyle::Bottom;
 
-               btnComprar->Tag = gcnew array<String^>{id_juego, titulo, precio};
+               // CORRECCIÓN 2: También usamos cli::array para empaquetar los datos aquí
+               btnComprar->Tag = gcnew cli::array<System::String^>{ id_juego.ToString(), titulo, precio };
                btnComprar->Click += gcnew System::EventHandler(this, &frmTienda::btnComprar_Click);
 
                card->Controls->Add(picPortada);
@@ -512,30 +507,86 @@ namespace Epsteam {
 
     private: System::Void btnComprar_Click(System::Object^ sender, System::EventArgs^ e) {
         Button^ btnCliquado = (Button^)sender;
-        array<String^>^ datos = (array<String^>^)btnCliquado->Tag;
+
+        cli::array<System::String^>^ datos = (cli::array<System::String^>^)btnCliquado->Tag;
+
         String^ idJuegoStr = datos[0];
         String^ nombreJuego = datos[1];
         String^ precioReal = datos[2];
 
         bool yaLoTiene = false;
-        DataTable^ misJuegos = Epsteam::ConexionBD::ObtenerMisJuegos(Epsteam::ConexionBD::idUsuarioActual);
-
+        DataTable^ misJuegos = Epsteam::ConexionBD::ObtenerMisJuegos(idUsuarioActual);
         if (misJuegos != nullptr) {
             for (int i = 0; i < misJuegos->Rows->Count; i++) {
-                DataRow^ fila = misJuegos->Rows[i];
-                if (fila["titulo"]->ToString() == nombreJuego) {
+                if (safe_cast<DataRow^>(misJuegos->Rows[i])["titulo"]->ToString() == nombreJuego) {
                     yaLoTiene = true;
                     break;
                 }
             }
         }
-
         if (yaLoTiene) {
-            MessageBox::Show("¡El registro indica que ya tienes '" + nombreJuego + "'!", "Juego Duplicado", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+            MessageBox::Show("¡Ya tienes '" + nombreJuego + "' en tu biblioteca!", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Information);
+            return;
+        }
+
+        bool yaEnCarrito = false;
+        for (int i = 0; i < carritoCompras->Count; i++) {
+            if (safe_cast<cli::array<System::String^>^>(carritoCompras[i])[0] == idJuegoStr) {
+                yaEnCarrito = true;
+                break;
+            }
+        }
+
+        if (yaEnCarrito) {
+            MessageBox::Show("Ya agregaste este juego al carrito.", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Information);
         }
         else {
-            frmTicket^ ticket = gcnew frmTicket(idJuegoStr, nombreJuego, precioReal);
-            ticket->ShowDialog();
+            carritoCompras->Add(datos);
+            btnCarrito->Text = "CARRITO (" + Convert::ToString(carritoCompras->Count) + ")";
+            btnCliquado->Text = "AGREGADO";
+            btnCliquado->BackColor = Color::MediumSeaGreen;
+        }
+    }
+
+    private: System::Void btnCarrito_Click(System::Object^ sender, System::EventArgs^ e) {
+        if (carritoCompras->Count == 0) {
+            MessageBox::Show("Tu carrito está vacío.", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
+            return;
+        }
+
+        frmCarrito^ ventanaCarrito = gcnew frmCarrito(idUsuarioActual, carritoCompras);
+        ventanaCarrito->ShowDialog();
+
+        // CORRECCIÓN 3: Le agregamos el Convert::ToString para evitar el error C2227
+        btnCarrito->Text = "CARRITO (" + Convert::ToString(carritoCompras->Count) + ")";
+
+        for each(Control ^ card in flowTienda->Controls) {
+            for each(Control ^ c in card->Controls) {
+                if (c->GetType() == Button::typeid) {
+                    Button^ btn = (Button^)c;
+
+                    // CORRECCIÓN 4: Agregamos el blindaje cli::array aquí también
+                    cli::array<System::String^>^ datos = (cli::array<System::String^>^)btn->Tag;
+                    String^ idJuego = datos[0];
+
+                    bool sigueEnCarrito = false;
+                    for (int i = 0; i < carritoCompras->Count; i++) {
+                        if (safe_cast<cli::array<System::String^>^>(carritoCompras[i])[0] == idJuego) {
+                            sigueEnCarrito = true;
+                            break;
+                        }
+                    }
+
+                    if (sigueEnCarrito) {
+                        btn->Text = "AGREGADO";
+                        btn->BackColor = Color::MediumSeaGreen;
+                    }
+                    else {
+                        btn->Text = "AGREGAR AL CARRO";
+                        btn->BackColor = Color::FromArgb(0, 120, 215);
+                    }
+                }
+            }
         }
     }
 
@@ -551,7 +602,7 @@ namespace Epsteam {
             ticksGracia++;
         }
         else {
-            Epsteam::ConexionBD::AvanzarTiempoJuego(Epsteam::ConexionBD::idUsuarioActual);
+            Epsteam::ConexionBD::AvanzarTiempoJuego(idUsuarioActual);
         }
     }
     };
