@@ -1,0 +1,15 @@
+========================================
+          RECIBO DE EPSTEAM             
+========================================
+Fecha: 23/03/2026 18:07:18
+Cliente: leo
+Método de Pago: Tarjeta de Crédito/Débito
+----------------------------------------
+ARTÍCULOS COMPRADOS:
+- Halo Infinite ($1199.00 MXN)
+- Hello Neighbor ($279.99 MXN)
+- The Outer Worlds ($279.99 MXN)
+----------------------------------------
+TOTAL PAGADO: $1758.98 MXN
+========================================
+¡Los juegos ya están en tu Biblioteca!

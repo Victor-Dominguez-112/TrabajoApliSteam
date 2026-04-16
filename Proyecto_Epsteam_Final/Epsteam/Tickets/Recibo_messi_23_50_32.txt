@@ -1,0 +1,14 @@
+========================================
+          RECIBO DE EPSTEAM             
+========================================
+Fecha: 23/03/2026 23:50:32
+Cliente: messi
+Método de Pago: Tarjeta de Crédito/Débito
+----------------------------------------
+ARTÍCULOS COMPRADOS:
+- Assassin's Creed Brotherhood ($149.99 MXN)
+- Assassin's Creed Revelations ($149.99 MXN)
+----------------------------------------
+TOTAL PAGADO: $299.98 MXN
+========================================
+¡Los juegos ya están en tu Biblioteca!

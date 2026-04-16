@@ -210,11 +210,11 @@ namespace Epsteam {
             pnlBuscador->Controls->Add(lblPrecio);
 
             // ¡DISEÑO LIMPIO! Todos los filtros en una sola línea recta
-            CrearBotonFiltro("Géneros ▼", 35, 80, pnlFiltroGeneros, clbGeneros, "genero");
-            CrearBotonFiltro("Categorías ▼", 165, 80, pnlFiltroCategorias, clbCategorias, "categoria");
-            CrearBotonFiltro("Etiquetas ▼", 295, 80, pnlFiltroEtiquetas, clbEtiquetas, "etiqueta");
-            CrearBotonFiltro("Desarrollador ▼", 425, 80, pnlFiltroDesarrolladores, clbDesarrolladores, "desarrollador");
-            CrearBotonFiltro("Editor ▼", 555, 80, pnlFiltroEditores, clbEditores, "editor");
+            CrearBotonFiltro("Géneros", 35, 80, pnlFiltroGeneros, clbGeneros, "genero");
+            CrearBotonFiltro("Categorías", 165, 80, pnlFiltroCategorias, clbCategorias, "categoria");
+            CrearBotonFiltro("Etiquetas", 295, 80, pnlFiltroEtiquetas, clbEtiquetas, "etiqueta");
+            CrearBotonFiltro("Desarrollador", 425, 80, pnlFiltroDesarrolladores, clbDesarrolladores, "desarrollador");
+            CrearBotonFiltro("Editor", 555, 80, pnlFiltroEditores, clbEditores, "editor");
         }
 
         /**

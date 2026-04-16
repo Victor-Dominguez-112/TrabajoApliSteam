@@ -1,0 +1,15 @@
+========================================
+          RECIBO DE EPSTEAM             
+========================================
+Fecha: 23/03/2026 23:47:27
+Cliente: messi
+Método de Pago: Efectivo
+----------------------------------------
+ARTÍCULOS COMPRADOS:
+- Tekken 8 ($1499.00 MXN)
+- Overcooked! 2 ($279.99 MXN)
+- Half-Life: Alyx ($59.99 MXN)
+----------------------------------------
+TOTAL PAGADO: $1838.98 MXN
+========================================
+¡Los juegos ya están en tu Biblioteca!

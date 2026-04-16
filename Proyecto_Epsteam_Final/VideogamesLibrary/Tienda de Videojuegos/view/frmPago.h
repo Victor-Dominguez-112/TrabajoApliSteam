@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "ConexionBD.h"
-#include "frmTicket.h" // ¡Conectamos tu nueva vista!
+#include "frmTicket.h" 
 
 namespace Epsteam {
     using namespace System;
