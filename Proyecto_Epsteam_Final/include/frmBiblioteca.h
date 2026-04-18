@@ -145,7 +145,7 @@ namespace Epsteam {
 
                     // Buscamos la imagen del juego
                     String^ nombreLimpio = titulo->Trim()->ToLower()->Replace(" ", "_")->Replace(":", "")->Replace("!", "")->Replace("'", "");
-                    String^ rutaImagen = "img/" + nombreLimpio + ".jpg";
+                    String^ rutaImagen = "../assets/img/" + nombreLimpio + ".jpg";
                     if (System::IO::File::Exists(rutaImagen)) {
                         picPortada->Image = Image::FromFile(rutaImagen);
                     }

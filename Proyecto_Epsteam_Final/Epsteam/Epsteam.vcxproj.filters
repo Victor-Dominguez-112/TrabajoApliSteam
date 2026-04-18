@@ -15,81 +15,93 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.cpp">
+    <EmbeddedResource Include="..\include\frmBiblioteca.resx">
+      <Filter>Archivos de encabezado</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\include\frmLogin.resx">
+      <Filter>Archivos de encabezado</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\include\frmPasarela.resx">
+      <Filter>Archivos de encabezado</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\include\frmTicket.resx">
+      <Filter>Archivos de encabezado</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\include\frmRegister.resx">
+      <Filter>Archivos de recursos</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="..\include\frmTienda.resx">
+      <Filter>Archivos de recursos</Filter>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\ConexionBD.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.cpp">
+    <ClCompile Include="..\src\frmBiblioteca.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.cpp">
+    <ClCompile Include="..\src\frmCarrito.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.cpp">
+    <ClCompile Include="..\src\frmConfiguracion.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.cpp">
+    <ClCompile Include="..\src\frmLogin.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.cpp">
+    <ClCompile Include="..\src\frmPago.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.cpp">
+    <ClCompile Include="..\src\frmPasarela.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.cpp">
+    <ClCompile Include="..\src\frmTicket.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.cpp">
+    <ClCompile Include="..\src\ThemeManager.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.cpp">
+    <ClCompile Include="..\src\frmRegister.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.cpp">
+    <ClCompile Include="..\src\frmTienda.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.h">
+    <ClInclude Include="..\include\ConexionBD.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.h">
+    <ClInclude Include="..\include\frmBiblioteca.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.h">
+    <ClInclude Include="..\include\frmCarrito.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.h">
+    <ClInclude Include="..\include\frmConfiguracion.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.h">
+    <ClInclude Include="..\include\frmLogin.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.h">
+    <ClInclude Include="..\include\frmPago.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.h">
+    <ClInclude Include="..\include\frmPasarela.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.h">
+    <ClInclude Include="..\include\frmTicket.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.h">
+    <ClInclude Include="..\include\ThemeManager.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.h">
+    <ClInclude Include="..\include\frmRegister.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.h">
+    <ClInclude Include="..\include\frmTienda.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.resx">
-      <Filter>Archivos de recursos</Filter>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.resx">
-      <Filter>Archivos de recursos</Filter>
-    </EmbeddedResource>
   </ItemGroup>
 </Project>

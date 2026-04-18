@@ -32,7 +32,7 @@ namespace Epsteam {
         static String^ ObtenerRuta(String^ nombreJuego) {
             String^ nombreLimpio = nombreJuego->Trim()->ToLower();
             nombreLimpio = nombreLimpio->Replace(" ", "_")->Replace(":", "")->Replace("!", "")->Replace("'", "");
-            return "img/" + nombreLimpio + ".jpg";
+            return "../assets/img/" + nombreLimpio + ".jpg";
         }
     };
 
@@ -288,7 +288,7 @@ namespace Epsteam {
         }
     }
 
-           /** @brief Restaura el texto placeholder si la caja quedó vacía al perder el foco. */
+        /** @brief Restaura el texto placeholder si la caja quedó vacía al perder el foco. */
     private: System::Void txtBusqueda_LostFocus(System::Object^ sender, System::EventArgs^ e) {
         if (String::IsNullOrWhiteSpace(txtBusqueda->Text)) {
             ignorarBusqueda = true;
@@ -298,12 +298,12 @@ namespace Epsteam {
         }
     }
 
-           /** @brief Evita ruidos de sistema (Beep) al presionar Enter en el buscador. */
+        /** @brief Evita ruidos de sistema (Beep) al presionar Enter en el buscador. */
     private: System::Void txtBusqueda_KeyPress(System::Object^ sender, KeyPressEventArgs^ e) {
         if (e->KeyChar == (char)13 || e->KeyChar == (char)27) e->Handled = true;
     }
 
-           /** @brief Permite realizar la búsqueda con Enter o cerrarla con Escape. */
+        /** @brief Permite realizar la búsqueda con Enter o cerrarla con Escape. */
     private: System::Void txtBusqueda_KeyDown(System::Object^ sender, KeyEventArgs^ e) {
         if (e->KeyCode == Keys::Escape) {
             lstSugerencias->Visible = false;
@@ -316,7 +316,7 @@ namespace Epsteam {
         }
     }
 
-           /** @brief Oculta los paneles desplegables de filtros si el usuario da clic fuera de ellos. */
+        /** @brief Oculta los paneles desplegables de filtros si el usuario da clic fuera de ellos. */
     private: System::Void ClicFueraDeFiltros(System::Object^ sender, MouseEventArgs^ e) {
         pnlFiltroGeneros->Visible = false;
         pnlFiltroCategorias->Visible = false;

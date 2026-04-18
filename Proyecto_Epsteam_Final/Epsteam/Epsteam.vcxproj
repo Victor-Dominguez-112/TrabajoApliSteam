@@ -78,7 +78,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)mysql-connector\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>mysqlcppconnx.lib</AdditionalDependencies>
@@ -107,7 +107,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)mysql-connector\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)..\include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <AdditionalDependencies>mysqlcppconnx.lib</AdditionalDependencies>
@@ -167,49 +167,38 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.cpp" />
-    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.cpp" />
+    <EmbeddedResource Include="..\include\frmBiblioteca.resx" />
+    <EmbeddedResource Include="..\include\frmLogin.resx" />
+    <EmbeddedResource Include="..\include\frmPasarela.resx" />
+    <EmbeddedResource Include="..\include\frmRegister.resx" />
+    <EmbeddedResource Include="..\include\frmTicket.resx" />
+    <EmbeddedResource Include="..\include\frmTienda.resx" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.h" />
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.h" />
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.h" />
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.h" />
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.h" />
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.h" />
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.h">
-      <FileType>CppForm</FileType>
-    </ClInclude>
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.h" />
-    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.h" />
+    <ClCompile Include="..\src\ConexionBD.cpp" />
+    <ClCompile Include="..\src\frmBiblioteca.cpp" />
+    <ClCompile Include="..\src\frmCarrito.cpp" />
+    <ClCompile Include="..\src\frmConfiguracion.cpp" />
+    <ClCompile Include="..\src\frmLogin.cpp" />
+    <ClCompile Include="..\src\frmPago.cpp" />
+    <ClCompile Include="..\src\frmPasarela.cpp" />
+    <ClCompile Include="..\src\frmRegister.cpp" />
+    <ClCompile Include="..\src\frmTicket.cpp" />
+    <ClCompile Include="..\src\frmTienda.cpp" />
+    <ClCompile Include="..\src\ThemeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.resx">
-      <DependentUpon>..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.h</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.resx">
-      <DependentUpon>..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.h</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.resx" />
-    <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.resx">
-      <DependentUpon>..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.h</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.resx" />
+    <ClInclude Include="..\include\ConexionBD.h" />
+    <ClInclude Include="..\include\frmBiblioteca.h" />
+    <ClInclude Include="..\include\frmCarrito.h" />
+    <ClInclude Include="..\include\frmConfiguracion.h" />
+    <ClInclude Include="..\include\frmLogin.h" />
+    <ClInclude Include="..\include\frmPago.h" />
+    <ClInclude Include="..\include\frmPasarela.h" />
+    <ClInclude Include="..\include\frmRegister.h" />
+    <ClInclude Include="..\include\frmTicket.h" />
+    <ClInclude Include="..\include\frmTienda.h" />
+    <ClInclude Include="..\include\ThemeManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
