@@ -4,6 +4,8 @@
 #include "ConexionBD.h" 
 #include "frmPago.h"
 #include "frmCarrito.h"
+#include "frmConfiguracion.h"
+#include "ThemeManager.h"
 
 namespace Epsteam {
 
@@ -53,6 +55,7 @@ namespace Epsteam {
         {
             idUsuarioActual = idLogueado;
             InitializeComponent();
+            ThemeManager::Aplicar(this);
             ignorarBusqueda = false;
 
             Button^ btnBiblioteca = gcnew Button();
@@ -76,6 +79,17 @@ namespace Epsteam {
             btnCarrito->Location = System::Drawing::Point(600, 20);
             btnCarrito->Click += gcnew System::EventHandler(this, &frmTienda::btnCarrito_Click);
             pnlNav->Controls->Add(btnCarrito);
+
+            
+            Button^ btnPerfil = gcnew Button();
+            btnPerfil->Text = "MI PERFIL";
+            btnPerfil->BackColor = Color::FromArgb(45, 45, 45);
+            btnPerfil->ForeColor = Color::White;
+            btnPerfil->FlatStyle = FlatStyle::Flat;
+            btnPerfil->Size = System::Drawing::Size(100, 35);
+            btnPerfil->Location = System::Drawing::Point(740, 20); 
+            btnPerfil->Click += gcnew System::EventHandler(this, &frmTienda::btnPerfil_Click);
+            pnlNav->Controls->Add(btnPerfil);
 
             timerBusqueda = gcnew System::Windows::Forms::Timer();
             timerBusqueda->Interval = 400;
@@ -570,8 +584,12 @@ namespace Epsteam {
             * @brief Cierra sesión, detiene los temporizadores de fondo y cierra la ventana.
             */
     private: System::Void btnCerrarSesion_Click(System::Object^ sender, System::EventArgs^ e) {
-        timerFarmeo->Stop();
-        this->Close();
+        timerFarmeo->Stop(); // Lo que ya tenías
+
+        // ¡NUEVO! Reseteamos el tema global al Oscuro (0) antes de irnos
+        ThemeManager::EstablecerTema(0);
+
+        this->Close(); // Regresamos al login
     }
 
            /**
@@ -669,6 +687,16 @@ namespace Epsteam {
         this->Hide();
         biblioteca->ShowDialog();
         this->Show();
+    }
+
+    private: System::Void btnPerfil_Click(System::Object^ sender, System::EventArgs^ e) {
+        frmConfiguracion^ ventanaPerfil = gcnew frmConfiguracion();
+        this->Hide();
+        ventanaPerfil->ShowDialog(); // El programa se pausa en esta línea
+
+        // --- CUANDO LA VENTANA DE PERFIL SE CIERRA, EL CÓDIGO CONTINÚA AQUÍ ---
+        this->Show(); // La tienda reaparece
+        ThemeManager::Aplicar(this); // ¡CLAVE! Obligamos a la tienda a pintarse con el tema nuevo
     }
 
            /**

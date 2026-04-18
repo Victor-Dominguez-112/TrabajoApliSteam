@@ -1,5 +1,6 @@
 ﻿#pragma once
 #include "ConexionBD.h"
+#include "ThemeManager.h"
 
 namespace Epsteam {
     using namespace System;
@@ -121,6 +122,8 @@ namespace Epsteam {
          */
         void CargarBiblioteca() {
             flowJuegos->Controls->Clear();
+            flowJuegos->ResumeLayout();
+            ThemeManager::Aplicar(this);
 
             // Traemos TUS juegos directamente desde la Base de Datos
             DataTable^ misJuegos = Epsteam::ConexionBD::ObtenerMisJuegos(Epsteam::ConexionBD::idUsuarioActual);

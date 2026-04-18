@@ -1,5 +1,6 @@
 #pragma once
 #include "frmPago.h"
+#include "ThemeManager.h"
 
 namespace Epsteam {
     using namespace System;
@@ -150,6 +151,7 @@ namespace Epsteam {
          */
         void DibujarJuegos() {
             flowItems->Controls->Clear();
+            ThemeManager::Aplicar(this);
             double total = 0;
 
             if (carritoReferencia->Count == 0) {

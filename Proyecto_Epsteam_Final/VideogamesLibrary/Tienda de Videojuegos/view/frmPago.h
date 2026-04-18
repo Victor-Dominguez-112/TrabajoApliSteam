@@ -1,6 +1,8 @@
 ﻿#pragma once
 #include "ConexionBD.h"
 #include "frmTicket.h" 
+#include "ThemeManager.h"
+#include "frmPasarela.h"
 
 namespace Epsteam {
     using namespace System;
@@ -11,55 +13,24 @@ namespace Epsteam {
     using namespace System::Drawing;
     using namespace System::Collections::Generic;
 
-    /**
-     * @class frmPago
-     * @brief Formulario que simula una pasarela de pago para procesar las compras.
-     * @details Presenta al usuario tres opciones de pago (Tarjeta, Efectivo, Cartera).
-     * Incluye validaciones básicas de campos, invoca el guardado de la transacción en la base
-     * de datos, genera un recibo visual (frmTicket) y escribe un comprobante físico (.txt).
-     */
     public ref class frmPago : public System::Windows::Forms::Form
     {
     private:
-        /** @brief ID del usuario que está realizando la compra. */
         int idUsuario;
-
-        // FIRMA BLINDADA PARA EVITAR ERRORES E1767
-        /** * @brief Referencia a la lista de juegos a comprar.
-         * @details Contiene arreglos de Strings donde el índice 0 es ID, 1 es Título y 2 es Precio.
-         */
         System::Collections::Generic::List<cli::array<System::String^>^>^ carritoPago;
-
-        /** @brief Monto total a cobrar. */
         double totalPago;
 
-        /** @brief Etiqueta principal con el título de la ventana. */
         Label^ lblTitulo;
-        /** @brief Etiqueta que muestra la cantidad de artículos y el total a pagar. */
         Label^ lblResumen;
-        /** @brief Botón de radio para seleccionar pago con Tarjeta de Crédito/Débito. */
         RadioButton^ rbTarjeta;
-        /** @brief Botón de radio para seleccionar pago en Efectivo (generación de código). */
         RadioButton^ rbEfectivo;
-        /** @brief Botón de radio para seleccionar pago con Cartera Virtual Epsteam. */
         RadioButton^ rbCartera;
-        /** @brief Panel dinámico que cambia su contenido dependiendo del método de pago seleccionado. */
         Panel^ pnlOpciones;
-        /** @brief Etiqueta inicial que pide al usuario seleccionar un método de pago. */
         Label^ lblDinamico;
-        /** @brief Botón para ejecutar la transacción y registrar la compra. */
         Button^ btnPagar;
-        /** @brief Botón para abortar el pago y regresar al carrito. */
         Button^ btnCancelar;
 
     public:
-        // FIRMA BLINDADA EN EL CONSTRUCTOR
-        /**
-         * @brief Constructor de la clase frmPago.
-         * @param idUsu ID del usuario logueado.
-         * @param carrito Lista genérica de arreglos de cadenas con los datos de los juegos seleccionados.
-         * @param total Monto total pre-calculado a cobrar.
-         */
         frmPago(int idUsu, System::Collections::Generic::List<cli::array<System::String^>^>^ carrito, double total)
         {
             idUsuario = idUsu;
@@ -68,29 +39,17 @@ namespace Epsteam {
 
             InitializeComponent();
             ConfigurarDiseño();
+            ThemeManager::Aplicar(this);
         }
 
     protected:
-        /**
-         * @brief Destructor de la clase.
-         * @details Libera la memoria de los componentes visuales de Windows Forms.
-         */
         ~frmPago() { if (components) { delete components; } }
 
     private:
-        /** @brief Contenedor principal de componentes. */
         System::ComponentModel::Container^ components;
 
-        /**
-         * @brief Inicialización básica del formulario.
-         */
         void InitializeComponent(void) { this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font; }
 
-        /**
-         * @brief Configura la interfaz visual de la pasarela de pago.
-         * @details Posiciona los RadioButtons de opciones, inicializa el panel dinámico central
-         * e instancia los botones de confirmación y cancelación con estilos flat.
-         */
         void ConfigurarDiseño() {
             this->BackColor = Color::FromArgb(27, 40, 56);
             this->Size = System::Drawing::Size(450, 520);
@@ -132,7 +91,7 @@ namespace Epsteam {
             this->Controls->Add(rbEfectivo);
 
             rbCartera = gcnew RadioButton();
-            rbCartera->Text = "Mi Cartera Epsteam";
+            rbCartera->Text = "Billeteras Digitales";
             rbCartera->ForeColor = Color::White;
             rbCartera->Font = gcnew System::Drawing::Font("Arial", 11);
             rbCartera->Location = System::Drawing::Point(40, 190);
@@ -176,39 +135,41 @@ namespace Epsteam {
             this->Controls->Add(btnPagar);
         }
 
-        /**
-         * @brief Cierra la ventana y devuelve un resultado de cancelación.
-         * @param sender Botón Cancelar.
-         * @param e Argumentos del evento.
-         */
     private: System::Void btnCancelar_Click(System::Object^ sender, System::EventArgs^ e) {
         this->DialogResult = System::Windows::Forms::DialogResult::Cancel;
         this->Close();
     }
 
-           /**
-            * @brief Evento disparado al cambiar la selección en los RadioButtons.
-            * @details Reconstruye dinámicamente el contenido de pnlOpciones:
-            * - Tarjeta: Dibuja TextBox para número, vencimiento y CVV.
-            * - Efectivo: Genera un número aleatorio de pago y dibuja un código de barras simulado en un Bitmap.
-            * - Cartera: Muestra un mensaje de confirmación de saldo.
-            * @param sender El RadioButton que fue modificado.
-            * @param e Argumentos del evento.
-            */
     private: System::Void CambiarMetodoPago(System::Object^ sender, System::EventArgs^ e) {
         btnPagar->Enabled = true;
         pnlOpciones->Controls->Clear();
 
         if (rbTarjeta->Checked) {
+            Label^ lblTipo = gcnew Label();
+            lblTipo->Text = "Tipo:";
+            lblTipo->ForeColor = Color::LightGray;
+            lblTipo->Font = gcnew System::Drawing::Font("Arial", 9);
+            lblTipo->Location = System::Drawing::Point(15, 5);
+            lblTipo->AutoSize = true;
+
+            ComboBox^ cmbTipoTarjeta = gcnew ComboBox();
+            cmbTipoTarjeta->DropDownStyle = ComboBoxStyle::DropDownList;
+            cmbTipoTarjeta->Location = System::Drawing::Point(15, 25);
+            cmbTipoTarjeta->Size = System::Drawing::Size(120, 25);
+            cmbTipoTarjeta->Items->Add("Crédito");
+            cmbTipoTarjeta->Items->Add("Débito");
+            cmbTipoTarjeta->SelectedIndex = 0;
+            cmbTipoTarjeta->Name = "cmbTipoTarjeta";
+
             Label^ lblNum = gcnew Label();
             lblNum->Text = "Número de Tarjeta (16 dígitos):";
             lblNum->ForeColor = Color::LightGray;
             lblNum->Font = gcnew System::Drawing::Font("Arial", 9);
-            lblNum->Location = System::Drawing::Point(15, 15);
+            lblNum->Location = System::Drawing::Point(15, 60);
             lblNum->AutoSize = true;
 
             TextBox^ txtNum = gcnew TextBox();
-            txtNum->Location = System::Drawing::Point(15, 35);
+            txtNum->Location = System::Drawing::Point(15, 80);
             txtNum->Size = System::Drawing::Size(200, 25);
             txtNum->Font = gcnew System::Drawing::Font("Arial", 11);
             txtNum->MaxLength = 16;
@@ -217,11 +178,11 @@ namespace Epsteam {
             lblVenc->Text = "Vencimiento:";
             lblVenc->ForeColor = Color::LightGray;
             lblVenc->Font = gcnew System::Drawing::Font("Arial", 9);
-            lblVenc->Location = System::Drawing::Point(230, 15);
+            lblVenc->Location = System::Drawing::Point(230, 60);
             lblVenc->AutoSize = true;
 
             TextBox^ txtVenc = gcnew TextBox();
-            txtVenc->Location = System::Drawing::Point(230, 35);
+            txtVenc->Location = System::Drawing::Point(230, 80);
             txtVenc->Size = System::Drawing::Size(60, 25);
             txtVenc->Font = gcnew System::Drawing::Font("Arial", 11);
             txtVenc->MaxLength = 5;
@@ -234,16 +195,18 @@ namespace Epsteam {
             lblCVV->Text = "CVV:";
             lblCVV->ForeColor = Color::LightGray;
             lblCVV->Font = gcnew System::Drawing::Font("Arial", 9);
-            lblCVV->Location = System::Drawing::Point(310, 15);
+            lblCVV->Location = System::Drawing::Point(310, 60);
             lblCVV->AutoSize = true;
 
             TextBox^ txtCVV = gcnew TextBox();
-            txtCVV->Location = System::Drawing::Point(310, 35);
+            txtCVV->Location = System::Drawing::Point(310, 80);
             txtCVV->Size = System::Drawing::Size(45, 25);
             txtCVV->Font = gcnew System::Drawing::Font("Arial", 11);
             txtCVV->MaxLength = 3;
             txtCVV->PasswordChar = '*';
 
+            pnlOpciones->Controls->Add(lblTipo);
+            pnlOpciones->Controls->Add(cmbTipoTarjeta);
             pnlOpciones->Controls->Add(lblNum);
             pnlOpciones->Controls->Add(txtNum);
             pnlOpciones->Controls->Add(lblVenc);
@@ -284,19 +247,30 @@ namespace Epsteam {
             pnlOpciones->Controls->Add(picCodigo);
         }
         else if (rbCartera->Checked) {
-            Label^ lblCartera = gcnew Label();
-            lblCartera->Text = "Se descontará de tu Cartera Epsteam.";
-            lblCartera->ForeColor = Color::LightGreen;
-            lblCartera->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
-            lblCartera->Dock = DockStyle::Fill;
-            lblCartera->TextAlign = ContentAlignment::MiddleCenter;
-            pnlOpciones->Controls->Add(lblCartera);
+            Label^ lblPlataforma = gcnew Label();
+            lblPlataforma->Text = "Selecciona la plataforma de pago:";
+            lblPlataforma->ForeColor = Color::White;
+            lblPlataforma->Font = gcnew System::Drawing::Font("Arial", 10, FontStyle::Bold);
+            lblPlataforma->Location = System::Drawing::Point(60, 20);
+            lblPlataforma->AutoSize = true;
+
+            ComboBox^ cmbBilleteras = gcnew ComboBox();
+            cmbBilleteras->DropDownStyle = ComboBoxStyle::DropDownList;
+            cmbBilleteras->Location = System::Drawing::Point(60, 50);
+            cmbBilleteras->Size = System::Drawing::Size(250, 30);
+            cmbBilleteras->Font = gcnew System::Drawing::Font("Arial", 11);
+            cmbBilleteras->Items->Add("PayPal");
+            cmbBilleteras->Items->Add("MercadoPago");
+            cmbBilleteras->Items->Add("Xsolla");
+            cmbBilleteras->Items->Add("Mi Cartera Epsteam");
+            cmbBilleteras->SelectedIndex = 0;
+            cmbBilleteras->Name = "cmbBilleteras";
+
+            pnlOpciones->Controls->Add(lblPlataforma);
+            pnlOpciones->Controls->Add(cmbBilleteras);
         }
     }
 
-           /**
-            * @brief Limpia el texto guía "MM/AA" cuando la caja de texto recibe el foco.
-            */
     private: System::Void txtVenc_GotFocus(System::Object^ sender, System::EventArgs^ e) {
         TextBox^ txt = (TextBox^)sender;
         if (txt->Text == "MM/AA") {
@@ -305,9 +279,6 @@ namespace Epsteam {
         }
     }
 
-           /**
-            * @brief Restaura el texto guía "MM/AA" si el usuario deja el campo vacío al perder el foco.
-            */
     private: System::Void txtVenc_LostFocus(System::Object^ sender, System::EventArgs^ e) {
         TextBox^ txt = (TextBox^)sender;
         if (String::IsNullOrWhiteSpace(txt->Text)) {
@@ -316,23 +287,10 @@ namespace Epsteam {
         }
     }
 
-           /**
-            * @brief Valida, registra y consolida la compra final del usuario.
-            * @details
-            * 1. Verifica que los TextBoxes de la tarjeta no estén vacíos.
-            * 2. Determina el método de pago seleccionado.
-            * 3. Llama a ConexionBD::RegistrarCompra para insertar los datos en la BD.
-            * 4. Lanza el formulario visual frmTicket para mostrar un comprobante al usuario.
-            * 5. Escribe físicamente un archivo de texto (.txt) con el resumen de la compra dentro de la carpeta "Tickets".
-            * @param sender Botón "CONFIRMAR PAGO".
-            * @param e Argumentos del evento.
-            */
     private: System::Void btnPagar_Click(System::Object^ sender, System::EventArgs^ e) {
-
-        // --- 1. EL CADENERO DE SEGURIDAD ---
         if (rbTarjeta->Checked) {
             bool faltanDatos = false;
-            for each(Control ^ c in pnlOpciones->Controls) {
+            for each (Control ^ c in pnlOpciones->Controls) {
                 if (c->GetType() == TextBox::typeid) {
                     if (String::IsNullOrWhiteSpace(c->Text) || c->Text == "MM/AA") {
                         faltanDatos = true;
@@ -342,25 +300,40 @@ namespace Epsteam {
             }
             if (faltanDatos) {
                 MessageBox::Show("¡Oye! No puedes llevarte los juegos gratis. Llena todos los datos de tu tarjeta.", "Aviso de Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-                return; // ¡Abortar misión!
+                return;
             }
         }
 
-        // --- 2. PREPARAR DATOS DE LA COMPRA ---
         int metodoSeleccionado = 1;
         String^ nombreMetodo = "Tarjeta de Crédito/Débito";
         if (rbEfectivo->Checked) { metodoSeleccionado = 2; nombreMetodo = "Efectivo"; }
         else if (rbCartera->Checked) { metodoSeleccionado = 3; nombreMetodo = "Cartera Epsteam"; }
 
-        // --- 3. GUARDAR EN LA BASE DE DATOS ---
+        if (rbTarjeta->Checked || rbCartera->Checked) {
+            String^ proveedorExterno = "Bancario";
+
+            if (rbCartera->Checked) {
+                if (pnlOpciones->Controls->ContainsKey("cmbBilleteras")) {
+                    ComboBox^ cmb = (ComboBox^)pnlOpciones->Controls["cmbBilleteras"];
+                    proveedorExterno = cmb->Text;
+                    nombreMetodo = cmb->Text;
+                }
+            }
+
+            frmPasarela^ ventanaSimulada = gcnew frmPasarela(proveedorExterno, totalPago);
+
+            if (ventanaSimulada->ShowDialog() != System::Windows::Forms::DialogResult::OK) {
+                MessageBox::Show("El pago fue cancelado o la conexión externa falló.", "Transacción Abortada", MessageBoxButtons::OK, MessageBoxIcon::Error);
+                return;
+            }
+        }
+
         bool exito = Epsteam::ConexionBD::RegistrarCompra(idUsuario, carritoPago, metodoSeleccionado, totalPago);
 
         if (exito) {
-            // --- 4. ABRIR EL TICKET VISUAL POP-UP (NUEVO) ---
             frmTicket^ ticketVisual = gcnew frmTicket(nombreMetodo, carritoPago, totalPago);
             ticketVisual->ShowDialog();
 
-            // --- 5. GENERAR EL TICKET TXT CON TU NICKNAME ---
             try {
                 if (!System::IO::Directory::Exists("Tickets")) {
                     System::IO::Directory::CreateDirectory("Tickets");
@@ -391,7 +364,6 @@ namespace Epsteam {
             }
             catch (...) {}
 
-            // --- 6. CERRAR EL CARRITO ---
             this->DialogResult = System::Windows::Forms::DialogResult::OK;
             this->Close();
         }

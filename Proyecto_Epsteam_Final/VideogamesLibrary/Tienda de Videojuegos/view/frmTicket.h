@@ -1,5 +1,6 @@
 #pragma once
 #include "ConexionBD.h"
+#include "ThemeManager.h"
 
 namespace Epsteam {
     using namespace System;
@@ -35,6 +36,7 @@ namespace Epsteam {
         {
             InitializeComponent();
             ConfigurarInterfaz(metodo, carrito, total);
+            ThemeManager::Aplicar(this);
         }
 
     protected:
@@ -88,7 +90,7 @@ namespace Epsteam {
             lblASCII = gcnew Label();
             lblASCII->Location = System::Drawing::Point(15, 15);
             lblASCII->Size = System::Drawing::Size(420, 500);
-            lblASCII->ForeColor = Color::White;
+            lblASCII->BackColor = Color::Transparent; 
             lblASCII->Padding = System::Windows::Forms::Padding(5);
             lblASCII->Font = gcnew System::Drawing::Font("Courier New", 11); // Magia ASCII
 

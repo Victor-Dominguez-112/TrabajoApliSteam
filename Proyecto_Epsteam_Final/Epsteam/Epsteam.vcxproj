@@ -170,11 +170,14 @@
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.cpp" />
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.cpp" />
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.cpp" />
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.cpp" />
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ConexionBD.h" />
@@ -182,15 +185,18 @@
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.h" />
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.h" />
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPago.h" />
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.h" />
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmRegister.h" />
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTicket.h">
       <FileType>CppForm</FileType>
     </ClInclude>
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmTienda.h" />
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.h" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmBiblioteca.resx">

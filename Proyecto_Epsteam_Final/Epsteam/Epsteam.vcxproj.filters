@@ -39,6 +39,15 @@
     <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.cpp">
+      <Filter>Archivos de origen</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmLogin.h">
@@ -63,6 +72,15 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
     <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmCarrito.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmConfiguracion.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\ThemeManager.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+    <ClInclude Include="..\VideogamesLibrary\Tienda de Videojuegos\view\frmPasarela.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
