@@ -29,10 +29,11 @@ namespace Epsteam {
             }
         }
 
-        static void EstablecerTema(int tipo) {
+        static void EstablecerTema(int tipo)
+        {
             TemaActual = tipo; // Guardamos el número
 
-            if (tipo == 0) { // Oscuro
+            if (tipo == 0) { // Oscuro (Clásico Epsteam)
                 ColorFondo = Color::FromArgb(27, 40, 56);
                 ColorTexto = Color::White;
                 ColorBotones = Color::FromArgb(45, 45, 45);
@@ -46,6 +47,41 @@ namespace Epsteam {
                 ColorFondo = Color::FromArgb(15, 10, 30);
                 ColorTexto = Color::Cyan;
                 ColorBotones = Color::DeepPink;
+            }
+            else if (tipo == 3) { // Océano Profundo
+                ColorFondo = Color::FromArgb(15, 25, 35);
+                ColorTexto = Color::White;
+                ColorBotones = Color::FromArgb(0, 153, 204); // Cian oscuro
+            }
+            else if (tipo == 4) { // Modo Sangriento
+                ColorFondo = Color::FromArgb(18, 18, 18);
+                ColorTexto = Color::FromArgb(240, 240, 240);
+                ColorBotones = Color::FromArgb(180, 20, 20); // Rojo Carmesí
+            }
+            else if (tipo == 5) { // Neón Synthwave
+                ColorFondo = Color::FromArgb(25, 15, 35);
+                ColorTexto = Color::White;
+                ColorBotones = Color::FromArgb(255, 0, 128); // Rosa Neón
+            }
+            else if (tipo == 6) { // Hacker Terminal
+                ColorFondo = Color::FromArgb(5, 5, 5);
+                ColorTexto = Color::FromArgb(0, 255, 0); // Verde clásico de consola
+                ColorBotones = Color::FromArgb(25, 25, 25);
+            }
+            else if (tipo == 7) { // Eclipse Solar
+                ColorFondo = Color::FromArgb(30, 30, 35);
+                ColorTexto = Color::White;
+                ColorBotones = Color::FromArgb(255, 100, 0); // Naranja vibrante
+            }
+            else if (tipo == 8) { // Bosque Místico
+                ColorFondo = Color::FromArgb(15, 30, 20); // Verde muy oscuro
+                ColorTexto = Color::White;
+                ColorBotones = Color::FromArgb(46, 204, 113); // Esmeralda brillante
+            }
+            else if (tipo == 9) { // Atardecer Retro
+                ColorFondo = Color::FromArgb(40, 20, 35); // Púrpura cálido
+                ColorTexto = Color::FromArgb(255, 235, 180); // Amarillo suave (durazno)
+                ColorBotones = Color::FromArgb(255, 87, 34); // Naranja atardecer
             }
         }
     };

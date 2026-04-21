@@ -74,8 +74,8 @@ namespace Epsteam {
 
             // --- CREACIÓN DEL MENÚ DESPLEGABLE ---
             menuPerfil = gcnew System::Windows::Forms::ContextMenuStrip();
-            menuPerfil->ShowImageMargin = false; // Quita la barra gris de la izquierda
-            menuPerfil->ShowCheckMargin = false; // Quita espacio de checkbox
+            menuPerfil->ShowImageMargin = false;
+            menuPerfil->ShowCheckMargin = false; 
             menuPerfil->BackColor = Color::FromArgb(45, 45, 45);
             menuPerfil->ForeColor = Color::White;
             menuPerfil->Items->Add("Editar Perfil", nullptr, gcnew EventHandler(this, &frmTienda::AbrirConfiguracion));
@@ -466,7 +466,7 @@ namespace Epsteam {
                btnComprar->Text = "AGREGAR AL CARRO";
                btnComprar->FlatStyle = FlatStyle::Flat;
                btnComprar->ForeColor = Color::White;
-               btnComprar->BackColor = Color::FromArgb(0, 120, 215);
+               btnComprar->BackColor = ThemeManager::ColorBotones;
                btnComprar->Dock = DockStyle::Bottom;
                btnComprar->Height = 35;
                btnComprar->Tag = datosJuego;
@@ -645,7 +645,7 @@ namespace Epsteam {
                     }
                     else {
                         btn->Text = "AGREGAR AL CARRO";
-                        btn->BackColor = Color::FromArgb(0, 120, 215);
+                        btn->BackColor = ThemeManager::ColorBotones;
                     }
                 }
             }

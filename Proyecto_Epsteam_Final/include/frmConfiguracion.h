@@ -25,6 +25,9 @@ namespace Epsteam {
 
             // Y nos pintamos de ese color al nacer
             ThemeManager::Aplicar(this);
+            // Obligamos a la lista de temas a quedarse siempre en blanco y negro para que sea legible
+            this->cmbTema->BackColor = Color::White;
+            this->cmbTema->ForeColor = Color::Black;        
         }
 
     protected:
@@ -173,12 +176,8 @@ namespace Epsteam {
             this->Controls->Add(picPred5);
 
             try {
-                // 1. Obtenemos la ruta del .exe
                 String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
 
-                // 2. Subimos TRES niveles (de Debug a x64, de x64 a Epsteam, de Epsteam a Raíz)
-                // Luego entramos a assets/avatares/
-                // Nota: Agregué un "../" extra
                 String^ rutaFinal = rutaExe + "../../../assets/avatares/";
 
                 picPred1->Image = Image::FromFile(rutaFinal + "avatar1.png");
@@ -233,6 +232,13 @@ namespace Epsteam {
             cmbTema->Items->Add("Tema Oscuro (Clásico Epsteam)");
             cmbTema->Items->Add("Tema Claro (Light Mode)");
             cmbTema->Items->Add("Tema Cyberpunk (Neón)");
+            cmbTema->Items->Add("Tema Oceano Profundo");
+            cmbTema->Items->Add("Tema Modo Sangriento");
+            cmbTema->Items->Add("Tema Neón Synthwave");
+            cmbTema->Items->Add("Tema Hacker Terminal");
+            cmbTema->Items->Add("Tema Eclipse Solar");
+            cmbTema->Items->Add("Tema Bosque Místico");
+            cmbTema->Items->Add("Tema Atardecer Retro");
             cmbTema->SelectedIndex = 0; // Selecciona el oscuro por defecto
             cmbTema->SelectedIndexChanged += gcnew System::EventHandler(this, &frmConfiguracion::cmbTema_SelectedIndexChanged);
             this->Controls->Add(cmbTema);

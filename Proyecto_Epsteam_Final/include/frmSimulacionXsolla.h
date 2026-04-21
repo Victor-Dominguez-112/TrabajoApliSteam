@@ -84,16 +84,15 @@ namespace Epsteam {
             this->Controls->Add(btnCerrar);
         }
 
-        // --- LA MAGIA QUE DIBUJA EL CÓDIGO DE BARRAS ---
+        // --- Codigo de barras ---
         System::Void DibujarCodigoBarras(System::Object^ sender, System::Windows::Forms::PaintEventArgs^ e) {
             Graphics^ g = e->Graphics;
-            Random^ rnd = gcnew Random(12345); // Usamos una semilla fija para que no parpadee si la ventana se repinta
+            Random^ rnd = gcnew Random(12345); 
 
             int xPos = 10;
-            // Dibujamos líneas rectangulares negras de diferentes grosores
             while (xPos < picBarcode->Width - 20) {
-                int grosorBarra = rnd->Next(2, 6); // Grosor aleatorio entre 2 y 5 píxeles
-                int espacioBlanco = rnd->Next(2, 5); // Separación aleatoria
+                int grosorBarra = rnd->Next(2, 6); 
+                int espacioBlanco = rnd->Next(2, 5); 
 
                 g->FillRectangle(Brushes::Black, xPos, 0, grosorBarra, picBarcode->Height);
                 xPos += (grosorBarra + espacioBlanco);
@@ -101,7 +100,16 @@ namespace Epsteam {
         }
 
         System::Void btnCerrar_Click(System::Object^ sender, System::EventArgs^ e) {
-            this->Close(); // Cierra el simulador de Xsolla
+            this->Close(); 
         }
+    private: System::Void InitializeComponent() {
+        this->SuspendLayout();
+        this->ClientSize = System::Drawing::Size(282, 253);
+        this->Name = L"frmSimulacionXsolla";
+        this->Load += gcnew System::EventHandler(this, &frmSimulacionXsolla::frmSimulacionXsolla_Load);
+        this->ResumeLayout(false);
+    }
+    private: System::Void frmSimulacionXsolla_Load(System::Object^ sender, System::EventArgs^ e) {
+    }
     };
 }
