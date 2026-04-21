@@ -179,6 +179,7 @@
     <ClCompile Include="..\src\frmBiblioteca.cpp" />
     <ClCompile Include="..\src\frmCarrito.cpp" />
     <ClCompile Include="..\src\frmConfiguracion.cpp" />
+    <ClCompile Include="..\src\frmDetalleJuego.cpp" />
     <ClCompile Include="..\src\frmLogin.cpp" />
     <ClCompile Include="..\src\frmPago.cpp" />
     <ClCompile Include="..\src\frmPasarela.cpp" />
@@ -192,6 +193,7 @@
     <ClInclude Include="..\include\frmBiblioteca.h" />
     <ClInclude Include="..\include\frmCarrito.h" />
     <ClInclude Include="..\include\frmConfiguracion.h" />
+    <ClInclude Include="..\include\frmDetalleJuego.h" />
     <ClInclude Include="..\include\frmLogin.h" />
     <ClInclude Include="..\include\frmPago.h" />
     <ClInclude Include="..\include\frmPasarela.h" />
