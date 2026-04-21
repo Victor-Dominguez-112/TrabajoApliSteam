@@ -440,7 +440,6 @@ namespace Epsteam {
                    picPortada->BackColor = Color::DimGray;
                }
 
-               // AHORA GUARDAMOS ID, TITULO Y PRECIO JUNTOS PARA MANDARLOS
                cli::array<System::String^>^ datosJuego = gcnew cli::array<System::String^>{ id_juego.ToString(), titulo, precio };
 
 
@@ -478,7 +477,7 @@ namespace Epsteam {
                btnComprar->BackColor = Color::FromArgb(0, 120, 215);
                btnComprar->Dock = DockStyle::Bottom;
                btnComprar->Height = 35;
-               btnComprar->Tag = datosJuego; // Reutilizamos el mismo arreglo
+               btnComprar->Tag = datosJuego;
                btnComprar->Click += gcnew System::EventHandler(this, &frmTienda::btnComprar_Click);
 
 
@@ -496,15 +495,35 @@ namespace Epsteam {
     private: System::Void AbrirDetalle_Click(System::Object^ sender, System::EventArgs^ e) {
         Control^ controlClicado = (Control^)sender;
 
-        // RECUPERAMOS LOS 3 DATOS DEL BOTÓN QUE SE HIZO CLIC
         cli::array<System::String^>^ datos = (cli::array<System::String^>^)controlClicado->Tag;
         int idJuegoClicado = Convert::ToInt32(datos[0]);
         String^ tituloClicado = datos[1];
         String^ precioClicado = datos[2];
 
-        // LE PASAMOS TODO A TU VENTANA (CERO BASE DE DATOS)
-        frmDetalleJuego^ ventanaDetalles = gcnew frmDetalleJuego(idJuegoClicado, tituloClicado, precioClicado);
+        // LE PASAMOS TU VENTANA Y EL CARRITO DE LA TIENDA
+        frmDetalleJuego^ ventanaDetalles = gcnew frmDetalleJuego(idJuegoClicado, tituloClicado, precioClicado, carritoCompras);
         ventanaDetalles->ShowDialog();
+
+
+        // ¡ACTUALIZAMOS LA TIENDA AL CERRAR TU VENTANA!
+        btnCarrito->Text = "CARRITO (" + Convert::ToString(carritoCompras->Count) + ")";
+
+        for each (Control ^ card in flowTienda->Controls) {
+            for each (Control ^ c in card->Controls) {
+                if (c->GetType() == Button::typeid) {
+                    Button^ btn = (Button^)c;
+                    cli::array<System::String^>^ datosBtn = (cli::array<System::String^>^)btn->Tag;
+                    bool sigueEnCarrito = false;
+                    for (int i = 0; i < carritoCompras->Count; i++) {
+                        if (carritoCompras[i][0] == datosBtn[0]) { sigueEnCarrito = true; break; }
+                    }
+                    if (sigueEnCarrito) {
+                        btn->Text = "AGREGADO";
+                        btn->BackColor = Color::MediumSeaGreen;
+                    }
+                }
+            }
+        }
     }
 
 
@@ -584,15 +603,24 @@ namespace Epsteam {
 
 
         bool yaLoTiene = false;
-        DataTable^ misJuegos = Epsteam::ConexionBD::ObtenerMisJuegos(idUsuarioActual);
-        if (misJuegos != nullptr) {
-            for (int i = 0; i < misJuegos->Rows->Count; i++) {
-                if (misJuegos->Rows[i]["titulo"]->ToString() == nombreJuego) {
-                    yaLoTiene = true;
-                    break;
+
+        // BLINDAJE POR SI LA BD NO FUNCIONA
+        try {
+            DataTable^ misJuegos = Epsteam::ConexionBD::ObtenerMisJuegos(idUsuarioActual);
+            if (misJuegos != nullptr) {
+                for (int i = 0; i < misJuegos->Rows->Count; i++) {
+                    if (misJuegos->Rows[i]["titulo"]->ToString() == nombreJuego) {
+                        yaLoTiene = true;
+                        break;
+                    }
                 }
             }
         }
+        catch (...) {
+            // Si falla la BD ignoramos la comprobación de si ya lo tiene comprado
+        }
+
+
         if (yaLoTiene) {
             MessageBox::Show("¡Ya tienes '" + nombreJuego + "' en tu biblioteca!", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Information);
             return;
