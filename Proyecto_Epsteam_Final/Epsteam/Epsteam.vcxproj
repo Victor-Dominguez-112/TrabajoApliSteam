@@ -168,9 +168,15 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="..\include\frmBiblioteca.resx" />
+    <EmbeddedResource Include="..\include\frmFirmaElectronica.resx">
+      <DependentUpon>..\include\frmFirmaElectronica.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\include\frmLogin.resx" />
     <EmbeddedResource Include="..\include\frmPasarela.resx" />
     <EmbeddedResource Include="..\include\frmRegister.resx" />
+    <EmbeddedResource Include="..\include\frmSimulacionXsolla.resx">
+      <DependentUpon>..\include\frmSimulacionXsolla.h</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="..\include\frmTicket.resx" />
     <EmbeddedResource Include="..\include\frmTienda.resx" />
   </ItemGroup>
@@ -180,10 +186,12 @@
     <ClCompile Include="..\src\frmCarrito.cpp" />
     <ClCompile Include="..\src\frmConfiguracion.cpp" />
     <ClCompile Include="..\src\frmDetalleJuego.cpp" />
+    <ClCompile Include="..\src\frmFirmaElectronica.cpp" />
     <ClCompile Include="..\src\frmLogin.cpp" />
     <ClCompile Include="..\src\frmPago.cpp" />
     <ClCompile Include="..\src\frmPasarela.cpp" />
     <ClCompile Include="..\src\frmRegister.cpp" />
+    <ClCompile Include="..\src\frmSimulacionXsolla.cpp" />
     <ClCompile Include="..\src\frmTicket.cpp" />
     <ClCompile Include="..\src\frmTienda.cpp" />
     <ClCompile Include="..\src\ThemeManager.cpp" />
@@ -194,10 +202,16 @@
     <ClInclude Include="..\include\frmCarrito.h" />
     <ClInclude Include="..\include\frmConfiguracion.h" />
     <ClInclude Include="..\include\frmDetalleJuego.h" />
+    <ClInclude Include="..\include\frmFirmaElectronica.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="..\include\frmLogin.h" />
     <ClInclude Include="..\include\frmPago.h" />
     <ClInclude Include="..\include\frmPasarela.h" />
     <ClInclude Include="..\include\frmRegister.h" />
+    <ClInclude Include="..\include\frmSimulacionXsolla.h">
+      <FileType>CppForm</FileType>
+    </ClInclude>
     <ClInclude Include="..\include\frmTicket.h" />
     <ClInclude Include="..\include\frmTienda.h" />
     <ClInclude Include="..\include\ThemeManager.h" />

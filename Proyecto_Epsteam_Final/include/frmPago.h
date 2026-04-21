@@ -3,6 +3,8 @@
 #include "frmTicket.h" 
 #include "ThemeManager.h"
 #include "frmPasarela.h"
+#include "frmSimulacionXsolla.h" 
+#include "frmFirmaElectronica.h" // <-- NUEVA VENTANA DE INICIO DE SESIÓN
 
 namespace Epsteam {
     using namespace System;
@@ -101,7 +103,7 @@ namespace Epsteam {
 
             pnlOpciones = gcnew Panel();
             pnlOpciones->Location = System::Drawing::Point(40, 240);
-            pnlOpciones->Size = System::Drawing::Size(370, 100);
+            pnlOpciones->Size = System::Drawing::Size(370, 100); // Volvió a su tamaño original
             pnlOpciones->BackColor = Color::FromArgb(45, 45, 45);
             this->Controls->Add(pnlOpciones);
 
@@ -145,6 +147,7 @@ namespace Epsteam {
         pnlOpciones->Controls->Clear();
 
         if (rbTarjeta->Checked) {
+            // Diseño de tarjeta (se mantiene igual)
             Label^ lblTipo = gcnew Label();
             lblTipo->Text = "Tipo:";
             lblTipo->ForeColor = Color::LightGray;
@@ -215,6 +218,7 @@ namespace Epsteam {
             pnlOpciones->Controls->Add(txtCVV);
         }
         else if (rbEfectivo->Checked) {
+            // Diseño Efectivo (se mantiene igual)
             Random^ rnd = gcnew Random();
             long long codigoNum = rnd->Next(10000000, 99999999);
             String^ codigoTexto = "EPSTEAM - " + codigoNum.ToString() + rnd->Next(1000, 9999).ToString();
@@ -247,17 +251,18 @@ namespace Epsteam {
             pnlOpciones->Controls->Add(picCodigo);
         }
         else if (rbCartera->Checked) {
+            // Diseño Billeteras (Limpiado, regresó al original sin firmas)
             Label^ lblPlataforma = gcnew Label();
-            lblPlataforma->Text = "Selecciona la plataforma de pago:";
+            lblPlataforma->Text = "Selecciona la plataforma:";
             lblPlataforma->ForeColor = Color::White;
             lblPlataforma->Font = gcnew System::Drawing::Font("Arial", 10, FontStyle::Bold);
-            lblPlataforma->Location = System::Drawing::Point(60, 20);
+            lblPlataforma->Location = System::Drawing::Point(15, 10);
             lblPlataforma->AutoSize = true;
 
             ComboBox^ cmbBilleteras = gcnew ComboBox();
             cmbBilleteras->DropDownStyle = ComboBoxStyle::DropDownList;
-            cmbBilleteras->Location = System::Drawing::Point(60, 50);
-            cmbBilleteras->Size = System::Drawing::Size(250, 30);
+            cmbBilleteras->Location = System::Drawing::Point(15, 35);
+            cmbBilleteras->Size = System::Drawing::Size(330, 30);
             cmbBilleteras->Font = gcnew System::Drawing::Font("Arial", 11);
             cmbBilleteras->Items->Add("PayPal");
             cmbBilleteras->Items->Add("MercadoPago");
@@ -288,46 +293,54 @@ namespace Epsteam {
     }
 
     private: System::Void btnPagar_Click(System::Object^ sender, System::EventArgs^ e) {
-        if (rbTarjeta->Checked) {
-            bool faltanDatos = false;
-            for each (Control ^ c in pnlOpciones->Controls) {
-                if (c->GetType() == TextBox::typeid) {
-                    if (String::IsNullOrWhiteSpace(c->Text) || c->Text == "MM/AA") {
-                        faltanDatos = true;
-                        break;
-                    }
-                }
-            }
-            if (faltanDatos) {
-                MessageBox::Show("¡Oye! No puedes llevarte los juegos gratis. Llena todos los datos de tu tarjeta.", "Aviso de Seguridad", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-                return;
-            }
-        }
 
         int metodoSeleccionado = 1;
         String^ nombreMetodo = "Tarjeta de Crédito/Débito";
-        if (rbEfectivo->Checked) { metodoSeleccionado = 2; nombreMetodo = "Efectivo"; }
-        else if (rbCartera->Checked) { metodoSeleccionado = 3; nombreMetodo = "Cartera Epsteam"; }
 
-        if (rbTarjeta->Checked || rbCartera->Checked) {
-            String^ proveedorExterno = "Bancario";
-
-            if (rbCartera->Checked) {
-                if (pnlOpciones->Controls->ContainsKey("cmbBilleteras")) {
-                    ComboBox^ cmb = (ComboBox^)pnlOpciones->Controls["cmbBilleteras"];
-                    proveedorExterno = cmb->Text;
-                    nombreMetodo = cmb->Text;
+        if (rbTarjeta->Checked) {
+            for each (Control ^ c in pnlOpciones->Controls) {
+                if (c->GetType() == TextBox::typeid) {
+                    if (String::IsNullOrWhiteSpace(c->Text) || c->Text == "MM/AA") {
+                        MessageBox::Show("¡Oye! No puedes llevarte los juegos gratis. Llena todos los datos de tu tarjeta.", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+                        return;
+                    }
                 }
             }
+            frmPasarela^ ventanaSimulada = gcnew frmPasarela("Bancario", totalPago);
+            if (ventanaSimulada->ShowDialog() != System::Windows::Forms::DialogResult::OK) return;
+        }
+        else if (rbEfectivo->Checked) {
+            metodoSeleccionado = 2;
+            nombreMetodo = "Efectivo";
+        }
+        else if (rbCartera->Checked) {
+            metodoSeleccionado = 3;
 
-            frmPasarela^ ventanaSimulada = gcnew frmPasarela(proveedorExterno, totalPago);
+            ComboBox^ cmb = (ComboBox^)pnlOpciones->Controls["cmbBilleteras"];
+            nombreMetodo = cmb->Text;
 
-            if (ventanaSimulada->ShowDialog() != System::Windows::Forms::DialogResult::OK) {
-                MessageBox::Show("El pago fue cancelado o la conexión externa falló.", "Transacción Abortada", MessageBoxButtons::OK, MessageBoxIcon::Error);
-                return;
+            if (nombreMetodo == "Xsolla") {
+                frmSimulacionXsolla^ xsolla = gcnew frmSimulacionXsolla();
+                xsolla->ShowDialog();
+            }
+            else {
+                // AQUÍ LE PASAMOS EL ID DEL USUARIO Y EL NOMBRE DE LA CARTERA
+                frmFirmaElectronica^ firmaEmergente = gcnew frmFirmaElectronica(idUsuario, nombreMetodo);
+
+                // Si la ventana emergente devuelve OK, se completó el pago
+                if (firmaEmergente->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+                    // Puedes dejar esta línea si quieres abrir frmPasarela DESPUÉS de loguearte, 
+                    // o quitarla si frmFirmaElectronica ya cuenta como la pasarela final.
+                    frmPasarela^ ventanaSimulada = gcnew frmPasarela(nombreMetodo, totalPago);
+                    if (ventanaSimulada->ShowDialog() != System::Windows::Forms::DialogResult::OK) return;
+                }
+                else {
+                    return; // Si cerró la pestaña emergente, cancelamos
+                }
             }
         }
 
+        // --- REGISTRO Y TICKET FINAL ---
         bool exito = Epsteam::ConexionBD::RegistrarCompra(idUsuario, carritoPago, metodoSeleccionado, totalPago);
 
         if (exito) {
