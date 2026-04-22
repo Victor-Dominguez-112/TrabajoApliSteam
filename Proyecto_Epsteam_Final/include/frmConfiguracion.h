@@ -13,21 +13,25 @@ namespace Epsteam {
     {
     public:
         // Variable para atrapar la decisión del usuario y mandarla a la BD
-        String^ avatarElegido = "avatar1.jpg";
+        String^ avatarElegido = ""; // Mejor que inicie en .png para coincidir con tus defaults
+        String^ avatarTemporal = "";
+        int temaOriginal;
 
         frmConfiguracion(void)
         {
             InitializeComponent();
             ConfigurarInterfaz();
 
-            // Leemos el cerebro central para que el ComboBox muestre el tema correcto (0, 1 o 2)
+            // Leemos el cerebro central para que el ComboBox muestre el tema correcto
             cmbTema->SelectedIndex = ThemeManager::TemaActual;
 
             // Y nos pintamos de ese color al nacer
             ThemeManager::Aplicar(this);
-            // Obligamos a la lista de temas a quedarse siempre en blanco y negro para que sea legible
+            temaOriginal = ThemeManager::TemaActual;
+
+            // Obligamos a la lista de temas a quedarse siempre en blanco y negro al iniciar
             this->cmbTema->BackColor = Color::White;
-            this->cmbTema->ForeColor = Color::Black;        
+            this->cmbTema->ForeColor = Color::Black;
         }
 
     protected:
@@ -67,8 +71,8 @@ namespace Epsteam {
 
         void ConfigurarInterfaz() {
             // Diseño base de la ventana
-            this->Size = System::Drawing::Size(500, 750); // Hice la ventana un poco más alta
-            this->BackColor = Color::FromArgb(27, 40, 56); // Tema oscuro por defecto
+            this->Size = System::Drawing::Size(500, 750);
+            this->BackColor = Color::FromArgb(27, 40, 56);
             this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
             this->StartPosition = FormStartPosition::CenterParent;
 
@@ -116,7 +120,7 @@ namespace Epsteam {
             btnCambiarAvatar->Click += gcnew System::EventHandler(this, &frmConfiguracion::btnCambiarAvatar_Click);
             this->Controls->Add(btnCambiarAvatar);
 
-            // --- NUEVA SECCIÓN: AVATARES PREDETERMINADOS ---
+            // --- SECCIÓN: AVATARES PREDETERMINADOS ---
             lblEligeAvatar = gcnew Label();
             lblEligeAvatar->Text = "O elige un avatar clásico:";
             lblEligeAvatar->ForeColor = Color::LightGray;
@@ -128,10 +132,10 @@ namespace Epsteam {
             // Avatar 1
             picPred1 = gcnew PictureBox();
             picPred1->Size = System::Drawing::Size(60, 60);
-            picPred1->Location = System::Drawing::Point(50, 320); // Ajustado para que quepan 5
+            picPred1->Location = System::Drawing::Point(50, 320);
             picPred1->SizeMode = PictureBoxSizeMode::Zoom;
             picPred1->Cursor = Cursors::Hand;
-            picPred1->Tag = "avatar1.jpg";
+            picPred1->Tag = "avatar1.png";
             picPred1->Click += gcnew System::EventHandler(this, &frmConfiguracion::SeleccionAvatar_Click);
             this->Controls->Add(picPred1);
 
@@ -141,7 +145,7 @@ namespace Epsteam {
             picPred2->Location = System::Drawing::Point(135, 320);
             picPred2->SizeMode = PictureBoxSizeMode::Zoom;
             picPred2->Cursor = Cursors::Hand;
-            picPred2->Tag = "avatar2.jpg";
+            picPred2->Tag = "avatar2.png";
             picPred2->Click += gcnew System::EventHandler(this, &frmConfiguracion::SeleccionAvatar_Click);
             this->Controls->Add(picPred2);
 
@@ -155,29 +159,28 @@ namespace Epsteam {
             picPred3->Click += gcnew System::EventHandler(this, &frmConfiguracion::SeleccionAvatar_Click);
             this->Controls->Add(picPred3);
 
-            // Avatar 4 (¡NUEVO!)
+            // Avatar 4 
             picPred4 = gcnew PictureBox();
             picPred4->Size = System::Drawing::Size(60, 60);
             picPred4->Location = System::Drawing::Point(305, 320);
             picPred4->SizeMode = PictureBoxSizeMode::Zoom;
             picPred4->Cursor = Cursors::Hand;
-            picPred4->Tag = "avatar4.jpg"; // Asegúrate que tu archivo se llame así
+            picPred4->Tag = "avatar4.png";
             picPred4->Click += gcnew System::EventHandler(this, &frmConfiguracion::SeleccionAvatar_Click);
             this->Controls->Add(picPred4);
 
-            // Avatar 5 (¡NUEVO!)
+            // Avatar 5 
             picPred5 = gcnew PictureBox();
             picPred5->Size = System::Drawing::Size(60, 60);
             picPred5->Location = System::Drawing::Point(390, 320);
             picPred5->SizeMode = PictureBoxSizeMode::Zoom;
             picPred5->Cursor = Cursors::Hand;
-            picPred5->Tag = "avatar5.jpg"; // Asegúrate que tu archivo se llame así
+            picPred5->Tag = "avatar5.png";
             picPred5->Click += gcnew System::EventHandler(this, &frmConfiguracion::SeleccionAvatar_Click);
             this->Controls->Add(picPred5);
 
             try {
                 String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
-
                 String^ rutaFinal = rutaExe + "../../../assets/avatares/";
 
                 picPred1->Image = Image::FromFile(rutaFinal + "avatar1.png");
@@ -186,24 +189,20 @@ namespace Epsteam {
                 picPred4->Image = Image::FromFile(rutaFinal + "avatar4.png");
                 picPred5->Image = Image::FromFile(rutaFinal + "avatar5.png");
 
-                // Si llega aquí, significa que cargaron. Vamos a quitar los fondos grises.
+                // Quitamos fondos
                 picPred1->BackColor = Color::Transparent;
                 picPred2->BackColor = Color::Transparent;
                 picPred3->BackColor = Color::Transparent;
                 picPred4->BackColor = Color::Transparent;
                 picPred5->BackColor = Color::Transparent;
             }
-            catch (Exception^ ex) {
-                // Si falla, el mensaje nos dirá la ruta final calculada
-                String^ rutaIntento = AppDomain::CurrentDomain->BaseDirectory + "../../../assets/avatares/avatar1.jpg";
-                MessageBox::Show("No se encontró en: " + rutaIntento, "Error de Ruta");
-            }
+            catch (Exception^ ex) {}
 
             // --- SECCIÓN BIOGRAFÍA ---
             lblBio = gcnew Label();
             lblBio->Text = "Sobre mí (Biografía):";
             lblBio->ForeColor = Color::LightGray;
-            lblBio->Location = System::Drawing::Point(50, 410); // Lo bajé un poco
+            lblBio->Location = System::Drawing::Point(50, 410);
             lblBio->AutoSize = true;
             lblBio->Font = gcnew System::Drawing::Font("Arial", 11);
             this->Controls->Add(lblBio);
@@ -219,7 +218,7 @@ namespace Epsteam {
             lblTema = gcnew Label();
             lblTema->Text = "Tema de la Interfaz:";
             lblTema->ForeColor = Color::LightGray;
-            lblTema->Location = System::Drawing::Point(50, 540); // Lo bajé un poco
+            lblTema->Location = System::Drawing::Point(50, 540);
             lblTema->AutoSize = true;
             lblTema->Font = gcnew System::Drawing::Font("Arial", 11);
             this->Controls->Add(lblTema);
@@ -239,7 +238,7 @@ namespace Epsteam {
             cmbTema->Items->Add("Tema Eclipse Solar");
             cmbTema->Items->Add("Tema Bosque Místico");
             cmbTema->Items->Add("Tema Atardecer Retro");
-            cmbTema->SelectedIndex = 0; // Selecciona el oscuro por defecto
+            cmbTema->SelectedIndex = 0;
             cmbTema->SelectedIndexChanged += gcnew System::EventHandler(this, &frmConfiguracion::cmbTema_SelectedIndexChanged);
             this->Controls->Add(cmbTema);
 
@@ -249,7 +248,7 @@ namespace Epsteam {
             btnGuardar->BackColor = Color::MediumSeaGreen;
             btnGuardar->ForeColor = Color::White;
             btnGuardar->FlatStyle = FlatStyle::Flat;
-            btnGuardar->Location = System::Drawing::Point(150, 640); // Lo bajé un poco
+            btnGuardar->Location = System::Drawing::Point(150, 640);
             btnGuardar->Size = System::Drawing::Size(200, 40);
             btnGuardar->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
             btnGuardar->Click += gcnew System::EventHandler(this, &frmConfiguracion::btnGuardar_Click);
@@ -259,75 +258,72 @@ namespace Epsteam {
         // --- LÓGICA DE EVENTOS ---
 
         System::Void btnVolver_Click(System::Object^ sender, System::EventArgs^ e) {
-            this->Close(); // Cierra la ventana de perfil
+            // ¡RESTAURACIÓN! Si el usuario se arrepiente, regresamos el tema al original
+            ThemeManager::EstablecerTema(temaOriginal);
+
+            this->DialogResult = System::Windows::Forms::DialogResult::Cancel;
+            this->Close();
         }
 
-        // 1. Abrir explorador de Windows para buscar una foto
-        System::Void btnCambiarAvatar_Click(System::Object^ sender, System::EventArgs^ e) {
-            OpenFileDialog^ ofd = gcnew OpenFileDialog();
-            ofd->Filter = "Archivos de Imagen (*.jpg; *.jpeg; *.png)|*.jpg;*.jpeg;*.png";
-            ofd->Title = "Selecciona tu nueva imagen de perfil";
+    private: System::Void btnCambiarAvatar_Click(System::Object^ sender, System::EventArgs^ e) {
+        OpenFileDialog^ ofd = gcnew OpenFileDialog();
+        ofd->Filter = "Archivos de Imagen (*.jpg; *.jpeg; *.png)|*.jpg;*.jpeg;*.png";
+        ofd->Title = "Selecciona tu nueva imagen de perfil";
 
-            if (ofd->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-                picAvatar->Image = Image::FromFile(ofd->FileName);
-                // Si sube una foto de su PC, guardamos la ruta completa (ofd->FileName) en la variable
-                avatarElegido = ofd->FileName;
+        if (ofd->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+            try {
+                String^ rutaOrigen = ofd->FileName;
+                String^ nombreUnico = "custom_" + DateTime::Now.Ticks + ".jpg";
+                String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
+                String^ rutaDestino = System::IO::Path::GetFullPath(rutaExe + "../../../assets/avatares/" + nombreUnico);
+
+                System::IO::File::Copy(rutaOrigen, rutaDestino, true);
+                avatarTemporal = nombreUnico;
+                picAvatar->Image = Image::FromFile(rutaDestino);
+            }
+            catch (Exception^ ex) {
+                MessageBox::Show("Error al guardar la foto seleccionada: " + ex->Message);
             }
         }
+    }
 
-        // --- NUEVO: EVENTO DE CLIC EN AVATARES PREDETERMINADOS ---
-        System::Void SeleccionAvatar_Click(System::Object^ sender, System::EventArgs^ e) {
+           System::Void SeleccionAvatar_Click(System::Object^ sender, System::EventArgs^ e) {
+               picPred1->BackColor = Color::Transparent;
+               picPred2->BackColor = Color::Transparent;
+               picPred3->BackColor = Color::Transparent;
+               picPred4->BackColor = Color::Transparent;
+               picPred5->BackColor = Color::Transparent;
 
-            // 1. Limpiamos los fondos de todos los avatares para apagar selecciones anteriores
-            picPred1->BackColor = Color::Transparent;
-            picPred2->BackColor = Color::Transparent;
-            picPred3->BackColor = Color::Transparent;
-            picPred4->BackColor = Color::Transparent;
-            picPred5->BackColor = Color::Transparent;
+               PictureBox^ picClickeado = safe_cast<PictureBox^>(sender);
+               picClickeado->BackColor = Color::DeepSkyBlue;
+               picAvatar->Image = picClickeado->Image;
 
-            // 2. Averiguamos a cuál le dieron clic
-            PictureBox^ picClickeado = safe_cast<PictureBox^>(sender);
+               // SOLO guardamos en la temporal. Jamás en la final hasta dar a Guardar.
+               if (picClickeado->Tag != nullptr) {
+                   avatarTemporal = picClickeado->Tag->ToString();
+               }
+           }
 
-            // 3. Lo iluminamos poniéndole fondo azul
-            picClickeado->BackColor = Color::DeepSkyBlue;
+           System::Void cmbTema_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+               // 1. Aplicamos el tema para previsualizar
+               ThemeManager::EstablecerTema(cmbTema->SelectedIndex);
+               ThemeManager::Aplicar(this);
 
-            // 4. Copiamos la foto al PictureBox grande de arriba para que el usuario la vea
-            picAvatar->Image = picClickeado->Image;
+               // 2. ¡EL CONTRAATAQUE! Forzamos la lista a ser blanca para que siempre sea legible
+               this->cmbTema->BackColor = Color::White;
+               this->cmbTema->ForeColor = Color::Black;
+           }
 
-            // 5. Atrapamos el texto oculto (Tag) y lo preparamos para la Base de Datos
-            if (picClickeado->Tag != nullptr) {
-                avatarElegido = picClickeado->Tag->ToString();
-            }
-        }
+           System::Void btnGuardar_Click(System::Object^ sender, System::EventArgs^ e) {
+               // Pasamos la variable temporal a la oficial
+               if (avatarTemporal != "") {
+                   this->avatarElegido = avatarTemporal;
+               }
 
-        // 2. Previsualización del Tema (La Magia Recursiva)
-        System::Void cmbTema_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-            ThemeManager::EstablecerTema(cmbTema->SelectedIndex);
-            ThemeManager::Aplicar(this);
-        }
+               this->DialogResult = System::Windows::Forms::DialogResult::OK;
 
-        // 3. Simular Guardado
-        System::Void btnGuardar_Click(System::Object^ sender, System::EventArgs^ e) {
-            String^ mensaje = "¡Perfil actualizado con éxito!";
-            MessageBox::Show(mensaje, "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
-        }
-
-        // --- EL MOTOR DE TEMAS (FUNCIÓN RECURSIVA) ---
-        void AplicarTemaVisual(Control^ contenedor, Color colorFondo, Color colorTexto, Color colorBoton) {
-            contenedor->BackColor = colorFondo;
-
-            if (contenedor->GetType() == Label::typeid || contenedor->GetType() == TextBox::typeid) {
-                contenedor->ForeColor = colorTexto;
-            }
-
-            if (contenedor->GetType() == Button::typeid) {
-                contenedor->BackColor = colorBoton;
-                contenedor->ForeColor = colorTexto;
-            }
-
-            for each (Control ^ c in contenedor->Controls) {
-                AplicarTemaVisual(c, colorFondo, colorTexto, colorBoton);
-            }
-        }
+               MessageBox::Show("¡Perfil actualizado con éxito!", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
+               this->Close();
+           }
     };
 }

@@ -37,26 +37,59 @@ namespace Epsteam {
             ThemeManager::Aplicar(this);
             ignorarBusqueda = false;
 
-            // --- BOTÓN MI BIBLIOTECA ---
-            Button^ btnBiblioteca = gcnew Button();
-            btnBiblioteca->Text = "MI BIBLIOTECA";
-            btnBiblioteca->BackColor = Color::FromArgb(45, 45, 45);
-            btnBiblioteca->ForeColor = Color::White;
-            btnBiblioteca->FlatStyle = FlatStyle::Flat;
-            btnBiblioteca->Size = System::Drawing::Size(130, 35);
-            btnBiblioteca->Location = System::Drawing::Point(450, 15);
-            btnBiblioteca->Click += gcnew System::EventHandler(this, &frmTienda::btnBiblioteca_Click);
-            pnlNav->Controls->Add(btnBiblioteca);
+            // --- ÍCONO MI BIBLIOTECA ---
+            PictureBox^ picBiblioteca = gcnew PictureBox();
+            picBiblioteca->Size = System::Drawing::Size(40, 40); // Un poco más pequeño
+            picBiblioteca->Location = System::Drawing::Point(500, 10); // Lo movemos más a la izquierda
+            picBiblioteca->SizeMode = PictureBoxSizeMode::Zoom;
+            picBiblioteca->Cursor = Cursors::Hand;
+
+            try {
+                String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
+                picBiblioteca->Image = Image::FromFile(rutaExe + "../../../assets/img/libreria.png");
+            }
+            catch (...) {}
+
+            picBiblioteca->Click += gcnew System::EventHandler(this, &frmTienda::btnBiblioteca_Click);
+            pnlNav->Controls->Add(picBiblioteca);
+
 
             // --- BOTÓN CARRITO ---
             carritoCompras = gcnew System::Collections::Generic::List<cli::array<System::String^>^>();
             btnCarrito = gcnew Button();
-            btnCarrito->Text = "CARRITO (0)";
+
+            // ¡EL TRUCO VETERANO! Le ponemos 3 espacios antes de la palabra para forzar la separación
+            btnCarrito->Text = "   CARRITO (0)";
+
             btnCarrito->BackColor = Color::FromArgb(45, 45, 45);
             btnCarrito->ForeColor = Color::White;
             btnCarrito->FlatStyle = FlatStyle::Flat;
-            btnCarrito->Size = System::Drawing::Size(130, 35);
-            btnCarrito->Location = System::Drawing::Point(600, 15);
+
+            // Botón más chaparrito (35) y un poco más angosto (145)
+            btnCarrito->Size = System::Drawing::Size(145, 35);
+
+            // Lo ponemos en la posición 560 (dejando un buen hueco entre este y la librería)
+            btnCarrito->Location = System::Drawing::Point(560, 12);
+
+            try {
+                String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
+                Image^ imgOriginal = Image::FromFile(rutaExe + "../../../assets/img/Carro.jpg");
+
+                // Ícono un pelín más pequeño (22x22) para que quepa perfecto en la altura de 35
+                Bitmap^ imgIcono = gcnew Bitmap(imgOriginal, System::Drawing::Size(22, 22));
+                imgIcono->MakeTransparent(Color::Black);
+                btnCarrito->Image = imgIcono;
+
+                btnCarrito->TextImageRelation = TextImageRelation::ImageBeforeText;
+                btnCarrito->ImageAlign = ContentAlignment::MiddleLeft;
+                btnCarrito->TextAlign = ContentAlignment::MiddleCenter;
+
+                // Padding ligero
+                btnCarrito->Padding = System::Windows::Forms::Padding(5, 0, 5, 0);
+
+            }
+            catch (...) {}
+
             btnCarrito->Click += gcnew System::EventHandler(this, &frmTienda::btnCarrito_Click);
             pnlNav->Controls->Add(btnCarrito);
 
@@ -394,31 +427,31 @@ namespace Epsteam {
         }
     }
 
-           void CargarJuegosTienda(DataTable^ juegosTabla) {
-               flowTienda->SuspendLayout();
-               flowTienda->Controls->Clear();
+    void CargarJuegosTienda(DataTable^ juegosTabla) {
+        flowTienda->SuspendLayout();
+        flowTienda->Controls->Clear();
 
-               if (juegosTabla != nullptr && juegosTabla->Rows->Count > 0) {
-                   for (int i = 0; i < juegosTabla->Rows->Count; i++) {
-                       DataRow^ fila = juegosTabla->Rows[i];
-                       int id_juego = Convert::ToInt32(fila["id_juego"]);
-                       String^ titulo = fila["titulo"]->ToString();
-                       String^ precio = "$" + fila["precio_base"]->ToString() + " MXN";
-                       AgregarJuego(id_juego, titulo, precio);
-                   }
-               }
-               else {
-                   Label^ lblVacio = gcnew Label();
-                   lblVacio->Text = "No se encontraron juegos";
-                   lblVacio->ForeColor = Color::White;
-                   lblVacio->AutoSize = true;
-                   lblVacio->Font = gcnew System::Drawing::Font("Arial", 14);
-                   flowTienda->Controls->Add(lblVacio);
-               }
-               flowTienda->ResumeLayout();
-           }
+        if (juegosTabla != nullptr && juegosTabla->Rows->Count > 0) {
+            for (int i = 0; i < juegosTabla->Rows->Count; i++) {
+                DataRow^ fila = juegosTabla->Rows[i];
+                int id_juego = Convert::ToInt32(fila["id_juego"]);
+                String^ titulo = fila["titulo"]->ToString();
+                String^ precio = "$" + fila["precio_base"]->ToString() + " MXN";
+                AgregarJuego(id_juego, titulo, precio);
+            }
+        }
+        else {
+            Label^ lblVacio = gcnew Label();
+            lblVacio->Text = "No se encontraron juegos";
+            lblVacio->ForeColor = Color::White;
+            lblVacio->AutoSize = true;
+            lblVacio->Font = gcnew System::Drawing::Font("Arial", 14);
+            flowTienda->Controls->Add(lblVacio);
+        }
+        flowTienda->ResumeLayout();
+    }
 
-           void AgregarJuego(int id_juego, String^ titulo, String^ precio) {
+    void AgregarJuego(int id_juego, String^ titulo, String^ precio) {
                Panel^ card = gcnew Panel();
                card->Size = System::Drawing::Size(200, 310);
                card->BackColor = Color::FromArgb(45, 45, 45);
@@ -513,60 +546,60 @@ namespace Epsteam {
     }
 
 #pragma region Windows Form Designer generated code
-           void InitializeComponent(void)
-           {
-               this->pnlNav = (gcnew System::Windows::Forms::Panel());
-               this->lblLogo = (gcnew System::Windows::Forms::Label());
-               this->btnCerrarSesion = (gcnew System::Windows::Forms::Button());
-               this->flowTienda = (gcnew System::Windows::Forms::FlowLayoutPanel());
-               this->pnlNav->SuspendLayout();
-               this->SuspendLayout();
+        void InitializeComponent(void)
+        {
+            this->pnlNav = (gcnew System::Windows::Forms::Panel());
+            this->lblLogo = (gcnew System::Windows::Forms::Label());
+            this->btnCerrarSesion = (gcnew System::Windows::Forms::Button());
+            this->flowTienda = (gcnew System::Windows::Forms::FlowLayoutPanel());
+            this->pnlNav->SuspendLayout();
+            this->SuspendLayout();
 
-               this->pnlNav->BackColor = System::Drawing::Color::FromArgb(23, 26, 33);
-               this->pnlNav->Controls->Add(this->btnCerrarSesion);
-               this->pnlNav->Controls->Add(this->lblLogo);
-               this->pnlNav->Dock = System::Windows::Forms::DockStyle::Top;
-               this->pnlNav->Location = System::Drawing::Point(0, 0);
-               this->pnlNav->Name = L"pnlNav";
-               this->pnlNav->Size = System::Drawing::Size(1000, 60);
+            this->pnlNav->BackColor = System::Drawing::Color::FromArgb(23, 26, 33);
+            this->pnlNav->Controls->Add(this->btnCerrarSesion);
+            this->pnlNav->Controls->Add(this->lblLogo);
+            this->pnlNav->Dock = System::Windows::Forms::DockStyle::Top;
+            this->pnlNav->Location = System::Drawing::Point(0, 0);
+            this->pnlNav->Name = L"pnlNav";
+            this->pnlNav->Size = System::Drawing::Size(1000, 60);
 
-               this->lblLogo->AutoSize = true;
-               this->lblLogo->Font = (gcnew System::Drawing::Font(L"Arial", 18, System::Drawing::FontStyle::Bold));
-               this->lblLogo->ForeColor = System::Drawing::Color::FromArgb(102, 192, 244);
-               this->lblLogo->Location = System::Drawing::Point(20, 15);
-               this->lblLogo->Text = L"EPSTEAM - TIENDA";
+            this->lblLogo->AutoSize = true;
+            this->lblLogo->Font = (gcnew System::Drawing::Font(L"Arial", 18, System::Drawing::FontStyle::Bold));
+            this->lblLogo->ForeColor = System::Drawing::Color::FromArgb(102, 192, 244);
+            this->lblLogo->Location = System::Drawing::Point(20, 15);
+            this->lblLogo->Text = L"EPSTEAM - TIENDA";
 
-               // Botón falso de diseño visual, se oculta por código luego
-               this->btnCerrarSesion->BackColor = System::Drawing::Color::FromArgb(45, 45, 45);
-               this->btnCerrarSesion->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
-               this->btnCerrarSesion->ForeColor = System::Drawing::Color::White;
-               this->btnCerrarSesion->Location = System::Drawing::Point(850, 15);
-               this->btnCerrarSesion->Size = System::Drawing::Size(120, 30);
-               this->btnCerrarSesion->Text = L"Cerrar Sesión";
-               this->btnCerrarSesion->Click += gcnew System::EventHandler(this, &frmTienda::btnCerrarSesion_Click);
+            // Botón falso de diseño visual, se oculta por código luego
+            this->btnCerrarSesion->BackColor = System::Drawing::Color::FromArgb(45, 45, 45);
+            this->btnCerrarSesion->FlatStyle = System::Windows::Forms::FlatStyle::Flat;
+            this->btnCerrarSesion->ForeColor = System::Drawing::Color::White;
+            this->btnCerrarSesion->Location = System::Drawing::Point(850, 15);
+            this->btnCerrarSesion->Size = System::Drawing::Size(120, 30);
+            this->btnCerrarSesion->Text = L"Cerrar Sesión";
+            this->btnCerrarSesion->Click += gcnew System::EventHandler(this, &frmTienda::btnCerrarSesion_Click);
 
-               this->flowTienda->AutoScroll = true;
-               this->flowTienda->BackColor = System::Drawing::Color::FromArgb(27, 40, 56);
-               this->flowTienda->Dock = System::Windows::Forms::DockStyle::Fill;
-               this->flowTienda->Location = System::Drawing::Point(0, 60);
-               this->flowTienda->Name = L"flowTienda";
-               this->flowTienda->Padding = System::Windows::Forms::Padding(20, 150, 20, 20);
-               this->flowTienda->Size = System::Drawing::Size(1000, 640);
-               this->flowTienda->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &frmTienda::ClicFueraDeFiltros);
+            this->flowTienda->AutoScroll = true;
+            this->flowTienda->BackColor = System::Drawing::Color::FromArgb(27, 40, 56);
+            this->flowTienda->Dock = System::Windows::Forms::DockStyle::Fill;
+            this->flowTienda->Location = System::Drawing::Point(0, 60);
+            this->flowTienda->Name = L"flowTienda";
+            this->flowTienda->Padding = System::Windows::Forms::Padding(20, 150, 20, 20);
+            this->flowTienda->Size = System::Drawing::Size(1000, 640);
+            this->flowTienda->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &frmTienda::ClicFueraDeFiltros);
 
-               this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
-               this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-               this->ClientSize = System::Drawing::Size(1000, 700);
-               this->Controls->Add(this->flowTienda);
-               this->Controls->Add(this->pnlNav);
-               this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
-               this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
-               this->Text = L"Tienda Epsteam";
-               this->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &frmTienda::ClicFueraDeFiltros);
-               this->pnlNav->ResumeLayout(false);
-               this->pnlNav->PerformLayout();
-               this->ResumeLayout(false);
-           }
+            this->AutoScaleDimensions = System::Drawing::SizeF(6, 13);
+            this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
+            this->ClientSize = System::Drawing::Size(1000, 700);
+            this->Controls->Add(this->flowTienda);
+            this->Controls->Add(this->pnlNav);
+            this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
+            this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+            this->Text = L"Tienda Epsteam";
+            this->MouseClick += gcnew System::Windows::Forms::MouseEventHandler(this, &frmTienda::ClicFueraDeFiltros);
+            this->pnlNav->ResumeLayout(false);
+            this->pnlNav->PerformLayout();
+            this->ResumeLayout(false);
+        }
 #pragma endregion
 
     private: System::Void btnCerrarSesion_Click(System::Object^ sender, System::EventArgs^ e) {
@@ -667,40 +700,36 @@ namespace Epsteam {
     private: System::Void AbrirConfiguracion(System::Object^ sender, System::EventArgs^ e) {
         frmConfiguracion^ ventanaPerfil = gcnew frmConfiguracion();
         this->Hide();
-        ventanaPerfil->ShowDialog();
+
+        // ¡EL CANDADO! Solo cambiamos la foto si el usuario presionó "GUARDAR CAMBIOS" (OK)
+        if (ventanaPerfil->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+
+            String^ fotoElegida = ventanaPerfil->avatarElegido;
+
+            if (!String::IsNullOrEmpty(fotoElegida)) {
+                String^ rutaFinal = fotoElegida;
+
+                try {
+                    if (!fotoElegida->Contains(":\\")) {
+                        String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
+                        String^ rutaSucia = rutaExe + "../../../assets/avatares/" + fotoElegida;
+                        rutaFinal = System::IO::Path::GetFullPath(rutaSucia);
+                    }
+
+                    picPerfilBoton->Image = Image::FromFile(rutaFinal);
+
+                    btnPerfil->Visible = false;
+                    picPerfilBoton->Visible = true;
+
+                }
+                catch (...) {
+                    // Silencio si hay error
+                }
+            }
+        } // Fin del candado
+
         this->Show();
         ThemeManager::Aplicar(this);
-
-        // Al regresar, revisamos qué foto eligió el usuario
-        String^ fotoElegida = ventanaPerfil->avatarElegido;
-
-        // Si no está vacío o no es el default, intentamos cargarla
-        if (!String::IsNullOrEmpty(fotoElegida)) {
-
-            // 1. ¡Declaramos rutaFinal AQUÍ AFUERA para que el catch la pueda ver!
-            String^ rutaFinal = fotoElegida;
-
-            try {
-                // Si la ruta NO tiene "C:\" o "D:\" significa que es un avatar de assets
-                if (!fotoElegida->Contains(":\\")) {
-                    String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
-                    String^ rutaSucia = rutaExe + "../../../assets/avatares/" + fotoElegida;
-
-                    // ¡AQUÍ ESTÁ LA MAGIA! Limpiamos la ruta para que Windows la lea perfectamente
-                    rutaFinal = System::IO::Path::GetFullPath(rutaSucia);
-                }
-
-                // Intentamos cargar la foto con la ruta ya limpia
-                picPerfilBoton->Image = Image::FromFile(rutaFinal);
-
-                // Ocultamos el botón de texto y mostramos la foto
-                btnPerfil->Visible = false;
-                picPerfilBoton->Visible = true;
-
-            }
-            catch (Exception^ ex) {
-            }
-        }
     }
 
     private: System::Void timerFarmeo_Tick(System::Object^ sender, System::EventArgs^ e) {
