@@ -34,7 +34,6 @@ namespace Epsteam {
         {
             idUsuarioActual = idLogueado;
             InitializeComponent();
-            ThemeManager::Aplicar(this);
             ignorarBusqueda = false;
 
             // --- ÍCONO MI BIBLIOTECA ---
@@ -116,24 +115,55 @@ namespace Epsteam {
             menuPerfil->Items->Add("Cerrar Sesión", nullptr, gcnew EventHandler(this, &frmTienda::btnCerrarSesion_Click));
 
             // --- CREACIÓN DE LA FOTO (BOTÓN DINÁMICO) ---
+            // --- CREACIÓN DE LA FOTO (BOTÓN DINÁMICO) ---
             picPerfilBoton = gcnew System::Windows::Forms::PictureBox();
             picPerfilBoton->Size = System::Drawing::Size(40, 40);
             picPerfilBoton->Location = System::Drawing::Point(750, 12);
             picPerfilBoton->SizeMode = PictureBoxSizeMode::Zoom;
             picPerfilBoton->Cursor = Cursors::Hand;
-            picPerfilBoton->Visible = false;
+
+            // Leemos qué nos mandó la base de datos
+            String^ fotoBD = Epsteam::ConexionBD::avatarActual;
+
+            if (fotoBD == "" || fotoBD == "avatar1.png") {
+                // Si no hay foto personalizada, mostramos las letras "MI PERFIL"
+                btnPerfil->Visible = true;
+                picPerfilBoton->Visible = false;
+            }
+            else {
+                // Si el usuario sí subió foto, ocultamos las letras y cargamos la imagen
+                try {
+                    String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
+                    String^ rutaLimpia = System::IO::Path::GetFullPath(rutaExe + "../../../assets/avatares/" + fotoBD);
+
+                    picPerfilBoton->Image = Image::FromFile(rutaLimpia);
+                    btnPerfil->Visible = false;
+                    picPerfilBoton->Visible = true;
+                }
+                catch (...) {
+                    // Si falla el archivo, regresamos a las letras por seguridad
+                    btnPerfil->Visible = true;
+                    picPerfilBoton->Visible = false;
+                }
+            }
+
+            picPerfilBoton->Click += gcnew System::EventHandler(this, &frmTienda::MostrarMenuPerfil);
+            pnlNav->Controls->Add(picPerfilBoton);
 
             // 👇 AQUÍ ES DONDE PEGAS EL CÓDIGO NUEVO 👇
             try {
                 String^ rutaExe = AppDomain::CurrentDomain->BaseDirectory;
-                String^ rutaSucia = rutaExe + "../../../assets/avatares/avatar1.png"; // Cambiado a .png
 
-                // Limpiamos la ruta
+                // ¡AQUÍ ESTÁ LA CLAVE! Leemos la foto de la memoria
+                String^ rutaSucia = rutaExe + "../../../assets/avatares/" + Epsteam::ConexionBD::avatarActual;
+
                 String^ rutaLimpia = System::IO::Path::GetFullPath(rutaSucia);
                 picPerfilBoton->Image = Image::FromFile(rutaLimpia);
+
+                picPerfilBoton->Visible = true;
+                btnPerfil->Visible = false; // Ocultamos el texto si hay foto
             }
             catch (...) {
-                // SI FALLA, QUE NO MUESTRE NINGÚN MENSAJE, SOLO QUE SE PONGA GRIS
                 picPerfilBoton->BackColor = Color::DimGray;
             }
             // 👆 HASTA AQUÍ EL CÓDIGO NUEVO 👆
@@ -156,8 +186,8 @@ namespace Epsteam {
             timerFarmeo->Interval = 1200;
             timerFarmeo->Tick += gcnew System::EventHandler(this, &frmTienda::timerFarmeo_Tick);
             timerFarmeo->Start();
-
             CargarJuegosTienda(Epsteam::ConexionBD::ObtenerCatalogoJuegos());
+            ThemeManager::Aplicar(this);
         }
 
     protected:
@@ -452,67 +482,67 @@ namespace Epsteam {
     }
 
     void AgregarJuego(int id_juego, String^ titulo, String^ precio) {
-               Panel^ card = gcnew Panel();
-               card->Size = System::Drawing::Size(200, 310);
-               card->BackColor = Color::FromArgb(45, 45, 45);
-               card->Margin = System::Windows::Forms::Padding(10, 15, 10, 15);
+            Panel^ card = gcnew Panel();
+            card->Size = System::Drawing::Size(200, 310);
+            card->BackColor = Color::FromArgb(45, 45, 45);
+            card->Margin = System::Windows::Forms::Padding(10, 15, 10, 15);
 
-               PictureBox^ picPortada = gcnew PictureBox();
-               picPortada->Dock = DockStyle::Fill;
-               picPortada->SizeMode = PictureBoxSizeMode::StretchImage;
-               String^ rutaImagen = GestorImagenes::ObtenerRuta(titulo);
+            PictureBox^ picPortada = gcnew PictureBox();
+            picPortada->Dock = DockStyle::Fill;
+            picPortada->SizeMode = PictureBoxSizeMode::StretchImage;
+            String^ rutaImagen = GestorImagenes::ObtenerRuta(titulo);
 
-               if (System::IO::File::Exists(rutaImagen)) {
-                   picPortada->Image = Image::FromFile(rutaImagen);
-               }
-               else {
-                   picPortada->BackColor = Color::DimGray;
-               }
+            if (System::IO::File::Exists(rutaImagen)) {
+                picPortada->Image = Image::FromFile(rutaImagen);
+            }
+            else {
+                picPortada->BackColor = Color::DimGray;
+            }
 
-               cli::array<System::String^>^ datosJuego = gcnew cli::array<System::String^>{ id_juego.ToString(), titulo, precio };
+            cli::array<System::String^>^ datosJuego = gcnew cli::array<System::String^>{ id_juego.ToString(), titulo, precio };
 
-               picPortada->Cursor = Cursors::Hand;
-               picPortada->Tag = datosJuego;
-               picPortada->Click += gcnew System::EventHandler(this, &frmTienda::AbrirDetalle_Click);
+            picPortada->Cursor = Cursors::Hand;
+            picPortada->Tag = datosJuego;
+            picPortada->Click += gcnew System::EventHandler(this, &frmTienda::AbrirDetalle_Click);
 
-               Label^ lblTitulo = gcnew Label();
-               lblTitulo->Text = titulo;
-               lblTitulo->ForeColor = Color::White;
-               lblTitulo->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
-               lblTitulo->Dock = DockStyle::Top;
-               lblTitulo->TextAlign = ContentAlignment::MiddleCenter;
-               lblTitulo->Height = 35;
+            Label^ lblTitulo = gcnew Label();
+            lblTitulo->Text = titulo;
+            lblTitulo->ForeColor = Color::White;
+            lblTitulo->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
+            lblTitulo->Dock = DockStyle::Top;
+            lblTitulo->TextAlign = ContentAlignment::MiddleCenter;
+            lblTitulo->Height = 35;
 
-               lblTitulo->Cursor = Cursors::Hand;
-               lblTitulo->Tag = datosJuego;
-               lblTitulo->Click += gcnew System::EventHandler(this, &frmTienda::AbrirDetalle_Click);
+            lblTitulo->Cursor = Cursors::Hand;
+            lblTitulo->Tag = datosJuego;
+            lblTitulo->Click += gcnew System::EventHandler(this, &frmTienda::AbrirDetalle_Click);
 
-               Label^ lblPrecio = gcnew Label();
-               lblPrecio->Text = precio;
-               lblPrecio->ForeColor = Color::LightGreen;
-               lblPrecio->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
-               lblPrecio->Dock = DockStyle::Bottom;
-               lblPrecio->TextAlign = ContentAlignment::MiddleCenter;
-               lblPrecio->Height = 25;
+            Label^ lblPrecio = gcnew Label();
+            lblPrecio->Text = precio;
+            lblPrecio->ForeColor = Color::LightGreen;
+            lblPrecio->Font = gcnew System::Drawing::Font("Arial", 11, FontStyle::Bold);
+            lblPrecio->Dock = DockStyle::Bottom;
+            lblPrecio->TextAlign = ContentAlignment::MiddleCenter;
+            lblPrecio->Height = 25;
 
-               Button^ btnComprar = gcnew Button();
-               btnComprar->Text = "AGREGAR AL CARRO";
-               btnComprar->FlatStyle = FlatStyle::Flat;
-               btnComprar->ForeColor = Color::White;
-               btnComprar->BackColor = ThemeManager::ColorBotones;
-               btnComprar->Dock = DockStyle::Bottom;
-               btnComprar->Height = 35;
-               btnComprar->Tag = datosJuego;
-               btnComprar->Click += gcnew System::EventHandler(this, &frmTienda::btnComprar_Click);
+            Button^ btnComprar = gcnew Button();
+            btnComprar->Text = "AGREGAR AL CARRO";
+            btnComprar->FlatStyle = FlatStyle::Flat;
+            btnComprar->ForeColor = Color::White;
+            btnComprar->BackColor = ThemeManager::ColorBotones;
+            btnComprar->Dock = DockStyle::Bottom;
+            btnComprar->Height = 35;
+            btnComprar->Tag = datosJuego;
+            btnComprar->Click += gcnew System::EventHandler(this, &frmTienda::btnComprar_Click);
 
-               card->Controls->Add(picPortada);
-               card->Controls->Add(lblTitulo);
-               card->Controls->Add(btnComprar);
-               card->Controls->Add(lblPrecio);
-               picPortada->SendToBack();
+            card->Controls->Add(picPortada);
+            card->Controls->Add(lblTitulo);
+            card->Controls->Add(btnComprar);
+            card->Controls->Add(lblPrecio);
+            picPortada->SendToBack();
 
-               flowTienda->Controls->Add(card);
-           }
+            flowTienda->Controls->Add(card);
+        }
 
     private: System::Void AbrirDetalle_Click(System::Object^ sender, System::EventArgs^ e) {
         Control^ controlClicado = (Control^)sender;

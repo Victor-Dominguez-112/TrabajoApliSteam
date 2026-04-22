@@ -1,5 +1,6 @@
 #pragma once
 #include "ThemeManager.h"
+#include "ConexionBD.h"
 
 namespace Epsteam {
     using namespace System;
@@ -287,43 +288,54 @@ namespace Epsteam {
         }
     }
 
-           System::Void SeleccionAvatar_Click(System::Object^ sender, System::EventArgs^ e) {
-               picPred1->BackColor = Color::Transparent;
-               picPred2->BackColor = Color::Transparent;
-               picPred3->BackColor = Color::Transparent;
-               picPred4->BackColor = Color::Transparent;
-               picPred5->BackColor = Color::Transparent;
+        System::Void SeleccionAvatar_Click(System::Object^ sender, System::EventArgs^ e) {
+            picPred1->BackColor = Color::Transparent;
+            picPred2->BackColor = Color::Transparent;
+            picPred3->BackColor = Color::Transparent;
+            picPred4->BackColor = Color::Transparent;
+            picPred5->BackColor = Color::Transparent;
 
-               PictureBox^ picClickeado = safe_cast<PictureBox^>(sender);
-               picClickeado->BackColor = Color::DeepSkyBlue;
-               picAvatar->Image = picClickeado->Image;
+            PictureBox^ picClickeado = safe_cast<PictureBox^>(sender);
+            picClickeado->BackColor = Color::DeepSkyBlue;
+            picAvatar->Image = picClickeado->Image;
 
-               // SOLO guardamos en la temporal. Jamás en la final hasta dar a Guardar.
-               if (picClickeado->Tag != nullptr) {
-                   avatarTemporal = picClickeado->Tag->ToString();
-               }
-           }
+            // SOLO guardamos en la temporal. Jamás en la final hasta dar a Guardar.
+            if (picClickeado->Tag != nullptr) {
+                avatarTemporal = picClickeado->Tag->ToString();
+            }
+        }
 
-           System::Void cmbTema_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
-               // 1. Aplicamos el tema para previsualizar
-               ThemeManager::EstablecerTema(cmbTema->SelectedIndex);
-               ThemeManager::Aplicar(this);
+        System::Void cmbTema_SelectedIndexChanged(System::Object^ sender, System::EventArgs^ e) {
+            // 1. Aplicamos el tema para previsualizar
+            ThemeManager::EstablecerTema(cmbTema->SelectedIndex);
+            ThemeManager::Aplicar(this);
 
-               // 2. ¡EL CONTRAATAQUE! Forzamos la lista a ser blanca para que siempre sea legible
-               this->cmbTema->BackColor = Color::White;
-               this->cmbTema->ForeColor = Color::Black;
-           }
+            // 2. ¡EL CONTRAATAQUE! Forzamos la lista a ser blanca para que siempre sea legible
+            this->cmbTema->BackColor = Color::White;
+            this->cmbTema->ForeColor = Color::Black;
+        }
 
-           System::Void btnGuardar_Click(System::Object^ sender, System::EventArgs^ e) {
-               // Pasamos la variable temporal a la oficial
-               if (avatarTemporal != "") {
-                   this->avatarElegido = avatarTemporal;
-               }
+        System::Void btnGuardar_Click(System::Object^ sender, System::EventArgs^ e) {
+            String^ fotoFinal = Epsteam::ConexionBD::avatarActual;
 
-               this->DialogResult = System::Windows::Forms::DialogResult::OK;
+            if (avatarTemporal != "") {
+                this->avatarElegido = avatarTemporal;
+                fotoFinal = avatarTemporal;
+            }
 
-               MessageBox::Show("¡Perfil actualizado con éxito!", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
-               this->Close();
-           }
+            // ¡EXTREMO RIGOR! Tomamos el número exacto del combobox que el usuario está viendo
+            int temaSeleccionado = cmbTema->SelectedIndex;
+
+            // Enviamos a guardar a MySQL
+            Epsteam::ConexionBD::GuardarPreferencias(
+                Epsteam::ConexionBD::idUsuarioActual,
+                fotoFinal,
+                temaSeleccionado
+            );
+
+            this->DialogResult = System::Windows::Forms::DialogResult::OK;
+            MessageBox::Show("¡Perfil actualizado con éxito!", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
+            this->Close();
+        }
     };
 }

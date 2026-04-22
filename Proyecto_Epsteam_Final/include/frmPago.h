@@ -294,28 +294,32 @@ namespace Epsteam {
 
     private: System::Void btnPagar_Click(System::Object^ sender, System::EventArgs^ e) {
 
+        btnPagar->Enabled = false; // Apagamos el botón al primer roce
+
         int metodoSeleccionado = 1;
         String^ nombreMetodo = "Tarjeta de Crédito/Débito";
 
+        // --- TARJETAS ---
         if (rbTarjeta->Checked) {
             for each (Control ^ c in pnlOpciones->Controls) {
-                if (c->GetType() == TextBox::typeid) {
-                    if (String::IsNullOrWhiteSpace(c->Text) || c->Text == "MM/AA") {
-                        MessageBox::Show("¡Oye! No puedes llevarte los juegos gratis. Llena todos los datos de tu tarjeta.", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
-                        return;
-                    }
+                if (c->GetType() == TextBox::typeid && (String::IsNullOrWhiteSpace(c->Text) || c->Text == "MM/AA")) {
+                    MessageBox::Show("Llena todos los datos de tu tarjeta.", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Warning);
+                    btnPagar->Enabled = true; return;
                 }
             }
             frmPasarela^ ventanaSimulada = gcnew frmPasarela("Bancario", totalPago);
-            if (ventanaSimulada->ShowDialog() != System::Windows::Forms::DialogResult::OK) return;
+            if (ventanaSimulada->ShowDialog() != System::Windows::Forms::DialogResult::OK) {
+                btnPagar->Enabled = true; return;
+            }
         }
+        // --- EFECTIVO ---
         else if (rbEfectivo->Checked) {
             metodoSeleccionado = 2;
             nombreMetodo = "Efectivo";
         }
+        // --- BILLETERAS (PAYPAL / MERCADO PAGO) ---
         else if (rbCartera->Checked) {
             metodoSeleccionado = 3;
-
             ComboBox^ cmb = (ComboBox^)pnlOpciones->Controls["cmbBilleteras"];
             nombreMetodo = cmb->Text;
 
@@ -324,61 +328,44 @@ namespace Epsteam {
                 xsolla->ShowDialog();
             }
             else {
-                // AQUÍ LE PASAMOS EL ID DEL USUARIO Y EL NOMBRE DE LA CARTERA
-                frmFirmaElectronica^ firmaEmergente = gcnew frmFirmaElectronica(idUsuario, nombreMetodo);
+                // 1. ABRIMOS LA PANTALLA DE CORREO Y CONTRASEÑA
+                frmFirmaElectronica^ login = gcnew frmFirmaElectronica(idUsuario, nombreMetodo, totalPago);
 
-                // Si la ventana emergente devuelve OK, se completó el pago
-                if (firmaEmergente->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
-                    // Puedes dejar esta línea si quieres abrir frmPasarela DESPUÉS de loguearte, 
-                    // o quitarla si frmFirmaElectronica ya cuenta como la pasarela final.
-                    frmPasarela^ ventanaSimulada = gcnew frmPasarela(nombreMetodo, totalPago);
-                    if (ventanaSimulada->ShowDialog() != System::Windows::Forms::DialogResult::OK) return;
+                if (login->ShowDialog() == System::Windows::Forms::DialogResult::OK) {
+
+                    // 2. SI EL CORREO FUE CORRECTO, ABRIMOS LA BARRA DE CARGA Y YA.
+                    frmPasarela^ carga = gcnew frmPasarela(nombreMetodo, totalPago);
+                    carga->ShowDialog(); // Solo dejamos que haga su animación
+
                 }
                 else {
-                    return; // Si cerró la pestaña emergente, cancelamos
+                    btnPagar->Enabled = true;
+                    return; // Si el usuario cierra el login, cancelamos todo el pago
                 }
             }
         }
 
-        // --- REGISTRO Y TICKET FINAL ---
-        bool exito = Epsteam::ConexionBD::RegistrarCompra(idUsuario, carritoPago, metodoSeleccionado, totalPago);
+        // --- REGISTRO FINAL EN BASE DE DATOS ---
+        if (Epsteam::ConexionBD::RegistrarCompra(idUsuario, carritoPago, metodoSeleccionado, totalPago)) {
+            frmTicket^ ticket = gcnew frmTicket(nombreMetodo, carritoPago, totalPago);
+            ticket->ShowDialog();
 
-        if (exito) {
-            frmTicket^ ticketVisual = gcnew frmTicket(nombreMetodo, carritoPago, totalPago);
-            ticketVisual->ShowDialog();
-
+            // Tratamos de imprimir el ticket txt
             try {
-                if (!System::IO::Directory::Exists("Tickets")) {
-                    System::IO::Directory::CreateDirectory("Tickets");
-                }
+                if (!System::IO::Directory::Exists("Tickets")) System::IO::Directory::CreateDirectory("Tickets");
                 DateTime fecha = DateTime::Now;
                 String^ nombreArchivo = "Tickets/Recibo_" + Epsteam::ConexionBD::nicknameActual + "_" + fecha.ToString("HH_mm_ss") + ".txt";
-
                 System::IO::StreamWriter^ recibo = gcnew System::IO::StreamWriter(nombreArchivo);
-                recibo->WriteLine("========================================");
-                recibo->WriteLine("          RECIBO DE EPSTEAM             ");
-                recibo->WriteLine("========================================");
-                recibo->WriteLine("Fecha: " + fecha.ToString("dd/MM/yyyy HH:mm:ss"));
-                recibo->WriteLine("Cliente: " + Epsteam::ConexionBD::nicknameActual);
-                recibo->WriteLine("Método de Pago: " + nombreMetodo);
-                recibo->WriteLine("----------------------------------------");
-                recibo->WriteLine("ARTÍCULOS COMPRADOS:");
-
-                for (int i = 0; i < carritoPago->Count; i++) {
-                    cli::array<System::String^>^ datos = carritoPago[i];
-                    recibo->WriteLine("- " + datos[1] + " (" + datos[2] + ")");
-                }
-
-                recibo->WriteLine("----------------------------------------");
                 recibo->WriteLine("TOTAL PAGADO: $" + totalPago.ToString("0.00") + " MXN");
-                recibo->WriteLine("========================================");
-                recibo->WriteLine("¡Los juegos ya están en tu Biblioteca!");
                 recibo->Close();
             }
             catch (...) {}
 
             this->DialogResult = System::Windows::Forms::DialogResult::OK;
             this->Close();
+        }
+        else {
+            btnPagar->Enabled = true;
         }
     }
     };

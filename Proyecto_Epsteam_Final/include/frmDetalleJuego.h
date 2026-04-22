@@ -1,9 +1,8 @@
-#pragma once
+Ôªø#pragma once
 #include "ThemeManager.h"
-
+#include "ConexionBD.h" // ¬°CONECTADO AL CEREBRO!
 
 namespace Epsteam {
-
 
     using namespace System;
     using namespace System::ComponentModel;
@@ -11,8 +10,7 @@ namespace Epsteam {
     using namespace System::Windows::Forms;
     using namespace System::Data;
     using namespace System::Drawing;
-    using namespace System::Collections::Generic; // °NUEVO! Para usar Listas
-
+    using namespace System::Collections::Generic;
 
     public ref class frmDetalleJuego : public System::Windows::Forms::Form
     {
@@ -21,9 +19,7 @@ namespace Epsteam {
         String^ titulo_juego;
         String^ precio_juego;
 
-        // °NUEVO! AquÌ guardaremos la referencia al carrito de la tienda
         List<cli::array<System::String^>^>^ carrito_global;
-
 
         Panel^ pnlHeader;
         Panel^ pnlContenedorScroll;
@@ -33,42 +29,36 @@ namespace Epsteam {
         Button^ btnCerrar;
         PictureBox^ picPortada;
         Label^ lblSinopsis;
-        Label^ lblRequisitos;
+        Label^ lblDetallesExtra; // ¬°NUEVO! Reemplaza a los requisitos
         Label^ lblPrecio;
         Button^ btnComprar;
 
-
         Label^ lblSeccionCalificar;
         ComboBox^ cmbPuntuacion;
+        Label^ lblCalificacionDB; // ¬°NUEVO! Calificaci√≥n al lado de las estrellas
         Label^ lblSeccionComentarios;
         TextBox^ txtComentario;
         Button^ btnEnviarResena;
 
-
     public:
-        // AHORA RECIBE EL CARRITO COMO PAR¡METRO
         frmDetalleJuego(int idJuego, String^ titulo, String^ precio, List<cli::array<System::String^>^>^ carrito)
         {
             id_juego_actual = idJuego;
             titulo_juego = titulo;
             precio_juego = precio;
-            carrito_global = carrito; // Conectamos el carrito
-
+            carrito_global = carrito;
 
             InitializeComponent();
             ConfigurarDiseno();
+            CargarDatosReales();
             ThemeManager::Aplicar(this);
-            CargarDatosSimulados();
         }
-
 
     protected:
         ~frmDetalleJuego() { if (components) { delete components; } }
 
-
     private:
         System::ComponentModel::Container^ components;
-
 
         void InitializeComponent(void)
         {
@@ -81,14 +71,12 @@ namespace Epsteam {
             this->StartPosition = FormStartPosition::CenterScreen;
         }
 
-
         void ConfigurarDiseno() {
             pnlHeader = gcnew Panel();
             pnlHeader->Dock = DockStyle::Top;
             pnlHeader->Height = 80;
             pnlHeader->BackColor = Color::FromArgb(23, 26, 33);
             this->Controls->Add(pnlHeader);
-
 
             lblTituloJuego = gcnew Label();
             lblTituloJuego->Text = "Cargando...";
@@ -98,14 +86,12 @@ namespace Epsteam {
             lblTituloJuego->AutoSize = true;
             pnlHeader->Controls->Add(lblTituloJuego);
 
-
             lblDesarrollador = gcnew Label();
             lblDesarrollador->Font = gcnew System::Drawing::Font("Arial", 10, FontStyle::Italic);
             lblDesarrollador->ForeColor = Color::FromArgb(102, 192, 244);
             lblDesarrollador->Location = System::Drawing::Point(25, 50);
             lblDesarrollador->AutoSize = true;
             pnlHeader->Controls->Add(lblDesarrollador);
-
 
             btnCerrar = gcnew Button();
             btnCerrar->Text = "X";
@@ -117,13 +103,11 @@ namespace Epsteam {
             btnCerrar->Click += gcnew System::EventHandler(this, &frmDetalleJuego::btnCerrar_Click);
             pnlHeader->Controls->Add(btnCerrar);
 
-
             pnlContenedorScroll = gcnew Panel();
             pnlContenedorScroll->Location = System::Drawing::Point(0, 80);
             pnlContenedorScroll->Size = System::Drawing::Size(900, 520);
             pnlContenedorScroll->AutoScroll = true;
             this->Controls->Add(pnlContenedorScroll);
-
 
             picPortada = gcnew PictureBox();
             picPortada->Location = System::Drawing::Point(30, 20);
@@ -132,14 +116,13 @@ namespace Epsteam {
             picPortada->SizeMode = PictureBoxSizeMode::StretchImage;
             pnlContenedorScroll->Controls->Add(picPortada);
 
-
-            lblRequisitos = gcnew Label();
-            lblRequisitos->Location = System::Drawing::Point(30, 480);
-            lblRequisitos->Size = System::Drawing::Size(380, 150);
-            lblRequisitos->ForeColor = Color::LightGray;
-            lblRequisitos->Font = gcnew System::Drawing::Font("Consolas", 9);
-            pnlContenedorScroll->Controls->Add(lblRequisitos);
-
+            // ¬°NUEVO! Panel de Informaci√≥n Adicional (reemplaza Requisitos)
+            lblDetallesExtra = gcnew Label();
+            lblDetallesExtra->Location = System::Drawing::Point(30, 480);
+            lblDetallesExtra->Size = System::Drawing::Size(380, 100);
+            lblDetallesExtra->ForeColor = Color::LightGray;
+            lblDetallesExtra->Font = gcnew System::Drawing::Font("Consolas", 10);
+            pnlContenedorScroll->Controls->Add(lblDetallesExtra);
 
             Label^ lblSinopTitulo = gcnew Label();
             lblSinopTitulo->Text = "SINOPSIS";
@@ -149,7 +132,6 @@ namespace Epsteam {
             lblSinopTitulo->AutoSize = true;
             pnlContenedorScroll->Controls->Add(lblSinopTitulo);
 
-
             lblSinopsis = gcnew Label();
             lblSinopsis->Location = System::Drawing::Point(440, 50);
             lblSinopsis->Size = System::Drawing::Size(420, 90);
@@ -158,7 +140,6 @@ namespace Epsteam {
             lblSinopsis->Font = gcnew System::Drawing::Font("Arial", 10);
             pnlContenedorScroll->Controls->Add(lblSinopsis);
 
-
             lblPrecio = gcnew Label();
             lblPrecio->Font = gcnew System::Drawing::Font("Arial", 22, FontStyle::Bold);
             lblPrecio->ForeColor = Color::LightGreen;
@@ -166,9 +147,8 @@ namespace Epsteam {
             lblPrecio->AutoSize = true;
             pnlContenedorScroll->Controls->Add(lblPrecio);
 
-
             btnComprar = gcnew Button();
-            btnComprar->Text = "A—ADIR AL CARRITO";
+            btnComprar->Text = "A√ëADIR AL CARRITO";
             btnComprar->Size = System::Drawing::Size(200, 45);
             btnComprar->Location = System::Drawing::Point(640, 140);
             btnComprar->BackColor = Color::FromArgb(0, 120, 215);
@@ -178,7 +158,6 @@ namespace Epsteam {
             btnComprar->Click += gcnew System::EventHandler(this, &frmDetalleJuego::btnComprar_Click);
             pnlContenedorScroll->Controls->Add(btnComprar);
 
-
             lblSeccionCalificar = gcnew Label();
             lblSeccionCalificar->Text = "CALIFICAR ESTE JUEGO";
             lblSeccionCalificar->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
@@ -187,15 +166,25 @@ namespace Epsteam {
             lblSeccionCalificar->AutoSize = true;
             pnlContenedorScroll->Controls->Add(lblSeccionCalificar);
 
-
             cmbPuntuacion = gcnew ComboBox();
             cmbPuntuacion->Items->AddRange(gcnew array<Object^>{ "5 Estrellas", "4 Estrellas", "3 Estrellas", "2 Estrellas", "1 Estrella" });
             cmbPuntuacion->SelectedIndex = 0;
             cmbPuntuacion->Location = System::Drawing::Point(440, 240);
             cmbPuntuacion->Size = System::Drawing::Size(150, 30);
             cmbPuntuacion->DropDownStyle = ComboBoxStyle::DropDownList;
+            cmbPuntuacion->BackColor = Color::FromArgb(40, 40, 40);
+            cmbPuntuacion->ForeColor = Color::White;               
+            cmbPuntuacion->FlatStyle = FlatStyle::Flat;            
             pnlContenedorScroll->Controls->Add(cmbPuntuacion);
 
+            // ¬°NUEVO! Calificaci√≥n que viene de la BD
+            lblCalificacionDB = gcnew Label();
+            lblCalificacionDB->Location = System::Drawing::Point(600, 243); // Al ladito de la cajita blanca
+            lblCalificacionDB->AutoSize = true;
+            lblCalificacionDB->ForeColor = Color::Gold;
+            lblCalificacionDB->Font = gcnew System::Drawing::Font("Arial", 12, FontStyle::Bold);
+            lblCalificacionDB->Text = " 0.0 / 10";
+            pnlContenedorScroll->Controls->Add(lblCalificacionDB);
 
             lblSeccionComentarios = gcnew Label();
             lblSeccionComentarios->Text = "DEJAR UN COMENTARIO";
@@ -205,7 +194,6 @@ namespace Epsteam {
             lblSeccionComentarios->AutoSize = true;
             pnlContenedorScroll->Controls->Add(lblSeccionComentarios);
 
-
             txtComentario = gcnew TextBox();
             txtComentario->Multiline = true;
             txtComentario->Size = System::Drawing::Size(400, 80);
@@ -213,7 +201,6 @@ namespace Epsteam {
             txtComentario->BackColor = Color::FromArgb(40, 40, 40);
             txtComentario->ForeColor = Color::White;
             pnlContenedorScroll->Controls->Add(txtComentario);
-
 
             btnEnviarResena = gcnew Button();
             btnEnviarResena->Text = "PUBLICAR COMENTARIO";
@@ -226,19 +213,41 @@ namespace Epsteam {
             pnlContenedorScroll->Controls->Add(btnEnviarResena);
         }
 
-
-        void CargarDatosSimulados() {
+        void CargarDatosReales() {
             lblTituloJuego->Text = titulo_juego;
             lblPrecio->Text = precio_juego;
 
-            lblSinopsis->Text = "Explora mundos increÌbles y vive aventuras Èpicas. InformaciÛn detallada temporalmente no disponible por mantenimiento de servidores.";
-            lblDesarrollador->Text = "Desarrollador: Epsteam Partners | Editor: Global Publishing";
-            lblRequisitos->Text = "REQUISITOS MÕNIMOS:\n- SO: Windows 10 64-bit\n- Procesador: Intel Core i5\n- Memoria: 8 GB RAM\n- Gr·ficos: NVIDIA GTX Series\n- Espacio: 50 GB disponible";
+            // ¬°MAGIA! Le pedimos los datos reales a la base de datos
+            DataTable^ dtJuego = Epsteam::ConexionBD::ObtenerDetalleJuego(id_juego_actual);
 
+            if (dtJuego->Rows->Count > 0) {
+                DataRow^ fila = dtJuego->Rows[0];
+
+                // 1. Sinopsis
+                if (fila["descripcion"] != DBNull::Value)
+                    lblSinopsis->Text = fila["descripcion"]->ToString();
+
+                // 2. Desarrolladores y Editores
+                String^ des = (fila["desarrolladores"] != DBNull::Value) ? fila["desarrolladores"]->ToString() : "Varios";
+                String^ edi = (fila["editores"] != DBNull::Value) ? fila["editores"]->ToString() : "Varios";
+                lblDesarrollador->Text = "Desarrollador: " + des + " | Editor: " + edi;
+
+                // 3. Detalles Extra (Fecha, Jugadores, Clasificaci√≥n)
+                String^ fecha = (fila["fecha_lanzamiento"] != DBNull::Value) ? Convert::ToDateTime(fila["fecha_lanzamiento"]).ToString("dd/MM/yyyy") : "N/D";
+                String^ jugadores = (fila["jugadores_activos"] != DBNull::Value) ? fila["jugadores_activos"]->ToString() : "0";
+                String^ clasificacion = (fila["clasificacion_texto"] != DBNull::Value) ? fila["clasificacion_texto"]->ToString() : "N/D";
+
+                lblDetallesExtra->Text = "INFORMACI√ìN ADICIONAL:\n- Fecha de Lanzamiento: " + fecha + "\n- Jugadores Activos: " + jugadores + "\n- Clasificaci√≥n: " + clasificacion;
+
+                // 4. Calificaci√≥n General
+                String^ calif = (fila["calificacion"] != DBNull::Value) ? fila["calificacion"]->ToString() : "0.0";
+                lblCalificacionDB->Text = "" + calif + " / 10";
+            }
+
+            // CARGAR LA IMAGEN LOCAL
             String^ nombreLimpio = titulo_juego->Trim()->ToLower();
             nombreLimpio = nombreLimpio->Replace(" ", "_")->Replace(":", "")->Replace("!", "")->Replace("'", "");
             String^ rutaImagen = "../assets/img/" + nombreLimpio + ".jpg";
-
 
             try {
                 if (System::IO::File::Exists(rutaImagen)) {
@@ -253,7 +262,7 @@ namespace Epsteam {
                 picPortada->BackColor = Color::DimGray;
             }
 
-            // Verificamos si ya estaba en el carrito para poner el botÛn en verde
+            // REVISAR SI YA EST√Å EN EL CARRITO
             for (int i = 0; i < carrito_global->Count; i++) {
                 if (carrito_global[i][0] == id_juego_actual.ToString()) {
                     btnComprar->Text = "AGREGADO";
@@ -263,10 +272,8 @@ namespace Epsteam {
             }
         }
 
-
         void btnCerrar_Click(System::Object^ sender, System::EventArgs^ e) { this->Close(); }
 
-        // °L”GICA REAL DEL CARRITO!
         void btnComprar_Click(System::Object^ sender, System::EventArgs^ e) {
             bool yaEnCarrito = false;
             for (int i = 0; i < carrito_global->Count; i++) {
@@ -276,23 +283,21 @@ namespace Epsteam {
                 }
             }
 
-
             if (yaEnCarrito) {
                 MessageBox::Show("Ya agregaste este juego al carrito.", "Aviso", MessageBoxButtons::OK, MessageBoxIcon::Information);
             }
             else {
-                // Lo metemos al carrito global
                 cli::array<System::String^>^ datos = gcnew cli::array<System::String^>{ id_juego_actual.ToString(), titulo_juego, precio_juego };
                 carrito_global->Add(datos);
 
                 btnComprar->Text = "AGREGADO";
                 btnComprar->BackColor = Color::MediumSeaGreen;
-                MessageBox::Show("°Juego aÒadido al carrito de la tienda!", "…xito", MessageBoxButtons::OK, MessageBoxIcon::Information);
+                MessageBox::Show("¬°Juego a√±adido al carrito de la tienda!", "√âxito", MessageBoxButtons::OK, MessageBoxIcon::Information);
             }
         }
 
         void btnEnviar_Click(System::Object^ sender, System::EventArgs^ e) {
-            MessageBox::Show("ReseÒa publicada.", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
+            MessageBox::Show("Rese√±a publicada.", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
             txtComentario->Clear();
         }
     };

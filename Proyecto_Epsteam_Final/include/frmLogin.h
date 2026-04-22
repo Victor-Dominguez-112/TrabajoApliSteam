@@ -12,30 +12,15 @@ namespace Epsteam {
     using namespace System::Data;
     using namespace System::Drawing;
 
-    /**
-     * @class frmLogin
-     * @brief Formulario inicial que gestiona el acceso y autenticación de usuarios.
-     * @details Esta ventana solicita credenciales (usuario y contraseña) y las valida contra
-     * la base de datos MySQL mediante la clase ConexionBD. También provee acceso a la ventana
-     * de creación de nuevas cuentas (frmRegister).
-     */
     public ref class frmLogin : public System::Windows::Forms::Form
     {
     public:
-        /**
-         * @brief Constructor por defecto de frmLogin.
-         * @details Inicializa todos los componentes visuales de la ventana de inicio de sesión.
-         */
         frmLogin(void)
         {
             InitializeComponent();
         }
 
     protected:
-        /**
-         * @brief Destructor de la clase.
-         * @details Libera la memoria de los componentes visuales administrados cuando se cierra la aplicación.
-         */
         ~frmLogin()
         {
             if (components)
@@ -44,17 +29,11 @@ namespace Epsteam {
             }
         }
 
-        // Declaración de los elementos de tu diseño
     private:
-        /** @brief Etiqueta principal con el título de bienvenida. */
         System::Windows::Forms::Label^ lblTitle;
-        /** @brief Campo de texto para que el usuario ingrese su nickname. */
         System::Windows::Forms::TextBox^ txtUsername;
-        /** @brief Campo de texto oculto para que el usuario ingrese su contraseña. */
         System::Windows::Forms::TextBox^ txtPassword;
-        /** @brief Botón que desencadena el proceso de validación y acceso. */
         System::Windows::Forms::Button^ btnLogin;
-        /** @brief Botón que abre la ventana de registro de nuevos usuarios. */
         System::Windows::Forms::Button^ btnRegister;
 
     private:
@@ -62,10 +41,7 @@ namespace Epsteam {
         System::ComponentModel::Container^ components;
 
 #pragma region Windows Form Designer generated code
-        /**
-         * @brief Método autogenerado por el Diseñador de Windows Forms.
-         * @details Inicializa, posiciona y da estilo a todos los controles UI de la ventana de login.
-         */
+
         void InitializeComponent(void)
         {
             System::ComponentModel::ComponentResourceManager^ resources = (gcnew System::ComponentModel::ComponentResourceManager(frmLogin::typeid));
@@ -161,83 +137,40 @@ namespace Epsteam {
         }
 #pragma endregion
 
-        // ---------------------------------------------------------------------
-        // 1. EL BOTÓN DE ENTRAR (LOGIN)
-        // ---------------------------------------------------------------------
-        /**
-         * @brief Evento que valida las credenciales introducidas y otorga el acceso.
-         * @details Revisa que los campos no estén vacíos. Llama a ConexionBD::ValidarLogin()
-         * y, si recibe un ID válido, oculta el login, muestra un saludo personalizado y abre la Tienda (frmTienda).
-         * Al cerrar la tienda, vuelve a mostrar el login.
-         * @param sender Botón "Entrar" que disparó el evento.
-         * @param e Argumentos del evento.
-         */
     private: System::Void btnLogin_Click(System::Object^ sender, System::EventArgs^ e) {
-        String^ usuario = txtUsername->Text;
-        String^ password = txtPassword->Text;
+        // ... (tu código de validación de textos vacíos)
 
-        if (usuario == "" || password == "") {
-            MessageBox::Show("Escribe tu usuario y contraseña.", "Error",
-                MessageBoxButtons::OK, MessageBoxIcon::Warning);
-            return;
-        }
+        int idLogueado = Epsteam::ConexionBD::ValidarLogin(txtUsername->Text, txtPassword->Text);
 
-        // 1. Llamamos a nuestra super clase de Base de Datos
-        // Le pasamos los textos tal cual, sin conversiones raras
-        int idLogueado = Epsteam::ConexionBD::ValidarLogin(usuario, password);
-
-        // 2. Evaluamos la respuesta (-1 significa que falló)
         if (idLogueado != -1) {
-            MessageBox::Show("¡Bienvenido de vuelta, " + Epsteam::ConexionBD::nicknameActual + "!", "Epsteam", MessageBoxButtons::OK, MessageBoxIcon::Information);
+            // 1. ¡ACTUALIZAMOS EL TEMA GLOBAL! 
+            // Esto hace que todo el programa sepa qué colores usar
+            ThemeManager::EstablecerTema(Epsteam::ConexionBD::temaActual);
 
-            // --- EL CAMBIO ESTÁ AQUÍ ---
-            // Le pasamos el 'idLogueado' adentro de los paréntesis de frmTienda
+            MessageBox::Show("¡Bienvenido de vuelta, " + Epsteam::ConexionBD::nicknameActual + "!", "Epsteam");
+
+            // 2. Abrimos la tienda (ya llevará el color correcto)
             frmTienda^ tienda = gcnew frmTienda(idLogueado);
             this->Hide();
             tienda->ShowDialog();
             this->Show();
         }
         else {
-            MessageBox::Show("Usuario o contraseña incorrectos, o la BD está apagada.", "Error",
-                MessageBoxButtons::OK, MessageBoxIcon::Error);
+            MessageBox::Show("Usuario o contraseña incorrectos.");
         }
     }
 
-           // <--- CIERRA btnLogin_Click // <--- LLAVE 1: CIERRA EL BOTÓN DE ENTRAR
-
-
-           // ---------------------------------------------------------------------
-           // 2. EL LOAD (A veces se crea solo al darle doble clic al fondo)
-           // ---------------------------------------------------------------------
-           /**
-            * @brief Evento que se ejecuta al cargar y dibujar el formulario por primera vez.
-            * @details Realiza una prueba temprana de conexión a la base de datos MySQL (ConexionBD::Conectar)
-            * para asegurar que los servicios de XAMPP estén encendidos y disponibles antes de que el usuario intente loguearse.
-            * @param sender El propio formulario frmLogin.
-            * @param e Argumentos del evento.
-            */
     private: System::Void frmLogin_Load(System::Object^ sender, System::EventArgs^ e) {
         // Intentamos abrir la puerta de la BD nada más arrancar
         MySql::Data::MySqlClient::MySqlConnection^ prueba = Epsteam::ConexionBD::Conectar();
     }
 
-
-           // ---------------------------------------------------------------------
-           // 3. EL TEXTO AZUL DE CREAR CUENTA
-           // ---------------------------------------------------------------------
-           /**
-            * @brief Evento que redirige al usuario a la ventana de registro de cuentas.
-            * @details Oculta temporalmente la ventana de login (Hide) y muestra la ventana modal frmRegister.
-            * Cuando el registro finaliza o se cancela, el login vuelve a aparecer (Show).
-            * @param sender Botón "Crear Cuenta" que disparó el evento.
-            * @param e Argumentos del evento.
-            */
     private: System::Void btnRegister_Click(System::Object^ sender, System::EventArgs^ e) {
         frmRegister^ ventanaRegistro = gcnew frmRegister();
         this->Hide();
         ventanaRegistro->ShowDialog();
         this->Show();
-    } // <--- LLAVE 3: CIERRA EL BOTÓN DE REGISTRO
+    } 
 
-    }; // <--- LLAVE 4: CIERRA LA CLASE frmLogin (¡Esta es la que tiene el punto y coma!)
-} // <--- LLAVE 5: CIERRA EL NAMESPACE Epsteam
+    }; 
+} 
